@@ -245,6 +245,28 @@
     font-size: theme('fontSize.fluid-sm');
   }
 
+
+  .stack-marquee-track {
+    animation: stack-marquee-scroll 32s linear infinite;
+  }
+
+  .stack-marquee:hover .stack-marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes stack-marquee-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-50% - 0.375rem)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack-marquee-track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+    }
+  }
+
   .card {
     position: relative;
     background:
