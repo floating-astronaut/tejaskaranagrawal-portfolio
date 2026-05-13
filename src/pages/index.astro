@@ -85,11 +85,11 @@ const experience = [
 ];
 
 const education = [
-  { school: 'York University', credential: 'Postgraduate - Digital and Content Marketing', period: 'September 2025 - May 2026' },
-  { school: 'George Brown College', credential: 'Postgraduate - Marketing Management, Digital Media', period: 'May 2024 - April 2025' },
-  { school: 'Mahatma Gandhi Chitrakoot Gramodaya Vishwavidyalaya', credential: 'Bachelor of Commerce - Marketing', period: '2015 - 2018' },
-  { school: 'Gwalior Glory High School', credential: 'Commerce and Maths', period: '2013 - 2015' },
-  { school: 'The Scindia School', credential: 'High School', period: '2010 - 2013' },
+  { school: 'York University', credential: 'Postgraduate - Digital and Content Marketing', period: 'September 2025 - May 2026', logo: '/logos/education/york-university.jpg', logoClass: 'max-h-10 max-w-[9rem]' },
+  { school: 'George Brown College', credential: 'Postgraduate - Marketing Management, Digital Media', period: 'May 2024 - April 2025', logo: '/logos/education/george-brown-college.svg', logoClass: 'max-h-11 max-w-[9rem]' },
+  { school: 'Mahatma Gandhi Chitrakoot Gramodaya Vishwavidyalaya', credential: 'Bachelor of Commerce - Marketing', period: '2015 - 2018', logo: '/logos/education/mgcgv.png', logoClass: 'max-h-12 max-w-[3rem]' },
+  { school: 'Gwalior Glory High School', credential: 'Commerce and Maths', period: '2013 - 2015', logo: '/logos/education/gwalior-glory.png', logoClass: 'max-h-10 max-w-[9rem]' },
+  { school: 'The Scindia School', credential: 'High School', period: '2010 - 2013', logo: '/logos/education/scindia-school.png', logoClass: 'max-h-10 max-w-[9rem]' },
 ];
 
 const skills = [
@@ -218,7 +218,10 @@ const systems = [
       <div class="grid gap-8 lg:col-span-7">
         <div class="grid gap-3">
           {education.map((item) => (
-            <article class="card grid gap-3 p-5 sm:grid-cols-[1fr_auto] sm:items-start">
+            <article class="card grid gap-4 p-5 sm:grid-cols-[auto_1fr_auto] sm:items-center">
+              <div class="flex h-16 w-40 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-white p-3">
+                <img src={item.logo} alt={`${item.school} logo`} width="128" height="64" loading="lazy" decoding="async" class:list={[item.logoClass, 'h-auto w-auto object-contain']} />
+              </div>
               <div><h3 class="text-fluid-xl">{item.school}</h3><p class="mt-2 text-fluid-sm text-muted">{item.credential}</p></div>
               <p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle sm:text-right">{item.period}</p>
             </article>
