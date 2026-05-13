@@ -1,0 +1,528 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+
+const title = 'Glitch Budz · Cannabis e-commerce SaaS';
+const description =
+  'A real online store for your cannabis shop. $999 to launch, $99/month flat. AGCO click-and-collect compliant. Built in North York, for Canadian cannabis retail.';
+
+const tiers = [
+  {
+    name: 'Menu',
+    setup: '$999',
+    monthly: '$99',
+    blurb: 'Online catalogue + product pages. Click-to-call ordering. For shops just trying to get on Google.',
+    bullets: [
+      'Mobile-first product catalogue',
+      'AI-readable SEO + JSON-LD',
+      'Click-to-call ordering',
+      'Hosting, TLS, support included',
+    ],
+    featured: false,
+  },
+  {
+    name: 'Storefront',
+    setup: '$1,499',
+    monthly: '$200',
+    blurb:
+      'Full online store with checkout. Customer accounts, branded emails, lifecycle automation. The default for most shops.',
+    bullets: [
+      'Everything in Menu',
+      'Full checkout — Interac e-Transfer + crypto',
+      'Customer accounts + order history',
+      'Branded order-status emails (5 touchpoints)',
+      'Free-shipping bar, 19+ age gate, AGCO copy',
+      'No transaction fees, ever',
+    ],
+    featured: true,
+  },
+  {
+    name: 'Storefront + POS Sync',
+    setup: '$1,999',
+    monthly: '$299',
+    blurb:
+      'Auto-sync inventory and sales to Cova or Greenline. Your in-store menu becomes your online menu, automatically.',
+    bullets: [
+      'Everything in Storefront',
+      'Cova or Greenline POS sync',
+      'Inventory auto-update (no manual work)',
+      'Per-SKU stock visibility online',
+    ],
+    featured: false,
+  },
+];
+
+const features = [
+  {
+    icon: 'shopping-cart' as const,
+    title: 'Real checkout, real payments',
+    body:
+      'Interac e-Transfer with auto-deposit and server-generated references. Crypto via NOWPayments — money lands in your account, not ours. We never touch the funds.',
+  },
+  {
+    icon: 'shield' as const,
+    title: 'AGCO compliant by default',
+    body:
+      'Click-and-collect ordering, 19+ age gate, provincial logic, discreet shipping copy. Set up the way Ontario private retailers are actually allowed to operate.',
+  },
+  {
+    icon: 'spark' as const,
+    title: 'AI SEO out of the box',
+    body:
+      'Indexed and citable in ChatGPT, Perplexity, Claude, and Google AI Overviews from day one. JSON-LD on every page, llms.txt, robots.txt allowing 21 named AI bots.',
+  },
+  {
+    icon: 'database' as const,
+    title: 'POS sync (Cova / Greenline)',
+    body:
+      'Your in-store inventory becomes your online inventory. Sell out of an SKU at the counter — the website hides it within minutes. No double-entry.',
+  },
+  {
+    icon: 'send' as const,
+    title: 'Branded order lifecycle emails',
+    body:
+      'Order placed, paid, shipped (with tracking), delivered, canceled. Five HTML emails that look like your brand, not a Stripe receipt.',
+  },
+  {
+    icon: 'cpu' as const,
+    title: 'Hosted, fixed, updated by us',
+    body:
+      'One number to call when something breaks. Hosting, TLS, security patches, framework upgrades — included in the monthly. Your job is running your store.',
+  },
+];
+
+const compare = {
+  cols: ['Glitch Budz', 'Lightspeed Cannabis', 'Hire an agency'],
+  rows: [
+    { label: 'Setup cost',         values: ['$999–$1,999',    '$3,000–$5,000+',     '$50,000–$130,000'] },
+    { label: 'Monthly',            values: ['$99–$299 flat',  '$130 USD + add-ons', '$0 (you own infra)'] },
+    { label: 'Time to launch',     values: ['48 hours',        '2–4 weeks',          '8–16 weeks'] },
+    { label: 'Transaction fees',   values: ['0%',              '0% (you pay processor)', '0%'] },
+    { label: 'AGCO click-and-collect', values: ['built-in',    'manual config',      'depends on agency'] },
+    { label: 'AI SEO + JSON-LD',   values: ['day one',         'no',                 'extra scope'] },
+    { label: 'POS sync (Cova/Greenline)', values: ['+$299/mo tier', 'add-on',         'extra scope'] },
+    { label: 'Hosting + updates',  values: ['included',        'included',           'on you'] },
+    { label: 'Cancel anytime',     values: ['month-to-month',  'annual contracts',   'you own it'] },
+  ],
+};
+
+const faqs = [
+  {
+    q: 'Do you take my payments?',
+    a: 'No — and that is intentional. You bring your own Interac e-Transfer email and your own NOWPayments account for crypto. Money goes from your customer straight to your bank. We are the platform, not a payment processor. This is the exact reason cannabis-friendly: we have zero regulatory exposure to your transactions.',
+  },
+  {
+    q: 'What about AGCO compliance? Can I actually ship to customers?',
+    a: 'In Ontario, only OCS can deliver cannabis online direct to consumers. Private retailers run click-and-collect — order online, pick up in store. Our default copy and checkout flow is built around that model. If you ever want to position differently (delivery, B2B), we can adjust — but out of the box you are AGCO-aligned.',
+  },
+  {
+    q: 'I am already on Cova / Greenline. Does it sync?',
+    a: 'Yes — that is the Storefront + POS Sync tier ($1,999 + $299/mo). Inventory and product changes flow from your POS to the website automatically. Sell an SKU out at the counter, the site hides it within minutes. No double-entry, no end-of-day reconciliation.',
+  },
+  {
+    q: 'How fast can you have me live?',
+    a: '48 hours after you fill the intake form (logo, hours, address, products). The platform is templatized — we are not building from scratch each time, we are deploying a proven build with your branding swapped in.',
+  },
+  {
+    q: 'What is the catch? Why this cheap?',
+    a: 'Honest answer: we are early. We are looking for 3 to 5 pilot shops in the Greater Toronto Area to prove the model and produce real case studies. The first three sign at lifetime $99/mo in exchange for a testimonial, your logo on this page, and case-study rights. After that the price goes up.',
+  },
+  {
+    q: 'Can I cancel? What if I want to leave?',
+    a: 'Month-to-month, no annual contract. If you ever want out completely, the exit ramp is $5,000 one-time and you get a clean export of your code, your database, and an onboarding doc. You own your data either way — your customers, orders, and product catalogue are yours.',
+  },
+  {
+    q: 'Can I own the code instead of renting?',
+    a: 'Self-host license is $15,000 one-time + $99/mo support retainer. Almost nobody picks this — once shops see the price, they realize they actually wanted SaaS. But it exists for the rare operator who has a real "ownership" requirement.',
+  },
+  {
+    q: 'Are you only in Toronto / Ontario?',
+    a: 'Right now, yes. We are starting in the GTA where compliance is well-understood and we can do walk-in support. BC, Alberta, and other provinces have different cannabis e-commerce rules — we will tier them by complexity once Ontario pilots are live.',
+  },
+];
+
+const demoMail =
+  'mailto:tejas@glitchexecutor.com?subject=Glitch%20Budz%20demo&body=Hey%20Tejas%2C%0A%0AInterested%20in%20a%2010-min%20Glitch%20Budz%20demo.%0A%0AShop%20name%3A%20%0AAddress%3A%20%0AInstagram%3A%20%0ABest%20time%20to%20call%3A%20%0A%0AThanks';
+---
+
+<Base
+  title={title}
+  description={description}
+  pageType="WebPage"
+  ogSlug="budz"
+>
+  {/* ---------- HERO ---------- */}
+  <section class="relative pt-20 pb-20 md:pt-28 md:pb-28 overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 h-[40rem] w-[60rem] max-w-[90vw] rounded-full
+                  bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.18),transparent_60%)] blur-2xl"></div>
+      <div class="absolute top-40 right-[-10rem] h-[30rem] w-[30rem] rounded-full
+                  bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.14),transparent_60%)] blur-2xl"></div>
+    </div>
+
+    <div class="container-app reveal">
+      <p class="eyebrow">
+        <Icon name="spark" size={14} />
+        Glitch Budz · Cannabis e-commerce SaaS · Canada
+      </p>
+      <h1 class="mt-5 max-w-[22ch]">
+        Your cannabis store online.<br />
+        <span class="gradient-text">$999 to launch. $99/month.</span>
+      </h1>
+      <p class="mt-6 text-fluid-lg text-muted max-w-[60ch]">
+        A real online storefront for your shop — full menu, checkout, customer accounts,
+        AGCO click-and-collect, AI SEO. We host it, fix it, and update it. You run your store.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={demoMail} class="btn btn-primary">
+          Book a 10-min demo
+          <Icon name="arrow-right" size={16} />
+        </a>
+        <a
+          href="https://exotic420budz.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-secondary"
+        >
+          See it live
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+      </div>
+      <p class="mt-3 text-fluid-xs text-subtle">
+        Live reference build at exotic420budz.com — 19+ age gate, real working storefront.
+      </p>
+
+      <dl class="mt-12 grid grid-cols-3 gap-4 max-w-xl" aria-label="Headline numbers">
+        <div>
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">Setup</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-brand">$999</dd>
+        </div>
+        <div>
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">Monthly flat</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-brand">$99</dd>
+        </div>
+        <div>
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">Deploy time</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-brand">48h</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* ---------- THE PAIN ---------- */}
+  <section class="py-20 md:py-28 border-t border-border/40">
+    <div class="container-app">
+      <div class="max-w-2xl reveal">
+        <p class="eyebrow"><Icon name="bolt" size={14} /> The cannabis e-commerce problem</p>
+        <h2 class="mt-4">Every option is broken.</h2>
+        <p class="mt-5 text-fluid-lg text-muted">
+          You can't sell cannabis on Shopify, Stripe, Square, or BigCommerce — they reject the
+          vertical outright. So your choices are:
+        </p>
+      </div>
+
+      <ul class="mt-12 grid gap-5 md:grid-cols-3" role="list">
+        <li class="card p-6 md:p-7 reveal">
+          <p class="eyebrow">Option A</p>
+          <h3 class="mt-3 text-fluid-xl">Lightspeed Cannabis</h3>
+          <p class="mt-4 text-muted text-fluid-sm leading-relaxed">
+            $130 USD/mo + four-figure setup. Locked into their templates. Looks like every other
+            Lightspeed cannabis site on the internet.
+          </p>
+        </li>
+        <li class="card p-6 md:p-7 reveal">
+          <p class="eyebrow">Option B</p>
+          <h3 class="mt-3 text-fluid-xl">Hire an agency</h3>
+          <p class="mt-4 text-muted text-fluid-sm leading-relaxed">
+            Toronto agencies quote $50K–$130K for a custom build. Eight to sixteen weeks. Then
+            you own the hosting, the bugs, the security patches.
+          </p>
+        </li>
+        <li class="card p-6 md:p-7 reveal">
+          <p class="eyebrow">Option C</p>
+          <h3 class="mt-3 text-fluid-xl">Linktree + DMs</h3>
+          <p class="mt-4 text-muted text-fluid-sm leading-relaxed">
+            Customers Google your shop, can't see your menu, and walk to the next one. You're
+            invisible to anyone not already following you on Instagram.
+          </p>
+        </li>
+      </ul>
+
+      <p class="mt-12 text-fluid-lg text-fg max-w-3xl reveal">
+        Glitch Budz is the fourth option — a real storefront, built for Canadian cannabis retail,
+        priced like infrastructure instead of a custom project.
+      </p>
+    </div>
+  </section>
+
+  {/* ---------- WHAT YOU GET ---------- */}
+  <section class="py-20 md:py-28">
+    <div class="container-app">
+      <div class="max-w-2xl reveal">
+        <p class="eyebrow"><Icon name="layers" size={14} /> What ships</p>
+        <h2 class="mt-4">A real e-commerce platform, not a website template.</h2>
+        <p class="mt-5 text-fluid-lg text-muted">
+          Same battle-tested stack that runs the reference build at exotic420budz.com — your
+          branding, your products, your hours, your address.
+        </p>
+      </div>
+
+      <ul class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3" role="list">
+        {features.map((f) => (
+          <li class="card p-6 md:p-7 reveal">
+            <span class="inline-flex size-10 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+              <Icon name={f.icon} size={20} />
+            </span>
+            <h3 class="mt-4 text-fluid-xl">{f.title}</h3>
+            <p class="mt-3 text-muted text-fluid-sm leading-relaxed">{f.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* ---------- PRICING ---------- */}
+  <section id="pricing" class="py-20 md:py-28 relative border-t border-border/40">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[50rem] max-w-[90vw] rounded-full
+                  bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.10),transparent_60%)] blur-2xl"></div>
+    </div>
+
+    <div class="container-app">
+      <div class="max-w-2xl reveal">
+        <p class="eyebrow"><Icon name="chart" size={14} /> Pricing · CAD</p>
+        <h2 class="mt-4">Three tiers. Pick once. No transaction fees, ever.</h2>
+        <p class="mt-5 text-fluid-lg text-muted">
+          All tiers include hosting, TLS, AI SEO, Google Analytics + Tag Manager, branded
+          email, and a real human support inbox.
+        </p>
+      </div>
+
+      <ul class="mt-14 grid gap-6 md:grid-cols-3 items-stretch" role="list">
+        {tiers.map((t) => (
+          <li
+            class={`card p-6 md:p-8 reveal relative flex flex-col ${
+              t.featured ? 'ring-1 ring-brand/40 shadow-glow-brand' : ''
+            }`}
+          >
+            {t.featured && (
+              <span
+                class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-brand/40 text-brand rounded-full"
+              >
+                Most shops pick this
+              </span>
+            )}
+            <h3 class="text-fluid-xl">{t.name}</h3>
+            <div class="mt-5 flex items-baseline gap-2">
+              <span class="font-mono text-fluid-2xl text-brand">{t.setup}</span>
+              <span class="text-subtle text-fluid-xs">setup</span>
+            </div>
+            <div class="mt-1 flex items-baseline gap-2">
+              <span class="font-mono text-fluid-xl text-fg">{t.monthly}</span>
+              <span class="text-subtle text-fluid-xs">/ month</span>
+            </div>
+            <p class="mt-4 text-muted text-fluid-sm leading-relaxed">{t.blurb}</p>
+            <ul class="mt-5 space-y-2 text-fluid-sm" role="list">
+              {t.bullets.map((b) => (
+                <li class="flex items-start gap-2">
+                  <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+                  <span class="text-fg/90">{b}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={demoMail}
+              class={`btn mt-7 ${t.featured ? 'btn-primary' : 'btn-secondary'}`}
+            >
+              {t.featured ? 'Start with Storefront' : `Pick ${t.name}`}
+              <Icon name="arrow-right" size={16} />
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="mt-8 text-fluid-xs text-subtle reveal max-w-3xl">
+        Self-host license available on request — $15,000 one-time + $99/mo support. You own
+        the code, host it yourself. Almost nobody picks this once they see the price.
+      </p>
+    </div>
+  </section>
+
+  {/* ---------- COMPARISON ---------- */}
+  <section class="py-20 md:py-28">
+    <div class="container-app">
+      <div class="max-w-2xl reveal">
+        <p class="eyebrow"><Icon name="link" size={14} /> Versus the alternatives</p>
+        <h2 class="mt-4">Same outcome. A fraction of the money and time.</h2>
+      </div>
+
+      <div class="mt-12 reveal overflow-x-auto">
+        <table class="w-full min-w-[640px] border-collapse text-fluid-sm">
+          <thead>
+            <tr class="border-b border-border/60">
+              <th class="text-left py-3 pr-4 font-mono text-fluid-xs uppercase tracking-wider text-subtle">
+                &nbsp;
+              </th>
+              {compare.cols.map((c, i) => (
+                <th
+                  class={`text-left py-3 px-4 font-medium ${
+                    i === 0 ? 'text-brand' : 'text-fg/90'
+                  }`}
+                >
+                  {c}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {compare.rows.map((row) => (
+              <tr class="border-b border-border/30 last:border-b-0">
+                <td class="py-3 pr-4 text-subtle">{row.label}</td>
+                {row.values.map((v, i) => (
+                  <td class={`py-3 px-4 ${i === 0 ? 'text-fg font-medium' : 'text-muted'}`}>
+                    {v}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- HOW IT WORKS ---------- */}
+  <section class="py-20 md:py-28 border-t border-border/40">
+    <div class="container-app">
+      <div class="max-w-2xl reveal">
+        <p class="eyebrow"><Icon name="shield" size={14} /> How a deploy works</p>
+        <h2 class="mt-4">Three steps. Live in 48 hours.</h2>
+      </div>
+
+      <ol class="mt-14 grid gap-5 md:grid-cols-3" role="list">
+        <li class="card p-6 md:p-7 reveal relative">
+          <span class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-border text-brand rounded-full">
+            Day 0
+          </span>
+          <div class="flex items-center gap-3 mt-3">
+            <span class="font-mono text-fluid-xs text-subtle">01</span>
+            <h3 class="text-fluid-xl">Intake form</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted leading-relaxed">
+            Logo, brand colours, hours, address, your NOWPayments + Interac email. Products
+            as a CSV or photos. 10 minutes to fill.
+          </p>
+        </li>
+        <li class="card p-6 md:p-7 reveal relative">
+          <span class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-border text-brand rounded-full">
+            Day 1
+          </span>
+          <div class="flex items-center gap-3 mt-3">
+            <span class="font-mono text-fluid-xs text-subtle">02</span>
+            <h3 class="text-fluid-xl">We deploy</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted leading-relaxed">
+            Storefront spun up on your subdomain (or yourdomain.com). Branding swapped in,
+            products loaded, payments wired, AGCO copy applied. You review by end of day.
+          </p>
+        </li>
+        <li class="card p-6 md:p-7 reveal relative">
+          <span class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-brand/40 text-brand rounded-full">
+            Day 2
+          </span>
+          <div class="flex items-center gap-3 mt-3">
+            <span class="font-mono text-fluid-xs text-subtle">03</span>
+            <h3 class="text-fluid-xl">Live and indexed</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted leading-relaxed">
+            DNS pointed, TLS issued, sitemap submitted to Google + Bing, llms.txt published.
+            Your store is online and citable in ChatGPT and Perplexity from day one.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  {/* ---------- FAQ ---------- */}
+  <section id="faq" class="py-20 md:py-28">
+    <div class="container-app grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-4 reveal">
+        <p class="eyebrow"><Icon name="spark" size={14} /> FAQ</p>
+        <h2 class="mt-4">The questions every shop owner asks.</h2>
+        <p class="mt-5 text-fluid-base text-muted">
+          Answered up front. If yours isn't here, the demo call is the place — book one
+          above and we'll get to it.
+        </p>
+      </div>
+
+      <div class="md:col-span-8">
+        <ul class="divide-y divide-border/60 border-y border-border/60" role="list">
+          {faqs.map((f) => (
+            <li>
+              <details class="group">
+                <summary
+                  class="flex items-start justify-between gap-4 py-5 cursor-pointer list-none
+                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
+                >
+                  <span class="text-fluid-base font-medium pr-2">{f.q}</span>
+                  <span
+                    aria-hidden="true"
+                    class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle
+                           transition-transform duration-200 group-open:rotate-45 group-open:text-brand group-open:border-brand/50"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                      <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                </summary>
+                <div class="pb-5 pr-8 text-fluid-sm text-muted leading-relaxed">
+                  {f.a}
+                </div>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ---------- FINAL CTA ---------- */}
+  <section id="contact" class="py-20 md:py-28 border-t border-border/40">
+    <div class="container-app reveal max-w-3xl">
+      <p class="eyebrow"><Icon name="send" size={14} /> Pilot spots · Greater Toronto Area</p>
+      <h2 class="mt-4">First three shops lock in lifetime $99/month.</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        We're looking for three GTA cannabis retailers to pilot Glitch Budz. You get lifetime
+        $99/mo on the Storefront tier in exchange for a testimonial, your logo on this page,
+        and case-study rights. After the third pilot signs, the price goes back up.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href={demoMail} class="btn btn-primary">
+          Book a 10-min demo
+          <Icon name="arrow-right" size={16} />
+        </a>
+        <a
+          href="https://exotic420budz.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-secondary"
+        >
+          See the live build
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+      </div>
+
+      <p class="mt-6 text-fluid-xs text-subtle">
+        Built in North York · Toronto, ON. Glitch Budz is a Glitch Grow product.
+        Glitch Executor Labs is the trading name of Nuraveda, a sole proprietorship
+        registered in Ontario. 77 Huntley St, Toronto, ON.
+      </p>
+    </div>
+  </section>
+</Base>

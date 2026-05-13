@@ -1,0 +1,25 @@
+---
+term: webhook
+title: What is a webhook?
+definition: A webhook is an HTTP callback that one service makes to another when an event occurs — used to push notifications between systems instead of polling for changes.
+summary: "Webhooks are the primitive behind most real-time integrations: a payment processor calls your endpoint when a charge succeeds, a CRM calls your endpoint when a deal stage changes, an email provider calls your endpoint when a reply lands. Production webhook endpoints validate signatures (HMAC), handle retries idempotently, and respond quickly (under 5 seconds). They're how AI agents react to real-world events without polling."
+related:
+  - orchestration
+  - agentic-workflow
+  - tool-use
+relatedProducts:
+  - cod-confirm
+  - sales-agent
+citations:
+  []
+publishedAt: 2026-05-07
+---
+
+## Production webhook patterns
+
+- **HMAC signature verification** — every webhook should be signed; never trust the source IP or User-Agent
+- **Idempotency keys** — providers retry on 5xx; your handler must deduplicate
+- **Async processing** — return 200 quickly, queue the work; don't do slow processing inline
+- **Retry-aware** — log every receipt with the provider's event ID for debugging
+
+Glitch Grow's Voice AI Agent uses HMAC-verified webhooks for trigger calls; the Sales Agent uses Gmail push notifications via Pub/Sub for inbound replies.

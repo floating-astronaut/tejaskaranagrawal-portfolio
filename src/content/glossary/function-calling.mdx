@@ -1,0 +1,29 @@
+---
+term: function calling
+title: What is function calling?
+definition: Function calling (also called tool use) is a feature in modern LLMs that lets the model output a structured request to invoke a function — the host application runs the function, returns the result, and the model continues reasoning with that result.
+summary: Function calling turns LLMs from text generators into agents that can act. The model is given a list of available functions with their schemas; when the model decides one would help, it emits a JSON object naming the function and arguments. The host app (your code, Claude Desktop, an MCP client) executes the function, feeds the output back, and the model continues. This is the underlying primitive behind tool-using agents, MCP servers, and most agentic workflows.
+related:
+  - ai-agent
+  - mcp-server
+  - llm-orchestration
+relatedProducts:
+  - ugc-agent
+  - ads-agent
+citations:
+  - label: Anthropic — tool use
+    url: https://docs.anthropic.com/en/docs/build-with-claude/tool-use
+  - label: OpenAI — function calling
+    url: https://platform.openai.com/docs/guides/function-calling
+publishedAt: 2026-05-06
+---
+
+## Function calling vs MCP
+
+Function calling is the LLM-side primitive: the model can request a function call. MCP is the protocol layer: a standard for discovering, exposing, and invoking tools across clients. An MCP server registers its tools; an MCP client (Claude Desktop, your agent) surfaces them to the model via function calling.
+
+The two compose. Most production agents use function calling for in-process tools and MCP for cross-process or third-party integrations.
+
+## Reliability patterns
+
+LLM-emitted JSON isn't always valid. Production agents typically: validate the call against the schema, retry with feedback on parse failures, log every call for replay, and gate side-effecting calls behind HITL approval. Glitch Grow's production agents ship these patterns as part of their reference implementations.

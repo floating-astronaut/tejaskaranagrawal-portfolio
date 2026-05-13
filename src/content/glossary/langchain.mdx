@@ -1,0 +1,25 @@
+---
+term: LangChain
+title: What is LangChain?
+definition: LangChain is an open-source framework for building applications with LLMs, providing primitives for prompts, chains, memory, agents, and tool use — across Python and TypeScript.
+summary: LangChain is the most-adopted LLM application framework. It started as a way to compose prompts and chains and grew into a broader toolkit covering agents, retrievers, vector stores, and integrations with hundreds of providers. LangGraph (from the same team) is the recommended runtime for stateful agents. Some teams find LangChain's abstractions over-engineered for simple use cases — for those, direct API calls work better.
+related:
+  - ai-agent
+  - langgraph
+  - llm-orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "LangChain documentation"
+    url: https://python.langchain.com/docs/introduction/
+publishedAt: 2026-05-07
+---
+
+## LangChain vs LangGraph
+
+LangChain provides the primitives (LLMs, prompts, retrievers, tools); LangGraph provides the runtime (state, branching, HITL). For a simple Q&A app, LangChain alone is enough. For a multi-step agent with retries and HITL, LangGraph is the right layer.
+
+## When to use LangChain
+
+When you want to swap LLM providers, reuse battle-tested integrations (200+ vector stores, retrievers, tools), and not reinvent prompt templating. When you want full control over the call shape and don't mind writing it yourself, native SDKs are simpler.

@@ -1,0 +1,26 @@
+---
+term: fine-tuning
+title: What is LLM fine-tuning?
+definition: Fine-tuning is the process of additional training applied to a pre-trained LLM on a smaller, task-specific dataset — adjusting the model's weights to improve performance on a specific use case.
+summary: "Fine-tuning trades flexibility (a fine-tuned model is specialized) for accuracy and cost (it can be smaller and cheaper than a general model with comparable performance on the target task). Common methods: full fine-tuning (all weights), LoRA (small adapter weights), and reinforcement learning from human feedback (RLHF). For most agency use cases, prompt engineering + RAG outperforms fine-tuning; fine-tune only when you have hundreds of high-quality examples and prompt engineering has plateaued."
+related:
+  - rag
+  - system-prompt
+  - inference-cost
+relatedProducts:
+  []
+citations:
+  - label: "Anthropic — when to fine-tune"
+    url: https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview
+publishedAt: 2026-05-07
+---
+
+## When fine-tuning is worth it
+
+- Very specific output format requirements that prompt engineering can't reliably enforce
+- Domain language (medical, legal) where general models lack vocabulary
+- Latency or cost sensitivity that makes a smaller specialized model attractive
+
+## When prompt engineering wins
+
+For 90% of agency use cases. Better prompts + RAG + tool use almost always beats fine-tuning on time-to-value, especially given how fast base models improve.

@@ -1,0 +1,62 @@
+---
+competitor: Zapier
+competitorUrl: https://zapier.com
+title: Glitch Grow vs Zapier — agent stack vs workflow connector
+summary: "Direct comparison: Zapier is a Zap-driven workflow runner with task-metered pricing; Glitch Grow is a one-time purchase of six AI agents you self-host and resell to clients."
+tldr: Pick Zapier when you need fast cross-app glue with no engineering overhead and your volume fits a Pro tier ($19.99/mo). Pick Glitch Grow when you're delivering managed AI services to clients, need agent reasoning + HITL approval queues, and want fixed costs ($499 once + your infra) instead of per-task billing.
+pickGlitchWhen:
+  - You bill clients monthly retainers for an AI service outcome
+  - Your agents need plan → analyze → execute → reflect loops with memory
+  - HITL approval at the draft level is a daily workflow
+  - You want to white-label the service per client, no Zapier branding
+pickCompetitorWhen:
+  - You need quick cross-app connectors (form → CRM → Slack) at low volume
+  - You don't have a developer comfortable with Docker / Cloud Run
+  - Your team's value is workflow design, not agent operations
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Pricing
+    glitch: $499 once, unlimited deployments
+    competitor: $19.99–$103.50/mo per Workspace; task-metered
+  - feature: Agent loop primitive
+    glitch: LangGraph state machine
+    competitor: Zap chain (steps run in sequence)
+  - feature: HITL approval queue
+    glitch: Discord + Telegram first-click reconciler
+    competitor: Manual; no native queue
+  - feature: Memory / decision log
+    glitch: Postgres + pgvector indexed by decision
+    competitor: Zap history (logs, not memory)
+  - feature: Multi-tenant white-label
+    glitch: Brand-config JSON schema, BSL 1.1
+    competitor: Zapier Embed (paid add-on)
+  - feature: Self-host
+    glitch: Yes — Docker, Cloud Run, GCE, systemd
+    competitor: No — Zapier-hosted only
+  - feature: Voice agents
+    glitch: LiveKit + Sarvam + ElevenLabs
+    competitor: Not in scope
+faqs:
+  - q: Can Zapier and Glitch Grow coexist?
+    a: Yes. The common pattern is Zapier for connector glue (form submission → CRM row → Slack ping) and Glitch Grow boilerplates for the agent-shaped workloads where Zaps run out of room.
+  - q: What's the breakeven point cost-wise?
+    a: For an agency running 3+ client automations with any meaningful task volume, the one-time $499 is cheaper than Zapier's monthly billing within the first two months.
+  - q: Are Zapier Agents (the new product) comparable to Glitch Grow?
+    a: Zapier Agents add an LLM-powered orchestrator on top of Zaps. They're useful, but they sit on the same task-metered billing and don't ship the production patterns (HITL reconciler, vector memory, voice stack, white-label config) that Glitch Grow ships out of the box.
+  - q: Which is faster to deploy to a new client?
+    a: Zapier's UI is faster for a one-off Zap. Glitch Grow's brand-config JSON is faster once you're past your first deployment of an agent — client #2 onward is muscle memory.
+citations:
+  - label: Zapier Pricing
+    url: https://zapier.com/pricing
+  - label: Zapier Agents
+    url: https://zapier.com/agents
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+Zapier and Glitch Grow are not the same shape of product. Zapier is rented workflow infrastructure with thousands of connectors; Glitch Grow is six AI agents sold once. Treating them as direct competitors flattens an important distinction — they solve different problems for different operators at different scales.
+
+For a sole operator running one or two scenarios at low volume, Zapier is almost always the right call. The minute you're delivering a managed AI service to a paying client and the unit you sell is "an agent that handles X," the math reverses.

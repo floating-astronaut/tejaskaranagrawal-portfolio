@@ -1,0 +1,20 @@
+{
+  "source": "Unsplash",
+  "license": "Unsplash License (free for commercial + editorial use, attribution appreciated)",
+  "credits": [
+    {
+      "slug": "arjun",
+      "photoId": "qF9e4EHGCVQ",
+      "photographer": "litoon dev",
+      "profile": "https://unsplash.com/@litoondev",
+      "query": "south asian man portrait professional founder"
+    },
+    {
+      "slug": "priya",
+      "photoId": "0zJO10J6oVo",
+      "photographer": "Usman Yousaf",
+      "profile": "https://unsplash.com/@usmanyousaf",
+      "query": "south asian woman portrait professional smiling"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+---
+competitor: Vapi
+competitorUrl: https://vapi.ai
+title: Vapi alternative — voice AI you own at $0.02/min raw infra cost
+summary: Vapi is a polished voice-AI platform with per-minute pricing. Glitch Grow's Voice AI Agent ships the full LiveKit + Sarvam + GPT-4o-mini + ElevenLabs stack as source — you own the cost structure, the language coverage, and the deployment.
+tldr: Vapi charges starting around $0.05/min plus model + telephony costs (2026 pricing on the developer tier). Glitch Grow's Voice AI Agent ($149 once) ships LiveKit Agents v1.2.6 + Sarvam STT (10 Indian languages) + GPT-4o-mini + ElevenLabs at roughly $0.02/min raw infra cost — you skip the platform markup and the vendor lock-in. Better economics for high-volume call workflows; better Indian-language coverage than most platforms.
+audience: agencies and developers running COD-confirm, AI receptionist, appointment-confirmation calls — especially Indian D2C
+competitorPain: Per-minute platform pricing kills high-volume use cases like Indian Shopify COD confirmation, where a merchant might run thousands of calls a month at ₹3–₹5/call. Platform markup eats the margin. Vapi's English-language coverage is strong but Indian-language depth doesn't match Sarvam, which is critical for the Indian D2C voice market.
+relatedProducts:
+  - cod-confirm
+comparison:
+  - feature: Cost per minute (raw)
+    glitch: ~$0.02/min infra (LiveKit + Sarvam + GPT-4o-mini + ElevenLabs)
+    competitor: From ~$0.05/min platform fee plus model and telephony usage
+  - feature: Indian-language STT
+    glitch: Sarvam — Hindi, Punjabi, Tamil, Telugu, Bengali, Marathi, Gujarati, more
+    competitor: Strong English; Indian-language depth varies by configured provider
+  - feature: SIP / telephony integration
+    glitch: LiveKit SIP — Twilio, Plivo, Exotel
+    competitor: Twilio, Vonage, others via platform
+  - feature: Self-host
+    glitch: Yes — your VM, your bucket, your trunk
+    competitor: Vapi-hosted
+  - feature: Voice cloning + regional accents
+    glitch: ElevenLabs configured per-tenant
+    competitor: ElevenLabs + others, configured in Vapi
+  - feature: License
+    glitch: BSL 1.1 — white-label per client
+    competitor: SaaS subscription
+  - feature: Pricing model
+    glitch: $149 once
+    competitor: Per-minute + per-call platform fees
+faqs:
+  - q: Is Vapi easier to get started with?
+    a: For an English-only voice agent on the dev tier, yes — Vapi's web dashboard is faster than spinning up LiveKit Cloud + Sarvam keys. But the moment you're billing clients per-minute, the platform markup compounds.
+  - q: Why does Sarvam matter?
+    a: Indian COD-confirm calls require accurate STT in Hindi, Punjabi, Tamil, Telugu, Bengali, Marathi, and Gujarati. Sarvam was built specifically for Indian languages and outperforms generic STT on regional accents. The Voice AI Agent boilerplate ships pre-wired to Sarvam.
+  - q: Can I use Vapi for inbound only and Glitch Grow for outbound?
+    a: Yes — they're independent stacks. Some buyers run Vapi for English-only inbound and the Glitch Grow boilerplate for high-volume Indian-language outbound.
+  - q: How long does deployment take?
+    a: First instance is ~4 hours (LiveKit Cloud setup, Sarvam keys, R2 bucket, SIP trunk). Subsequent client deploys take ~1 hour with the brand-config schema.
+  - q: What about Bland.ai or Retell?
+    a: Same shape of trade-off — polished platforms with per-minute markup vs owning the stack. Bland.ai is around $0.10/min; Retell is around $0.07/min plus model costs. The Voice AI Agent boilerplate beats both at raw infra cost.
+citations:
+  - label: Vapi Pricing
+    url: https://vapi.ai/pricing
+  - label: LiveKit Agents documentation
+    url: https://docs.livekit.io/agents/
+  - label: Sarvam AI — speech models
+    url: https://www.sarvam.ai/
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+## The voice market split
+
+Voice AI right now divides into two camps:
+
+1. **Polished platforms** — Vapi, Bland, Retell. Easy to start, premium per-minute pricing, vendor lock-in.
+2. **Open stacks** — LiveKit + STT + LLM + TTS, assembled. Lower cost, more setup, full control.
+
+Glitch Grow's Voice AI Agent is the second camp, pre-assembled. You skip the integration work that pushes most teams toward camp #1 in the first place.
+
+## When to stay on Vapi
+
+If your volume is low (say under 500 minutes/month per client) and your audience is English-only, the price difference rarely justifies switching. If your client is an Indian D2C brand running thousands of COD-confirm calls in Hindi and Tamil, the gap is unmissable.

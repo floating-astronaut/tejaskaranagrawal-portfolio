@@ -1,0 +1,135 @@
+---
+import Base from '~/layouts/Base.astro';
+import { site, legalEntity } from '~/lib/site';
+const updated = '2026-04-19';
+---
+
+<Base title="Privacy" description="How Glitch Grow collects, stores, and uses data." pageType="WebPage">
+  <section class="container-app py-20 max-w-prose-tight">
+    <p class="eyebrow">Legal</p>
+    <h1 class="mt-4">Privacy Policy</h1>
+    <p class="mt-4 text-subtle text-fluid-sm">Last updated: {updated}</p>
+
+    <div class="prose mt-10 text-muted [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-fluid-xl [&_h3]:text-fg [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-fluid-base [&_p]:my-3 [&_strong]:text-fg [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1.5 [&_a]:text-brand">
+      <p>
+        {site.name} is an AI software tool operated by
+        <strong>{legalEntity.name}</strong>, a
+        {legalEntity.type.toLowerCase()} owned by {legalEntity.owner} at
+        {legalEntity.address}. This policy covers personal data collected
+        through {site.domain} and the tools we license to subscribers.
+      </p>
+
+      <h2>1. Data controller &amp; contact</h2>
+      <p>
+        {legalEntity.name} is the data controller. Contact
+        <a href={`mailto:${legalEntity.email}`}>{legalEntity.email}</a> for
+        any access, correction, deletion, or other data-related request.
+        We acknowledge requests within 7 days and respond within 30 days
+        (or the period required by your applicable law).
+      </p>
+
+      <h2>2. What we collect</h2>
+      <ul>
+        <li><strong>Contact form submissions</strong> — name, email, company, and the message you send us. Stored in encrypted Postgres.</li>
+        <li><strong>Account identifiers</strong> — account credentials for access control and billing.</li>
+        <li><strong>Connected-platform tokens</strong> — Meta, Amazon, Shopify, and similar OAuth tokens you authorise, used only to operate the tools you've enabled. Encrypted at rest.</li>
+        <li><strong>Billing data</strong> — handled by Stripe; we receive customer ID, email, amount, last-4 of card, and plan.</li>
+        <li><strong>Analytics</strong> — page views, referrers, device type, and approximate (city-level) location. When Google Analytics 4 is enabled on a site, it sets first-party cookies (<code>_ga</code>, <code>_ga_&lt;ID&gt;</code>) and sends pseudonymous event data to Google (acting as our processor). No device fingerprinting, no cross-site ad retargeting.</li>
+        <li><strong>Turnstile challenge data</strong> — processed by Cloudflare; we receive only pass/fail.</li>
+        <li><strong>Server logs</strong> — IP, timestamp, path, retained up to 30 days.</li>
+      </ul>
+
+      <h2>3. Legal basis</h2>
+      <p>
+        Depending on which privacy regime applies to you, we rely on one or
+        more of: contract performance (Canada PIPEDA; EU/UK GDPR Art.
+        6(1)(b); UAE PDPL Art. 5(1)(c); India DPDPA §7(a)), legitimate
+        interests (security, product improvement), legal obligation (tax,
+        accounting, sanctions screening), and consent (optional marketing,
+        withdrawable any time).
+      </p>
+
+      <h2>4. What we don't do</h2>
+      <ul>
+        <li>No selling or licensing of personal data to third parties.</li>
+        <li>No enrichment of form submissions against third-party data brokers.</li>
+        <li>No profiling or automated decisions producing legal effects on you.</li>
+        <li>No data collection from anyone we know to be under 18.</li>
+        <li>No device fingerprinting beyond the standard pixel tags listed below.</li>
+      </ul>
+
+      <h2>5. Sub-processors</h2>
+      <ul>
+        <li><strong>Cloudflare, Inc.</strong> — site delivery, WAF, Turnstile, Pages hosting.</li>
+        <li><strong>Stripe, Inc.</strong> — payments and subscription billing.</li>
+        <li><strong>Google Ireland Limited / Google LLC</strong> — Google Tag Manager (tag orchestration) and Google Analytics 4 (pageview and event telemetry, processed under Google's Ads Data Processing Terms; cookies <code>_ga</code>, <code>_ga_&lt;ID&gt;</code>).</li>
+        <li><strong>Meta Platforms, Inc.</strong> — Meta Pixel (browser-side) and Conversions API (server-side) for ad measurement and retargeting. Server-side identifiers are SHA-256 hashed.</li>
+        <li><strong>TikTok Pte. Ltd.</strong> — TikTok Pixel for ad measurement and retargeting on TikTok campaigns.</li>
+        <li><strong>Resend, Inc.</strong> — transactional and lifecycle email delivery.</li>
+        <li><strong>Meta, Amazon, Shopify</strong> (and similar platforms) — where you connect your own accounts for tool operation.</li>
+        <li><strong>Primary database hosting</strong> — Postgres-compatible, encrypted at rest, located in <strong>{legalEntity.dataStorageRegion}</strong>.</li>
+      </ul>
+
+      <h2>6. International transfers</h2>
+      <p>
+        Our primary database is in {legalEntity.dataStorageRegion}.
+        Because the controller ({legalEntity.name}) is based in
+        {legalEntity.jurisdiction}, most personal data is transferred from
+        Canada to the United States and may be subject to U.S. law,
+        including lawful-access regimes that differ from Canadian law.
+        Transfers for users in other regions rely on SCCs (EU), UK IDTA,
+        adequacy decisions, UAE PDPL Art. 22, and India DPDPA §16 where
+        applicable. Separately, when Google Analytics 4 is enabled, pageview and event data flow directly from visitors' browsers to Google servers in the US and EU under Google's own transfer mechanisms (Google's SCCs + Supplementary Measures).
+      </p>
+
+      <h2>7. Retention</h2>
+      <ul>
+        <li><strong>Account &amp; tool telemetry</strong> — subscription lifetime plus 24 months.</li>
+        <li><strong>Contact-form submissions</strong> — 24 months, or sooner on deletion request.</li>
+        <li><strong>Server logs</strong> — up to 30 days.</li>
+        <li><strong>Billing records</strong> — 6–7 years (CRA tax retention).</li>
+      </ul>
+
+      <h2>8. Your rights</h2>
+      <p>
+        You may have rights to access, rectify, erase, restrict, port,
+        object, or withdraw consent regarding your personal data, and to
+        complain to your data-protection authority — including the
+        <strong>Office of the Privacy Commissioner of Canada</strong>
+        (<a href="https://www.priv.gc.ca" rel="noopener">priv.gc.ca</a>) and
+        the Information and Privacy Commissioner of Ontario. Submit
+        requests to
+        <a href={`mailto:${legalEntity.email}`}>{legalEntity.email}</a>; we
+        verify identity before actioning.
+      </p>
+
+      <h2>9. Breach notification</h2>
+      <p>
+        Any breach of security safeguards posing real risk of significant
+        harm will be notified to the Office of the Privacy Commissioner of
+        Canada and affected individuals per PIPEDA, and to other
+        supervisory authorities within their statutory timelines where
+        applicable.
+      </p>
+
+      <h2>10. Client engagements</h2>
+      <p>
+        When we provide tools under a signed Master Services Agreement or
+        Data Processing Addendum with a client, that agreement governs —
+        not this page. Ask your account contact for the applicable
+        agreement.
+      </p>
+
+      <h2>11. Contact</h2>
+      <p>
+        <a href={`mailto:${legalEntity.email}`}>{legalEntity.email}</a>
+      </p>
+      <p class="font-mono text-fluid-sm">
+        {legalEntity.name}<br/>
+        Attention: {legalEntity.owner}<br/>
+        {legalEntity.address}<br/>
+        Tel: {legalEntity.phone}
+      </p>
+    </div>
+  </section>
+</Base>

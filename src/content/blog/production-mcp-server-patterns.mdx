@@ -1,0 +1,144 @@
+---
+title: "Production MCP server patterns — what makes integrations resellable"
+summary: "Most of the ~11K MCP servers in the wild are toy demos. Here are the five patterns — auth, multi-tenancy, deploy, rate limiting, observability — that turn an MCP server into something an agency can actually charge for."
+cover: ./production-mcp-server-patterns-cover.png
+coverAlt: "An isometric token vault with five outbound connectors feeding distinct integration endpoints"
+author: "arjun"
+tags: ["MCP", "AI Agents"]
+publishedAt: 2026-05-07
+updatedAt: 2026-05-12
+readingMinutes: 8
+featured: false
+---
+
+import StatCallout from '~/components/StatCallout.astro';
+
+Model Context Protocol shipped in late 2024 and the directory of MCP servers grew faster than almost any developer category in 2025. By mid-2026 there are roughly 11,000 of them in the wild. Fewer than 5% are monetized. The gap isn't capability — it's that most public MCP servers stop at the toy demo and skip the work that makes a server something an agency can deploy for paying clients.
+
+<StatCallout
+  stat="Fewer than 5% of the ~11,000 MCP servers in the wild are monetized."
+  context="The remaining 95% stop at toy demos because the production patterns — multi-tenant auth, deploy configs that match how clients actually host, observability — are undocumented."
+  sourceUrl="https://modelcontextprotocol.io"
+  sourceLabel="Model Context Protocol — official spec"
+/>
+
+This post walks through the five patterns that bridge that gap, with concrete code shapes and citations to the protocol spec.
+
+## Why "toy" and "production" diverge
+
+A working MCP server proves the protocol roundtrip: client requests a tool, server runs the tool, response goes back. That's enough for a demo. The minute you want to deploy it to a paying client, four things break:
+
+1. **Authentication that scales beyond your laptop.** The `MCP_API_KEY=changeme` line in the README isn't a deploy story.
+2. **Multi-tenancy.** A single server handling N clients with their own credentials, scoped per request, audited.
+3. **Rate limiting.** Per-tenant, per-tool, with a story for handling the integrated API's own rate limits.
+4. **Deploy configs.** stdio works locally; HTTP/SSE deploys to Cloud Run, Workers, Fly, or whatever your client runs.
+5. **Observability.** Which tool calls happened, by whom, with what arguments, with what result.
+
+The patterns below are how production MCP servers — including the ones powering Glitch Grow's [AI Ads Agent](/products/ads-agent), [AI Sales Agent](/products/sales-agent), and [AI SEO Agent](/products/seo-agent) — handle each one. Public reference servers live at [codeberg.org/glitch-executor](https://codeberg.org/glitch-executor).
+
+## Pattern 1 — multi-tenant token vault
+
+The biggest single shift between toy and production is that credentials live per-tenant, not in one `.env` file. The pattern that works: a `tokens` table keyed by tenant ID and provider, with the actual secret encrypted at rest, and a request-scoped resolver that decrypts on the way in.
+
+```ts
+// Pseudocode shape — not full implementation.
+async function withTenantCredentials<T>(
+  tenantId: string,
+  provider: 'meta' | 'google' | 'shopify',
+  fn: (creds: ProviderCreds) => Promise<T>,
+): Promise<T> {
+  const row = await db.tokens.findFirst({ where: { tenantId, provider } });
+  if (!row) throw new MCPError('NO_CREDENTIALS', `No ${provider} creds for ${tenantId}`);
+  const creds = await decrypt(row.encryptedBlob, env.KMS_KEY);
+  return fn(creds);
+}
+```
+
+Every tool in the MCP server takes a tenant ID via the request context (or an explicit argument when stdio doesn't pass context). The vault makes it impossible for one tenant's tools to silently use another tenant's credentials.
+
+OAuth providers also need a refresh story — token expiration is the most common production failure mode. The agents ship a refresh-aware vault that catches `401 Unauthorized` from the upstream API, refreshes the token, retries once, and only then surfaces the error.
+
+## Pattern 2 — five auth shapes
+
+There's no single "auth pattern" for MCP servers because the upstream APIs differ. The five patterns that cover most of the SaaS world:
+
+1. **OAuth 2 with refresh token** (Google Ads, Shopify, LinkedIn Marketing) — store refresh token, mint access tokens on demand.
+2. **System-user token** (Meta Business, Slack apps) — long-lived token issued by the upstream, no refresh, but tied to a specific user that mustn't churn out.
+3. **Profile-scoped LWA** (Amazon Advertising, Amazon Attribution) — Login With Amazon flow returning a profile ID alongside the access token. Easy to lose the profile ID and end up with a token that won't authorize anything.
+4. **API key** (Supermetrics, simpler SaaS) — single static key, easiest to wire, hardest to rotate.
+5. **Restli-encoded headers** (LinkedIn) — peculiar header encoding that catches you out the first time you ship a LinkedIn integration.
+
+The reference servers each demonstrate one of these patterns, so a buyer adding a new integration has a working template for the auth shape that matches their target API.
+
+## Pattern 3 — deployment configs that match how clients actually host
+
+Public MCP servers ship a `npm start` line and call it a day. Production MCP servers ship deploy targets that match the operator's hosting reality:
+
+- **Cloud Run YAML** — most agencies' default.
+- **Docker + Compose** — for VPS deploys.
+- **systemd unit + nginx upstream config** — when the client's IT team prefers a single VM.
+- **GCE cloud-init** — for one-shot provisioning.
+- **Cloudflare Workers** — for the HTTP/SSE servers where edge latency matters.
+
+Each deploy target needs subtle differences: Workers can't open long-lived connections so SSE works differently; Cloud Run cold-starts unless `min-instances=1`, which costs; systemd needs a logrotate config most public servers ship without.
+
+The argument for picking a starter kit isn't "we can't figure this out" — it's that solving each of these five deploy targets correctly is a week of work per stack, and the buyer is paying for that week not to be theirs.
+
+## Pattern 4 — per-tenant rate limiting
+
+Two layers of rate limiting matter: limits the client imposes (don't let one tenant spam the server) and limits the upstream imposes (don't burn the integrated API's quota).
+
+The pattern that works: a Redis or in-memory token-bucket per `(tenantId, tool)` for the inbound side, and a circuit-breaker per upstream-API-call that opens on consecutive 429s and closes on a successful retry. The circuit-breaker is what saves you when, for example, Meta Ads returns a temporary 429 storm — instead of hammering the API and getting blacklisted, the server short-circuits failing calls and surfaces a clean "upstream rate limit" to the agent.
+
+The reference implementations use a small library shared across all five servers; bringing your own integration means re-using that library, not rewriting it.
+
+## Pattern 5 — structured tool-call observability
+
+When an agent calls a tool, three things should be logged:
+
+- The tool name, arguments, and tenant ID
+- The upstream API call(s) the tool made (URL, method, status, latency)
+- The result returned to the agent
+
+OpenTelemetry tracing is the easiest way to wire this up — most production MCP servers use OTel spans with a few standard attributes (`mcp.tool_name`, `mcp.tenant_id`, `mcp.tool_call_id`). The same data feeds your agent's debugging UI and your billing system, since you're going to want to bill clients per-call eventually.
+
+Without observability, the first time something goes wrong in production you'll be reading raw logs trying to reconstruct what happened. With it, you have a query.
+
+## Pricing models that work
+
+The patterns above only matter if you can charge for what you build. The two pricing models that most MCP-server agencies are landing on right now:
+
+1. **$29–$99/mo per managed integration.** Customer pays a flat monthly fee, you handle uptime, key rotation, and version bumps. Works well for SaaS-replacement use cases (a $29 managed Notion MCP vs a custom build).
+2. **$5–$25K per custom-build engagement.** One-off project pricing for a vertical-specific MCP that connects to a less-common SaaS or to internal tooling. Margin is in the deployment work, not the protocol.
+
+The agents ship a 15-page playbook covering pricing tiers, listing copy, and a 5-tweet launch sequence — none of which is the engineering work, all of which is the difference between shipping a server and shipping a business.
+
+## What this implies for picking a starting point
+
+If you want to ship one MCP server this quarter, the question isn't "do I write FastMCP or MCP SDK from scratch" — both are well-documented. The question is which patterns above you're going to build vs which you're going to inherit.
+
+Building all five from scratch is a quarter. Inheriting them via a starter kit is a long weekend. Either path can work; the choice depends on how much of your time is going to engineering vs sales.
+
+## Frequently asked questions
+
+### What's the difference between an MCP server and a regular HTTP API?
+MCP is a protocol layer above whatever transport you use. An MCP server exposes typed tools, resources, and prompts that any MCP-compatible client (Claude Desktop, Codex, Cursor) can discover and call. A regular HTTP API is one-off integration work per client. MCP is portable across clients without changes.
+
+### Is it worth building an MCP server if there's already one for the same SaaS?
+Usually yes, for two reasons: the existing servers are mostly toy demos missing the production patterns above (auth at scale, observability, deploy), and a managed-MCP service typically commands $29–$99/mo per client even when "free" alternatives exist. The value is operations, not protocol coverage.
+
+### How do you handle MCP server versioning and breaking changes?
+Use OTel spans tagged with `mcp.server_version` for every tool call. When you ship a breaking change, the agent's logs immediately show clients still on the old version. Roll forward over a deprecation window rather than forcing simultaneous upgrades.
+
+### Do MCP servers replace LangGraph or work alongside it?
+They work alongside. LangGraph is the orchestration layer — state, branching, HITL. MCP servers expose tools the LangGraph nodes call. Most production agents use both: LangGraph for the agent loop, MCP for the integrations.
+
+### What's the most common production failure mode?
+Stale OAuth tokens. An MCP server that doesn't refresh tokens proactively will start returning 401s mid-call when the upstream API silently expires them. The vault pattern above handles this; ad-hoc implementations don't.
+
+## References
+
+- [Model Context Protocol — official spec](https://modelcontextprotocol.io)
+- [Anthropic — introducing MCP](https://www.anthropic.com/news/model-context-protocol)
+- [Glitch Grow public showcase](https://codeberg.org/glitch-executor) — five reference MCP servers + scaffolds
+- [What is an MCP server?](/glossary/mcp-server) — short definition

@@ -1,0 +1,54 @@
+---
+competitor: Retell
+competitorUrl: https://www.retellai.com
+title: Retell alternative — owned voice stack at $0.02/min raw infra
+summary: Retell is developer-focused voice AI infrastructure with per-minute pricing. Glitch Grow's Voice AI Agent ships LiveKit + Sarvam + GPT-4o-mini + ElevenLabs as source for $149 once.
+tldr: Retell charges around $0.07/min plus model costs (2026 pricing). Glitch Grow's Voice AI Agent ($149 once) ships the full open stack — sub-second latency, 10 Indian languages via Sarvam, $0.02/min raw infra cost. For high-volume calling and Indian-language workloads, owning the stack pays back in weeks.
+audience: agencies and developers running outbound calling at scale, especially Indian D2C
+competitorPain: Per-minute platform pricing layered on top of model + telephony costs scales linearly with call volume. At thousands of calls per month per client, the markup eats merchant margin.
+relatedProducts:
+  - cod-confirm
+comparison:
+  - feature: Cost per minute (raw)
+    glitch: ~$0.02/min
+    competitor: ~$0.07/min platform fee + model + telephony
+  - feature: Indian-language STT
+    glitch: Sarvam (Hindi, Punjabi, Tamil, Telugu, Bengali, Marathi, Gujarati+)
+    competitor: Configurable, generic STT
+  - feature: SIP / telephony
+    glitch: LiveKit SIP — Twilio, Plivo, Exotel
+    competitor: Twilio, others
+  - feature: Self-host
+    glitch: Yes
+    competitor: Retell-hosted
+  - feature: Pricing
+    glitch: $149 once
+    competitor: Per-minute platform fees
+  - feature: License
+    glitch: BSL 1.1 — white-label per client
+    competitor: SaaS subscription
+faqs:
+  - q: Is Retell easier to start with?
+    a: Yes — a developer-friendly dashboard beats provisioning LiveKit + Sarvam + R2 + SIP yourself the first time. The trade is per-minute pricing once you're in production.
+  - q: When does the cost gap matter?
+    a: Around 1,000 minutes per month per client and up. At Indian COD-confirm volumes (thousands of short calls), it's the entire economic argument.
+  - q: What about Vapi or Bland?
+    a: Same shape of trade-off. Vapi from ~$0.05/min, Bland ~$0.10/min, Retell ~$0.07/min — all platform fees layered over model + telephony. Glitch Grow's Voice AI Agent beats all three on raw infra.
+  - q: How long does first deploy take?
+    a: ~4 hours (LiveKit Cloud setup, Sarvam keys, R2 bucket, SIP trunk). Subsequent client deploys ~1 hour with brand-config.
+citations:
+  - label: Retell pricing
+    url: https://www.retellai.com/pricing
+  - label: LiveKit Agents documentation
+    url: https://docs.livekit.io/agents/
+  - label: Sarvam AI
+    url: https://www.sarvam.ai/
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+## Two camps in voice AI right now
+
+Polished managed platforms (Vapi, Retell, Bland) and source-available stacks. The first camp gets you to first call faster; the second camp gets you to break-even unit economics at scale.
+
+For Indian-language workloads specifically — where Sarvam outperforms generic STT on regional accents — owning the stack is also a quality argument, not just a cost one.

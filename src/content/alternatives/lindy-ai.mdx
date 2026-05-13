@@ -1,0 +1,61 @@
+---
+competitor: Lindy AI
+competitorUrl: https://www.lindy.ai
+title: Lindy AI alternative — owned agent stacks, not a managed platform
+summary: Lindy is a managed multi-agent platform with a polished builder. Glitch Grow ships the production source for six specific agents — you self-host and white-label, no platform between you and the client.
+tldr: Lindy's pricing starts around $49.99/mo (2026 published pricing) and scales with task and agent volume on a managed platform. Glitch Grow is $499 once for six AI agents — you own the source, self-host, rebrand per client, and bill as a managed service. Lindy is the right pick if you don't want to operate infra; Glitch Grow is the right pick if you do.
+audience: agencies and indie devs who want to own and operate their stack
+competitorPain: Managed agent platforms abstract the hard parts (LangGraph, vector store, HITL queues), which is the value — but they also lock the user into the platform's pricing, the platform's integrations, and the platform's branding. Reselling a managed-platform agent to your client without exposing the platform is awkward at best.
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Hosting model
+    glitch: Self-host on your infra
+    competitor: Lindy-managed cloud
+  - feature: Source code access
+    glitch: Full repo on private GitHub
+    competitor: No — managed platform
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Tiered subscription (~$49.99–$199.99/mo published)
+  - feature: White-label per client
+    glitch: Brand-config JSON schema, BSL 1.1 license
+    competitor: Lindy branding visible
+  - feature: Vendor lock-in
+    glitch: None — your code, your infra
+    competitor: Workflows live in Lindy
+  - feature: Time to first agent
+    glitch: ~2 hours first deploy
+    competitor: Minutes via builder UI
+  - feature: HITL
+    glitch: Discord + Telegram first-click reconciler
+    competitor: Built into platform
+faqs:
+  - q: Is Lindy faster to start with?
+    a: For a single user prototyping a workflow, yes — the builder UI is fast. For an agency running multiple clients on owned infrastructure with full brand isolation, the calculus reverses.
+  - q: Can I export agents from Lindy if I outgrow it?
+    a: Lindy is a managed platform, so portability of the agent definition itself is limited. This is the lock-in many buyers cite when moving to source-available alternatives.
+  - q: Can I run Glitch Grow agents on top of Lindy?
+    a: They're separate stacks. You could call a Glitch Grow service from Lindy via webhook, or vice versa, but the agents themselves don't share a runtime.
+  - q: What if I don't want to manage servers?
+    a: Glitch Grow ships Cloud Run YAML, GCE cloud-init, Docker, and systemd configs — Cloud Run is a hands-off option. But if "no servers at all" is a hard requirement, a managed platform is the better fit.
+  - q: How does pricing compare at 5 clients?
+    a: At 5 clients running multiple agents each, Lindy's per-platform pricing exceeds the one-time $499 plus self-host infra within the first month or two of operation.
+citations:
+  - label: Lindy Pricing
+    url: https://www.lindy.ai/pricing
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+## When Lindy is the right pick
+
+If you're a solo operator or a small team who doesn't want to manage infrastructure — no Postgres, no Cloud Run, no API key vault — and the per-agent subscription is fine for your scale, Lindy is genuinely a great product. It removes a real category of work.
+
+## When agencies pick Glitch Grow instead
+
+The constraint that pushes agencies toward source-available stacks is almost always the same: their client wants the service branded as the agency's, billed by the agency, on infrastructure the agency controls. That's hard to do cleanly through a managed platform. With BSL 1.1, the AI Digital Marketing Stack lets the agency rebrand each deployment and own the customer relationship end-to-end.

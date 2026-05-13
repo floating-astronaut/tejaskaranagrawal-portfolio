@@ -1,0 +1,56 @@
+---
+competitor: Gumloop
+competitorUrl: https://www.gumloop.com
+title: Glitch Grow vs Gumloop — finished agents vs no-code builder
+summary: Gumloop is a fast no-code AI workflow builder. Glitch Grow ships six finished production agents as source — different abstractions, different scales of operation.
+tldr: Pick Gumloop when you want to prototype an AI workflow visually without writing code. Pick Glitch Grow when you want the finished agent (ads, sales, voice, social, MCPs) ready to deploy with HITL, memory, and white-label config already wired.
+pickGlitchWhen:
+  - You want shipped agents, not a node graph to assemble
+  - You're billing clients per managed service line and need fixed costs
+  - You want resale-ready white-label config schemas included
+  - Source ownership is non-negotiable for the deployment
+pickCompetitorWhen:
+  - You're prototyping and visual debugging matters
+  - You don't have anyone comfortable with Docker / Cloud Run
+  - You're a solo operator at small scale
+relatedProducts:
+  - sales-agent
+  - ads-agent
+comparison:
+  - feature: Source code
+    glitch: Full repo, BSL 1.1
+    competitor: No-code, no source export
+  - feature: Hosting
+    glitch: Self-host
+    competitor: Gumloop-managed
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Subscription tiers
+  - feature: Time to first prototype
+    glitch: ~2 hours
+    competitor: Minutes via builder
+  - feature: White-label
+    glitch: Brand-config JSON schema
+    competitor: Platform branding visible
+  - feature: Multi-agent orchestration
+    glitch: LangGraph state machine
+    competitor: Visual flows
+faqs:
+  - q: Can I run both?
+    a: Yes — Gumloop for prototyping, Glitch Grow for production agent stacks once a workflow has earned commitment.
+  - q: Is the no-code builder faster?
+    a: For the first agent, yes. By client #2 the brand-config schema makes Glitch Grow deploys take ~20 minutes, which closes the gap.
+  - q: Should I migrate existing Gumloop flows?
+    a: Only the agent-shaped ones. Connector glue should stay where it is.
+  - q: What's the tradeoff?
+    a: Glitch Grow trades visual editing for source ownership and fixed costs. Worth it once you're past prototyping.
+citations:
+  - label: Gumloop
+    url: https://www.gumloop.com
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+Gumloop and Glitch Grow are different abstraction layers. Pick by the phase you're in: visual builder for exploration, source-available stacks for production deployment to paying clients.

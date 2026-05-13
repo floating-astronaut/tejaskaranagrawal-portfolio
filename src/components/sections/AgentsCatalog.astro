@@ -1,0 +1,300 @@
+---
+import Icon from '~/components/Icon.astro';
+import { products } from '~/lib/products';
+import { getGeo, formatPrice, currencyCode } from '~/lib/geo';
+
+// AgentsCatalog — geo-aware agent grid. Each card shows:
+//  • SKU + name + tagline + status
+//  • "Sell as managed service" reseller line (geo-aware copy)
+//  • Visible price in current variant's currency
+//  • Two buttons: "Buy now" (primary, → Stripe or Razorpay payment link)
+//                 "Read the spec" (secondary, → /products/[slug])
+//
+// On the global variant (`/`), Buy goes to Stripe (USD).
+// On the India variant (`/in/`), Buy goes to Razorpay (INR) — but the
+// India Payment Links don't exist yet (Day-7 setup-razorpay-products
+// hasn't run). Until they exist, the Buy button on /in/ shows a
+// "Razorpay opening soon" disabled state but the lead-capture modal is
+// still reachable via the kit-CTA strip below.
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+
+const statusLabel = {
+  shipped: 'Ready',
+  'in-pilot': 'In pilot',
+  'coming-soon': 'Coming soon',
+} as const;
+
+const artifactMeta: Record<string, {
+  label: string;
+  kind: 'graph' | 'pipeline' | 'inbox' | 'calendar' | 'waveform' | 'architecture';
+  primary: string;
+  secondary: string;
+  nodes: string[];
+  code: string[];
+}> = {
+  'ads-agent': {
+    label: 'Ad ops pipeline',
+    kind: 'pipeline',
+    primary: 'plan -> inspect -> approve -> execute',
+    secondary: 'Meta, Google and TikTok under one policy graph',
+    nodes: ['Meta', 'Google', 'TikTok', 'PostHog'],
+    code: ['graphs/ads_operator.py', 'recipes/budget_scale.yaml', 'hitl/telegram.ts'],
+  },
+  'sales-agent': {
+    label: 'Outbound inbox',
+    kind: 'inbox',
+    primary: 'draft ready for human review',
+    secondary: 'Approve, edit or reject before Gmail send',
+    nodes: ['Discover', 'Enrich', 'Draft', 'Approve'],
+    code: ['recipes/founder-led.yml', 'gmail/send.ts', 'memory/outcomes.sql'],
+  },
+  'social-media-agent': {
+    label: 'Publisher rail',
+    kind: 'calendar',
+    primary: '5 brands queued across 10+ channels',
+    secondary: 'Calendar, asset QC, captions, ORM monitor',
+    nodes: ['Mon', 'Tue', 'Wed', 'Thu'],
+    code: ['content/brand-sheet.csv', 'video/qc_gemini.ts', 'publish/upload-post.ts'],
+  },
+  'cod-confirm': {
+    label: 'Voice HITL status',
+    kind: 'waveform',
+    primary: 'Hindi COD call awaiting action',
+    secondary: 'LiveKit SIP, Sarvam STT, recording stored in R2',
+    nodes: ['SIP', 'STT', 'LLM', 'TTS'],
+    code: ['agents/cod-confirm.ts', 'scheduler/dnd.ts', 'recordings/r2.ts'],
+  },
+  'seo-agent': {
+    label: 'SEO + AI-search rail',
+    kind: 'architecture',
+    primary: 'audit -> schema -> llms.txt -> internal links',
+    secondary: 'AI-search ready · Shopify metafields · GSC + GA4 wired',
+    nodes: ['Audit', 'Schema', 'llms.txt', 'Links'],
+    code: ['mcp/tools.ts', 'recipes/audit.yml', 'shopify/metafields.ts'],
+  },
+  'ugc-agent': {
+    label: 'UGC creative pipeline',
+    kind: 'graph',
+    primary: 'brief -> 5–8 hook variants -> ad-platform draft',
+    secondary: 'HeyGen, ElevenLabs, gpt-image-2, fal.ai — assembled with Remotion',
+    nodes: ['Script', 'Avatar', 'B-roll', 'Voice'],
+    code: ['briefs/example.yaml', 'pipeline/assemble.ts', 'platforms/meta_draft.ts'],
+  },
+};
+---
+
+<section id="agents" class="py-10 md:py-12 lg:py-16 relative">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute right-0 top-0 h-[24rem] w-[24rem] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.10),transparent_70%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-3xl reveal">
+      <p class="eyebrow"><Icon name="layers" size={14} /> Agent catalog</p>
+      <h2 class="display-heading mt-4">
+        Six production agents.<br/>
+        <span class="gradient-text">Each one ships as source, config, deploy, and support workflow.</span>
+      </h2>
+      <p class="section-lead mt-5">
+        These are not prompt packs. Each module includes a repo, deploy files, client-facing configuration, approval surfaces, and a resale operating playbook.
+      </p>
+      <p class="metadata mt-3">
+        Prices shown in <span class="font-mono text-brand">{currencyCode(geo)}</span>{isIN && ' · GST inclusive · paid via Razorpay'}.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-6" role="list">
+      {products.map((p, index) => {
+        // On /, Buy redirects to the Stripe Payment Link.
+        // On /in/, Buy triggers Razorpay Standard Checkout via the
+        // global RazorpayCheckout listener (no buyUrlInr redirect).
+        const buyHref = isIN ? '#' : p.buyUrl;
+        const priceLabel = formatPrice(geo, { priceUsd: p.priceUsd, priceInr: p.priceInr });
+        const sellAs = isIN ? p.sellAsInr : p.sellAs;
+        const artifact = artifactMeta[p.slug];
+        return (
+          <li
+            class:list={[
+              'agent-card group flex flex-col h-full gap-5 transition-all duration-300 hover:-translate-y-1',
+              index === 0 ? 'lg:col-span-4' : index === 1 ? 'lg:col-span-2' : 'lg:col-span-3',
+            ]}
+            data-view-sku={p.sku}
+            data-price-major={String(isIN ? p.priceInr : p.priceUsd)}
+            data-currency={isIN ? 'INR' : 'USD'}
+          >
+            <div class={`artifact-card artifact-${artifact.kind}`} aria-label={`${p.name} ${artifact.label}`}>
+              <div class="artifact-topbar">
+                <span>{artifact.label}</span>
+                <span>{p.sku}</span>
+              </div>
+              <div class="artifact-stage">
+                <div class="artifact-nodes" aria-hidden="true">
+                  {artifact.nodes.map((node) => <span>{node}</span>)}
+                </div>
+                <div class="artifact-flow" aria-hidden="true">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="artifact-console">
+                  <p>{artifact.primary}</p>
+                  <p class="text-subtle">{artifact.secondary}</p>
+                </div>
+              </div>
+            </div>
+
+            <header class="flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex size-9 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/25">
+                    <Icon name={p.icon} size={18} />
+                  </span>
+                  <p class="code-tag">{p.sku}</p>
+                </div>
+                <h3 class="card-title mt-3">{p.name}</h3>
+                <p class="card-copy mt-2">{p.oneLiner}</p>
+              </div>
+              <span class={`status-pill ${
+                p.status === 'shipped' ? 'status-ready'
+                  : p.status === 'in-pilot' ? 'status-pilot'
+                    : 'status-soon'
+              }`}>
+                {statusLabel[p.status]}
+              </span>
+            </header>
+
+            <ul class="flex flex-wrap items-center gap-1.5" role="list" aria-label="Capabilities">
+              {p.chips.slice(0, 2).map((c) => <li><span class="chip">{c}</span></li>)}
+              {p.demoVideoId && (
+                <li>
+                  <a
+                    href={`/products/${p.slug}#demo`}
+                    class="inline-flex items-center gap-1 px-2.5 h-7 rounded-full border border-brand/40 bg-brand/10 text-brand text-fluid-xs font-medium hover:bg-brand/20 transition-colors"
+                    aria-label={`Watch ${p.name} demo`}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <span>2-min demo</span>
+                  </a>
+                </li>
+              )}
+            </ul>
+
+            <dl class="grid grid-cols-2 gap-2 mt-1">
+              <div class="metric-tile">
+                <dt class="label-ui">Deploy</dt>
+                <dd class="mt-1 text-fluid-sm font-semibold text-fg num">{p.metrics.deploy}</dd>
+              </div>
+              <div class="metric-tile">
+                <dt class="label-ui">Sell</dt>
+                <dd class="mt-1 text-fluid-sm font-semibold text-fg num">{p.metrics.sell}</dd>
+              </div>
+            </dl>
+
+            <footer class="mt-auto pt-4 border-t border-border/60">
+              <div class="flex items-baseline justify-between gap-3 flex-wrap">
+                <p class="num-mono text-fluid-2xl text-fg leading-none">{priceLabel}</p>
+                <p class="label-ui text-right">Lifetime access</p>
+              </div>
+              <div class="mt-4 flex items-center gap-2">
+                {/* When buyUrl is empty (Stripe Payment Link not yet
+                    provisioned for this SKU), render a "Notify me" CTA
+                    wired to the lead modal so prospects don't hit a
+                    dead link. data-cta="kit" is the global trigger
+                    for LeadFormModal; data-sku tags it so we know
+                    which SKU they're waiting on. */}
+                {!isIN && !p.buyUrl ? (
+                  <button
+                    type="button"
+                    class="btn btn-secondary btn-compact flex-1 justify-center"
+                    data-cta="kit"
+                    data-notify-sku={p.sku}
+                    aria-label={`Get notified when ${p.name} is on Stripe`}
+                  >
+                    Notify me
+                    <Icon name="arrow-right" size={14} />
+                  </button>
+                ) : isIN ? (
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-compact flex-1 justify-center"
+                    data-razorpay-sku={p.sku}
+                    data-price-major={String(p.priceInr)}
+                    data-currency="INR"
+                    aria-label={`Buy ${p.name} for ${priceLabel}`}
+                  >
+                    Buy now
+                    <Icon name="arrow-right" size={14} />
+                  </button>
+                ) : (
+                  <a
+                    href={buyHref}
+                    class="btn btn-primary btn-compact flex-1 justify-center"
+                    data-sku={p.sku}
+                    data-price-major={String(p.priceUsd)}
+                    data-currency="USD"
+                  >
+                    Buy now
+                    <Icon name="arrow-right" size={14} />
+                  </a>
+                )}
+                <a
+                  href={`/products/${p.slug}`}
+                  class="btn-link"
+                  aria-label={`Read the ${p.name} spec`}
+                >
+                  <span>View spec</span>
+                  <Icon name="arrow-up-right" size={14} />
+                </a>
+              </div>
+            </footer>
+
+            <details class="group mt-1">
+              <summary class="cursor-pointer list-none flex items-center justify-between label-ui hover:text-fg transition-colors py-2 -my-2">
+                <span>Open build sheet</span>
+                <span class="transition-transform group-open:rotate-90 inline-flex size-5 items-center justify-center rounded border border-border">
+                  <Icon name="arrow-right" size={10} />
+                </span>
+              </summary>
+              <div class="build-sheet mt-3">
+                <div class="artifact-filelist">
+                  {artifact.code.map((line) => <code>{line}</code>)}
+                </div>
+              </div>
+              <div class={`tab-group mt-3 pt-3 border-t border-border/40`}>
+                <input class={`tab-input--includes`} type="radio" id={`${p.sku}-includes`} name={`tabs-${p.sku}`} checked />
+                <input class={`tab-input--usecase`}  type="radio" id={`${p.sku}-usecase`}  name={`tabs-${p.sku}`} />
+                <input class={`tab-input--resell`}   type="radio" id={`${p.sku}-resell`}   name={`tabs-${p.sku}`} />
+                <input class={`tab-input--needs`}    type="radio" id={`${p.sku}-needs`}    name={`tabs-${p.sku}`} />
+                <div class="tab-list">
+                  <label for={`${p.sku}-includes`} data-tab-label="includes">Includes</label>
+                  <label for={`${p.sku}-usecase`}  data-tab-label="usecase">Use case</label>
+                  <label for={`${p.sku}-resell`}   data-tab-label="resell">Resell</label>
+                  <label for={`${p.sku}-needs`}    data-tab-label="needs">Needs</label>
+                </div>
+                <ul data-tab="includes" class="space-y-1.5 text-fluid-sm text-fg/90" role="list">
+                  {p.whatYouGet.map((line) => (
+                    <li class="flex items-start gap-2">
+                      <span class="mt-[5px] size-1.5 rounded-full bg-brand shrink-0"></span>
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p data-tab="usecase" class="text-fluid-sm text-fg/90 leading-snug">{p.bestFor}</p>
+                <p data-tab="resell"  class="text-fluid-sm text-fg/90 leading-snug">{sellAs}</p>
+                <p data-tab="needs"   class="text-fluid-sm text-subtle leading-snug">{p.requirements}</p>
+              </div>
+            </details>
+          </li>
+        );
+      })}
+    </ul>
+
+    <p class="mt-12 text-center text-fluid-base text-muted reveal">
+      All six agents are bundled in the Vibe Kit at one price.
+      <a href="#pricing" class="text-brand underline decoration-brand/40 hover:decoration-brand">See pricing →</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,128 @@
+---
+title: "The HITL outbound loop: discover, draft, Discord-approve, send, learn"
+summary: "Cold-email senders automate the send. The hard part is the agent layer above — who to email, with which recipe, with what edit. A discover → enrich → draft → approve → learn loop that earns autonomy per recipe over time."
+cover: ./hitl-outbound-loop-cover.png
+coverAlt: "Five connected stages of an outbound loop with a return arrow back to discovery"
+author: "arjun"
+tags: ["AI Sales Agents", "Outbound"]
+publishedAt: 2026-05-12
+updatedAt: 2026-05-12
+readingMinutes: 8
+featured: false
+---
+
+import StatCallout from '~/components/StatCallout.astro';
+
+A production outbound agent runs five stages: discover candidates from Google Maps + registry data, enrich with public signals, draft an email per a tunable recipe library, route to Discord for one-tap human approval, send through Gmail, then index the result in Postgres + pgvector + tsvector so the next pass learns from edits. Once a recipe earns enough approvals with low edit distance, the agent auto-sends within a daily cap. This is the layer above Smartlead and Instantly, not a replacement for them.
+
+<StatCallout
+  stat="After 5 consecutive approvals with low edit-distance, an email recipe earns auto-send autonomy within a daily cap."
+  context="Operator time per active prospect drops from ~3 minutes (read + edit + send) to ~8 seconds (Discord approve). Recipes that don't earn trust stay HITL forever — that's the point."
+  sourceUrl="/products/sales-agent"
+  sourceLabel="AI Sales Agent"
+/>
+
+## What sequence runners don't do
+
+Smartlead, Instantly, Lemlist, Apollo Sequences are all good at one job: getting email to inboxes reliably across rotating sender pools. They handle warm-up, sender rotation, inbox placement, and reply tracking. None of them automate the questions that sit above the send: which prospect, which template, with which personalization, at what cadence.
+
+Most teams paper over that gap with a research VA, a spreadsheet, and a few Zaps. The agent layer is what replaces that papering-over with a state machine that reasons, queues for approval, and learns from what the human did differently.
+
+## The five stages of the loop
+
+Each stage has a specific data shape, a specific autonomy threshold, and a specific failure mode.
+
+### 1. Discover
+
+Pull candidates from at least three sources: Google Maps API (for local-business outbound), registry data (state corporate registries, AGCO for Ontario cannabis retail, India's MCA for B2B), and public-record scrapers (the agent's own crawls of competitor sites, podcast guest lists, conference speaker rosters).
+
+The dedup pass matters more than the discovery pass. Same business under three different DBA names is the most common failure mode — the agent ends up emailing the same buyer three times in a week. A `(name, address, phone)` fuzzy-match on every new candidate against the existing prospect table catches this.
+
+### 2. Enrich
+
+Take a thin candidate (name + URL) and expand it into a profile rich enough to personalize an email against. The data points that matter:
+
+- Business size proxy (employee count from LinkedIn, ad-account size from Meta's Ad Library, revenue estimates from D&B or Crunchbase)
+- Tech stack signals (BuiltWith for web stacks, public job postings for engineering stacks)
+- Recent activity (last blog post, last hire, last funding round)
+- Local context where relevant (state, regulatory category)
+
+The enrichment is what makes the draft non-generic. Without it, the agent writes `"Hi [name], I noticed your business…"` 7,000 times. With it, the agent writes "Hi Priya, I saw the new Hyderabad warehouse opened last month — congrats."
+
+### 3. Draft
+
+Eight email recipes per persona, each with a tested opening hook, a body shape, and a CTA pattern. Recipes are A/B selected based on which one historically wins for similar prospect shapes. A 40-employee D2C brand in Mumbai gets a different recipe than a 200-employee SaaS company in San Francisco.
+
+Drafting is where the LLM earns its keep. The prompt template includes the enriched prospect profile, the chosen recipe's tested structure, the sender's voice samples, and an explicit instruction to not invent facts about the prospect. Drafts that include unverifiable claims get caught by a fact-check pass before they ever reach the HITL queue.
+
+### 4. Approve (HITL)
+
+Every draft above the autonomy threshold gets posted to Discord as a single message with three buttons: ✅ Approve, ✏️ Edit, ❌ Reject. The operator's loop is open Discord → scan 12 drafts → approve 10 → edit 1 → reject 1 → close Discord. Time per draft: 8 seconds for approve, 30 seconds for edit, 5 seconds for reject.
+
+The reconciler is the non-obvious piece. If two operators approve the same draft from Discord and Telegram simultaneously, the first commit wins and the second button becomes a no-op. Without that, you get duplicate sends.
+
+### 5. Send + learn
+
+Sends go through Gmail API (one sender domain per client, warmed up separately) or routed via a sender layer like Smartlead if deliverability infrastructure is the bottleneck. Replies are tracked, categorized by the same LLM that drafted, and fed back into the loop.
+
+The learn step is what most outbound stacks skip. Every edit the operator made to a draft is indexed in Postgres + pgvector + tsvector. Next pass, the agent's drafting prompt includes the 3 most-similar prior edits as in-context examples. Within ~30 active prospects, the agent's drafts converge toward the operator's voice without anyone tuning a prompt.
+
+## What good telemetry looks like
+
+After 30 days of live operation, these are the numbers worth tracking weekly:
+
+| Metric | Target | What "off" looks like |
+| --- | --- | --- |
+| Recipes with auto-send autonomy | 3–5 of 8 | 0 = drafts aren't earning trust; 8 = autonomy threshold is too loose |
+| Operator time per approved draft | < 15 sec | > 30 sec = drafts need too much editing; tighten the recipe |
+| Reply rate by recipe | ≥ 5% baseline | Recipe-specific declines are the cleanest signal for retirement |
+| Bounce rate | < 2% | Above means enrichment / verification is broken |
+| Recipes retired in last 30 days | 0–2 | Healthy churn; if 0 ever you're not tracking; if 5+ the discovery pipeline is feeding bad-fit prospects |
+
+These metrics are what the operator reviews on a Monday morning. The agent doesn't need to be supervised; the operator just needs to know which recipes are working and which are slipping.
+
+## Where this falls apart
+
+Three operating conditions where the loop doesn't work:
+
+- **Cold sender domains.** If your sender domains aren't warm, deliverability is the bottleneck and the agent layer is irrelevant. Route the first 30 days through Smartlead or Instantly for warm-up first.
+- **No first-party data on what works.** The learn step depends on enough approval/edit history to learn from. The first 100 prospects are the slowest because the agent has no examples yet.
+- **List quality below threshold.** The agent can write a personalized email; it can't fix a bad list. If 60% of your candidates are wrong-fit, the operator burns out fast.
+
+These are real constraints, not edge cases. Run a 100-prospect pilot before committing to a retainer that assumes the loop is running smoothly.
+
+## Pricing models that work for outbound
+
+Two patterns most agencies and indie operators settle on:
+
+1. **$797/mo Studio outbound.** 1,000 emails/month, 3 sender domains, weekly reporting. Fits solo founders + small agencies. The "Studio" framing matters because clients expect outbound to scale linearly with budget; capping volume sets expectations early.
+2. **$5K+/mo retainer for vertical-specific lists.** Clients pay for the list curation as much as the agent operation. Common verticals: Indian D2C, US dental DSOs, RIA wealth managers, B2B SaaS founder personas.
+
+The Studio tier scales horizontally — five Studio clients on one deployment is one operator's full pipeline. The retainer tier scales by depth — fewer clients, more enrichment, more operator time per client.
+
+## Frequently asked questions
+
+### How does this compare to Apollo + Outreach + Salesforce stack?
+Different category. Apollo is a data provider; Outreach is a sequencer; Salesforce is the CRM. The outbound agent is the agent layer that sits above all three — it could pull from Apollo, queue through Outreach, log to Salesforce. The Glitch Grow [AI Sales Agent](/products/sales-agent) does this directly via Gmail + Postgres without forcing Outreach/Salesforce.
+
+### Can the agent handle reply triage?
+Yes. Replies are categorized into 6 buckets (interested, not-interested, defer, wrong-person, unsubscribe, miscellaneous) by the same LLM. Interested goes to a separate Discord channel for the operator to take over. Other categories auto-route.
+
+### What about LinkedIn outbound?
+Different stack. LinkedIn outbound needs an automation layer (Phantombuster, La Growth Machine) that handles login state + LinkedIn's anti-automation. The agent layer above can be shared — same recipes, same HITL queue. The send transport just swaps from Gmail to LinkedIn DM.
+
+### Does the agent reach out at scale to people without explicit opt-in?
+The agent doesn't change what's legal. CAN-SPAM (US), CASL (Canada), and India's DLT regime each have specific rules. The agent enforces those at the recipe level — recipes that target B2B contact info without warm intro are gated to jurisdictions where that's permitted. Compliance is a config, not a feature.
+
+### What if the operator goes on vacation?
+The autonomy thresholds keep auto-sending recipes running. The high-stakes HITL drafts queue up; on return, the operator clears the queue in 15–30 minutes. Most operators set a max-queue-size that pauses new drafting when the backlog exceeds 50 — so nothing goes stale.
+
+## Further reading
+
+- [AI Sales Agent — product page](/products/sales-agent)
+- [Smartlead alternative — outbound that reasons, not just sends](/alternatives/smartlead)
+- [Glitch Grow vs Instantly](/vs/instantly)
+- [Agent Resale ROI Estimator](/tools/agent-roi-estimator)
+- [Anthropic — building effective agents](https://www.anthropic.com/research/building-effective-agents) — primary source on the agent-loop shape
+
+The Studio outbound model is one of the cleanest unit-economics stories in the catalog: $99 one-time license, $797/mo per client retainer, 5 clients on one operator. The math holds because the agent does the work an outbound VA used to do — only it doesn't churn, doesn't sleep, and indexes every edit you make.

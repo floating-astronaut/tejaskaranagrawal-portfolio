@@ -1,0 +1,27 @@
+---
+term: multi-tenancy
+title: What is multi-tenancy in AI agents?
+definition: Multi-tenancy is the architectural pattern where one running instance of an agent serves many independent customers (tenants), with each tenant's data, credentials, and configuration isolated from the others.
+summary: For agencies running an agent on behalf of multiple clients, multi-tenancy is the difference between deploying once and deploying N times. The pattern requires per-tenant credential storage (a token vault), tenant-scoped database queries, per-tenant rate limits, and brand-config swaps that don't require code changes. Done right, adding client #2 is a JSON file edit, not an environment.
+related:
+  - white-label-ai
+  - ai-agent
+  - self-hosting
+relatedProducts:
+  - ugc-agent
+  - seo-agent
+citations:
+  []
+publishedAt: 2026-05-07
+---
+
+## What multi-tenancy buys you
+
+- One deployment per agent, not per client
+- Add a client by editing brand-config JSON, not by spinning up a VM
+- Per-tenant API keys stored encrypted, scoped to the request
+- Single observability surface across all tenants
+
+## What it costs you
+
+More architectural care than single-tenant: every database query needs `WHERE tenant_id = ?`, every credential read needs to be tenant-scoped, every cache key needs the tenant in it. Mistakes are catastrophic — one tenant seeing another's data is the worst possible failure mode.

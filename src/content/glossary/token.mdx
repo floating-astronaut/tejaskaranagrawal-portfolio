@@ -1,0 +1,26 @@
+---
+term: token
+title: What is a token in LLM APIs?
+definition: A token is the unit of text an LLM processes — typically a word fragment of 1–4 characters; English averages roughly 0.75 words per token, so 1,000 tokens ≈ 750 words.
+summary: LLM pricing, rate limits, and context windows all measure in tokens, not characters or words. Tokenization is model-specific — different models split the same string into different token counts, with knock-on effects on cost. Counting tokens precisely requires the model's tokenizer (tiktoken for OpenAI, custom for Claude/Gemini); rough estimates use the 0.75-words-per-token heuristic for English.
+related:
+  - context-window
+  - embedding
+  - inference-cost
+relatedProducts:
+  []
+citations:
+  - label: "OpenAI — counting tokens"
+    url: https://platform.openai.com/docs/guides/text-generation
+publishedAt: 2026-05-07
+---
+
+## Why token counts matter
+
+- **Pricing** — APIs charge per million input/output tokens at different rates
+- **Rate limits** — usually expressed as tokens/minute and tokens/day
+- **Context window** — total budget per call
+
+## Estimating quickly
+
+For English text: ~4 characters per token, ~0.75 words per token. Code and non-English text tokenize less efficiently. Use the [Prompt Cost Estimator](/tools/prompt-cost-estimator) for monthly projections.

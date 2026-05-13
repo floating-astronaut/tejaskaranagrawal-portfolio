@@ -1,0 +1,244 @@
+---
+import Icon from '~/components/Icon.astro';
+import { products } from '~/lib/products';
+import { bundles, bundleAlaCarteTotal, bundleDiscountPct } from '~/lib/bundles';
+import { getGeo, currencyCode } from '~/lib/geo';
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+
+const bundle = bundles[0];
+const bundlePriceLabel = isIN
+  ? '₹' + bundle.priceInr.toLocaleString('en-IN')
+  : '$' + bundle.priceUsd.toLocaleString('en-US');
+const alaCarteTotal = bundleAlaCarteTotal(bundle, geo);
+const alaCarteLabel = isIN
+  ? '₹' + alaCarteTotal.toLocaleString('en-IN')
+  : '$' + alaCarteTotal.toLocaleString('en-US');
+const savingsAbs = alaCarteTotal - (isIN ? bundle.priceInr : bundle.priceUsd);
+const savingsLabel = isIN
+  ? '₹' + savingsAbs.toLocaleString('en-IN')
+  : '$' + savingsAbs.toLocaleString('en-US');
+const discountPct = bundleDiscountPct(bundle, geo);
+
+const buyHref = isIN ? '#' : bundle.buyUrl;
+const processor = isIN ? 'Razorpay' : 'Stripe';
+
+const includedProducts = bundle.includes
+  .map((slug) => products.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+const shortNames: Record<string, string> = {
+  'ads-agent': 'Ads Operator',
+  'sales-agent': 'Sales Agent',
+  'social-media-agent': 'Social Agent',
+  'cod-confirm': 'Voice Agent',
+  'seo-agent': 'SEO Agent',
+  'ugc-agent': 'UGC Agent',
+};
+
+const stackPreview = includedProducts.map((p) => ({
+  slug: p.slug,
+  name: shortNames[p.slug] ?? p.name,
+  headline: p.productLine,
+  artifact: p.whatYouGet?.[0] ?? p.oneLiner,
+  monetize: isIN ? p.sellAsInr : p.sellAs,
+  command: `deploy/${p.slug}/production.yml`,
+}));
+
+const afterPurchase = [
+  { label: 'Source invite', text: 'Private repo access on purchase' },
+  { label: 'AGENTS.md installer', text: 'Any AI coding agent reads it, installs for you' },
+  { label: 'Discord install help', text: 'Buyer-only channels + async support' },
+  { label: 'Architecture call', text: '30-minute 1:1 with the founder' },
+];
+---
+
+<section id="pricing" class="py-10 md:py-12 lg:py-16 relative overflow-hidden">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute left-1/2 top-1/3 -translate-x-1/2 h-[32rem] w-[60rem] max-w-[100vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.16),transparent_60%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-3xl reveal mx-auto text-center">
+      <p class="eyebrow justify-center"><Icon name="bolt" size={14} /> AI Digital Marketing Stack</p>
+      <h2 class="display-heading mt-4">
+        Stop assembling tools.<br/>
+        <span class="gradient-text">Run one stack.</span>
+      </h2>
+      <p class="section-lead mt-5">
+        Six AI agents — ads, sales, social, voice, SEO, UGC — that plug into Claude Code, Codex, OpenClaw, Hermes, NemoClaw, Cursor — any AI coding agent. Same deploy, same approval surface, same support discipline. <strong>Your AI agent installs each one for you.</strong>
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,390px)] items-start reveal" data-founder-stack>
+      <div class="proof-card p-5 md:p-7">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="metadata text-brand">{bundle.sku}</p>
+            <h3 class="mt-2 text-fluid-2xl font-semibold">Connected stack map</h3>
+            <p class="mt-2 text-fluid-sm text-muted max-w-2xl">
+              Hover, focus, or tap any block to inspect what that agent contributes to the bundled system.
+            </p>
+          </div>
+          <div class="rounded-lg border border-brand/25 bg-brand/10 px-3 py-2 text-fluid-sm text-brand">
+            Best value · {discountPct}% below à la carte
+          </div>
+        </div>
+
+        <div class="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(300px,0.85fr)]">
+          <div class="stack-map" role="tablist" aria-label="AI Digital Marketing Stack agents">
+            {includedProducts.map((p, i) => (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={i === 0 ? 'true' : 'false'}
+                aria-controls="stack-preview"
+                class="stack-node"
+                data-stack-node={p.slug}
+              >
+                <span class="stack-node-icon"><Icon name={p.icon} size={18} /></span>
+                <span>
+                  <strong>{shortNames[p.slug] ?? p.name}</strong>
+                  <small>{p.sku}</small>
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div id="stack-preview" class="artifact-card stack-preview" role="tabpanel" data-stack-preview>
+            <div class="artifact-topbar">
+              <span data-stack-preview-name>{stackPreview[0]?.name}</span>
+              <span>module.lock</span>
+            </div>
+            <div class="technical-code mt-4">
+              <p><span class="text-brand">$</span> clone founder-stack</p>
+              <p>include: <span data-stack-preview-command>{stackPreview[0]?.command}</span></p>
+              <p>artifact: <span data-stack-preview-artifact>{stackPreview[0]?.artifact}</span></p>
+            </div>
+            <h4 class="mt-5 card-title" data-stack-preview-headline>{stackPreview[0]?.headline}</h4>
+            <p class="mt-3 text-fluid-sm text-muted" data-stack-preview-money>{stackPreview[0]?.monetize}</p>
+          </div>
+        </div>
+
+        <div class="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {afterPurchase.map((item) => (
+            <div class="proof-card compact">
+              <p class="metadata text-fg">{item.label}</p>
+              <p class="mt-1 text-fluid-xs text-subtle leading-snug">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <script is:inline type="application/json" data-stack-data set:html={JSON.stringify(stackPreview)} />
+      </div>
+
+      <aside class="offer-card p-5 md:p-6 lg:sticky lg:top-[calc(var(--header-stack-h,72px)+1rem)]">
+        <p class="metadata text-brand">Premium checkout decision</p>
+        <div class="mt-4 flex items-end gap-3 flex-wrap">
+          <span class="num-mono text-fluid-5xl text-brand leading-none">{bundlePriceLabel}</span>
+          <span class="num-mono text-fluid-sm text-subtle line-through decoration-2">{alaCarteLabel}</span>
+        </div>
+        <p class="mt-3 text-fluid-sm text-muted">
+          One payment through {processor}; {currencyCode(geo)} pricing{isIN && ' includes GST'}. Source access, resale rights, support, and the architecture call are included.
+        </p>
+
+        <dl class="mt-5 grid grid-cols-2 gap-2">
+          <div class="metric-tile">
+            <dt class="metadata">Included</dt>
+            <dd class="mt-1 font-semibold">6 agents</dd>
+          </div>
+          <div class="metric-tile">
+            <dt class="metadata">Difference</dt>
+            <dd class="mt-1 font-semibold text-brand">{savingsLabel}</dd>
+          </div>
+        </dl>
+
+        {isIN ? (
+          <button
+            type="button"
+            class="mt-5 btn btn-primary w-full justify-center text-fluid-base py-3"
+            data-razorpay-sku={bundle.sku}
+            data-price-major={String(bundle.priceInr)}
+            data-currency="INR"
+            aria-label={`Buy the AI Digital Marketing Stack for ${bundlePriceLabel}`}
+          >
+            Get the Stack
+            <Icon name="arrow-right" size={16} />
+          </button>
+        ) : (
+          <a
+            href={buyHref}
+            class="mt-5 btn btn-primary w-full justify-center text-fluid-base py-3"
+            data-sku={bundle.sku}
+            data-price-major={String(bundle.priceUsd)}
+            data-currency="USD"
+          >
+            Get the Stack
+            <Icon name="arrow-right" size={16} />
+          </a>
+        )}
+
+        <ul class="mt-6 space-y-2.5 text-fluid-sm" role="list">
+          {[
+            'BSL 1.1 source-available licence',
+            'Use across unlimited client deployments',
+            'Future SKU additions free for 12 months',
+            '14-day refund window',
+          ].map((r) => (
+            <li class="flex items-start gap-2">
+              <span class="mt-[3px] text-brand shrink-0"><Icon name="check" size={14} /></span>
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script>
+  const stackRoot = document.querySelector<HTMLElement>('[data-founder-stack]');
+  if (stackRoot) {
+    const dataEl = stackRoot.querySelector<HTMLScriptElement>('[data-stack-data]');
+    const nodes = Array.from(stackRoot.querySelectorAll<HTMLButtonElement>('[data-stack-node]'));
+    const nameEl = stackRoot.querySelector<HTMLElement>('[data-stack-preview-name]');
+    const commandEl = stackRoot.querySelector<HTMLElement>('[data-stack-preview-command]');
+    const artifactEl = stackRoot.querySelector<HTMLElement>('[data-stack-preview-artifact]');
+    const headlineEl = stackRoot.querySelector<HTMLElement>('[data-stack-preview-headline]');
+    const moneyEl = stackRoot.querySelector<HTMLElement>('[data-stack-preview-money]');
+
+    type StackPreview = {
+      slug: string;
+      name: string;
+      headline: string;
+      artifact: string;
+      monetize: string;
+      command: string;
+    };
+    let data: StackPreview[] = [];
+    try { data = JSON.parse(dataEl?.textContent ?? '[]'); } catch {}
+
+    function render(slug: string) {
+      const item = data.find((d) => d.slug === slug);
+      if (!item) return;
+      if (nameEl) nameEl.textContent = item.name;
+      if (commandEl) commandEl.textContent = item.command;
+      if (artifactEl) artifactEl.textContent = item.artifact;
+      if (headlineEl) headlineEl.textContent = item.headline;
+      if (moneyEl) moneyEl.textContent = item.monetize;
+      nodes.forEach((node) => node.setAttribute('aria-selected', node.dataset.stackNode === slug ? 'true' : 'false'));
+    }
+
+    nodes.forEach((node) => {
+      const activate = () => {
+        const slug = node.dataset.stackNode;
+        if (slug) render(slug);
+      };
+      node.addEventListener('click', activate);
+      node.addEventListener('mouseenter', activate);
+      node.addEventListener('focus', activate);
+    });
+  }
+</script>

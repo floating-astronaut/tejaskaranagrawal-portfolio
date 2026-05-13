@@ -1,0 +1,128 @@
+---
+title: "Voice AI for Indian COD-confirmation at $0.02/min raw infra cost"
+summary: "Indian D2C runs on COD. Per-call markup from managed voice platforms eats merchant margin. Here's how to ship a Hindi/Tamil/Bengali voice agent on LiveKit + Sarvam for ~$0.02/min — and why it matters for the segment."
+cover: ./voice-ai-cod-confirm-india-cover.png
+coverAlt: "Audio waveform threading through Devanagari and Tamil script characters with a phone icon"
+author: "priya"
+tags: ["Voice AI", "Indian D2C"]
+publishedAt: 2026-05-07
+updatedAt: 2026-05-12
+readingMinutes: 7
+featured: false
+---
+
+import StatCallout from '~/components/StatCallout.astro';
+
+Indian direct-to-consumer commerce runs on cash-on-delivery. Depending on the category, somewhere between 50% and 75% of orders ship COD, and somewhere between 20% and 40% of those orders get refused at the door. Confirmation calls before dispatch are how merchants protect the margin — but a calling-team-of-one doesn't scale, and per-call SaaS markup eats the savings.
+
+<StatCallout
+  stat="At 10,000 calls/month, an owned LiveKit + Sarvam stack saves ~$600/month vs Bland.ai's ~$0.10/min platform pricing."
+  context="$0.02/min raw infra cost on the owned stack (LiveKit Cloud + Sarvam STT + GPT-4o-mini + ElevenLabs + R2 recording) vs ~$0.10/min platform fee on managed alternatives. License pays back in roughly 60 days at mid-volume merchants."
+  sourceUrl="/products/cod-confirm"
+  sourceLabel="Voice AI Agent — Glitch Grow"
+/>
+
+A production voice agent solves it: place the call, confirm in the customer's actual language, log the result, and reschedule when needed. The economics only work if you own the stack. Here's why, and how the production stack actually fits together.
+
+## The cost gap
+
+Managed voice-AI platforms — Vapi, Bland, Retell — charge per minute on top of model and telephony costs. Published rates as of 2026:
+
+| Platform | Per-minute fee | Plus model + telephony |
+| --- | --- | --- |
+| Bland.ai | ~$0.10/min | included in higher tiers |
+| Retell | ~$0.07/min | extra |
+| Vapi | from ~$0.05/min | extra |
+| Glitch Grow Voice AI Agent stack | $0 platform fee | ~$0.02/min raw infra |
+
+For a merchant running 10,000 confirmation calls a month at an average 45-second duration (7,500 minutes), the difference between $0.02/min and $0.10/min is $600/month. At ₹3–₹5 per call billed to the merchant, that's the difference between a ₹50,000/month revenue line and a break-even one.
+
+Owning the stack is the unit-economics argument. The technical argument is that Indian-language voice has been under-served by every major managed platform, and you can build a stack that handles regional accents better than what's available off the shelf.
+
+## What "Indian-language voice" actually requires
+
+English voice agents are well-served — pick any STT, LLM, TTS combination and it works. Indian-language voice is materially harder for three reasons:
+
+1. **Accent diversity is wider than European-language equivalents.** Hindi spoken in Punjab is different from Hindi spoken in Bihar; the model needs to handle both.
+2. **Code-switching is normal.** A typical confirmation call switches between Hindi and English mid-sentence ("Haan ji, address theek hai, but timing thoda change kar dijiye"). Most generic STT models drop accuracy hard on code-switched audio.
+3. **Regional languages aren't optional.** Tamil, Bengali, Marathi, Telugu, Punjabi, Gujarati all matter at scale. A merchant in Chennai needs Tamil, not Hindi.
+
+[Sarvam AI](https://www.sarvam.ai/) was built specifically for this problem and ships STT models trained on Indian-language audio at scale. The Glitch Grow [Voice AI Agent](/products/cod-confirm) defaults to Sarvam STT precisely because the alternatives degrade on real-world Indian audio. For English-only calls there's a fallback to OpenAI Realtime, but the default is Sarvam.
+
+## The production stack
+
+A production Indian-language voice agent has six components:
+
+```
+Customer phone → SIP trunk → LiveKit Cloud → Sarvam STT → GPT-4o-mini → ElevenLabs TTS → R2 recording + Whisper transcript
+                                                  ↓
+                                          Tool calls (Postgres, webhook to merchant)
+```
+
+Each layer has a non-obvious choice:
+
+- **SIP trunk.** Twilio works globally; for Indian DLT compliance you typically want Plivo or Exotel with a local DID and proper consent flow.
+- **LiveKit Cloud.** WebRTC-first realtime audio infrastructure; the Agents JS framework handles the orchestration loop with sub-second turn-taking.
+- **Sarvam STT.** Streaming transcription in 10+ Indian languages. Picks up code-switching at much higher accuracy than generic models.
+- **GPT-4o-mini reasoning.** Fast and cheap enough for high-volume calls; you can swap in Claude Haiku 4 if you want.
+- **ElevenLabs TTS.** Voice cloning + regional accents available; the alternatives have weaker Indian-accent options at this writing.
+- **R2 recording + Whisper transcript.** S3-compatible storage for the audio plus an offline Whisper pass for the transcript. R2 egress is free which materially affects cost when you're recording every call.
+
+Latency budget for the whole loop is sub-second turn-taking, which means the components have to live in the same region (typically Mumbai or Singapore) and the streaming paths need to be connected, not polled.
+
+## The DND and consent edge cases
+
+Two regulatory things matter for outbound voice in India:
+
+1. **DND scrubbing.** TRAI's Do-Not-Disturb registry is mandatory for promotional calls and recommended for transactional calls. Glitch Grow's stack ships a DND-aware scheduler that scrubs the registry per-call.
+2. **DLT registration.** Outbound voice traffic via Indian SIP trunks needs DLT-registered headers and templates. Plivo and Exotel both expose this in their APIs.
+
+If the call is genuinely transactional (confirming an order the customer already placed), the regulatory bar is lower than promotional. But "lower" isn't "none." Consent and recording disclosure on the call itself is the safe path.
+
+## Where this approach doesn't fit
+
+The same honesty-first framing as everywhere else on this site applies here.
+
+**You're not building this stack for 100 calls a month.** Below ~500 minutes/month per client, the platform markup is irrelevant compared to the engineering setup time. Stay on Vapi.
+
+**You need someone comfortable with telephony.** SIP trunks, DLT compliance, codec mismatches between providers — these aren't pleasant problems. The boilerplate ships configs that work, but operations are still real.
+
+**You need a recording + privacy story.** R2 stores the recordings; you're responsible for retention policy and customer access requests. This is a feature, not a bug — managed platforms also have to handle it, but you get to choose how.
+
+If those constraints don't apply, the unit economics speak for themselves. A merchant running 10,000 calls a month will save more than the entire boilerplate price within 30 days.
+
+## Pricing models that work
+
+Two patterns most agencies and reseller operators use:
+
+1. **₹3–₹5 per call to the merchant.** Easy to explain, scales with their volume, predictable for both sides. Mid-volume merchant (10K calls/mo) = ₹30,000–₹50,000/mo per client.
+2. **₹50,000/mo white-label reseller seat.** For agencies wanting to embed voice as part of a broader managed-service offering, a flat monthly seat with unlimited calls under a fair-use cap.
+
+The Glitch Grow Voice AI Agent ships with both pricing playbooks plus the brand-config schema to white-label per merchant.
+
+## Frequently asked questions
+
+### Does Sarvam STT cost more than English-only STT?
+Roughly the same per-minute. Sarvam's pricing for the languages it covers is comparable to Whisper or Google Speech-to-Text for English; the advantage isn't price, it's that English-only STT collapses on code-switched Hindi-English audio.
+
+### What about TRAI consent and DLT compliance for outbound voice?
+Outbound voice via Indian SIP trunks needs DLT-registered headers and templates. For transactional COD-confirm calls the regulatory bar is lower than promotional, but consent disclosure and DND scrubbing are still required. Plivo and Exotel both expose this in their APIs; the boilerplate ships those integrations.
+
+### Can a single VM handle 10K calls/month?
+Yes, easily. The stack is mostly orchestration — LiveKit Cloud handles the WebRTC layer, Sarvam handles STT, the LLM handles reasoning. A $40–$80/mo VM is enough for one mid-volume merchant; scale horizontally per-merchant if needed.
+
+### How does this work alongside Shopify's order webhooks?
+Out of the box. The Voice AI Agent triggers on Shopify's `orders/paid` webhook with HMAC verification, calls the customer in their preferred language, posts the confirmation result back as an Order Note. Merchants don't change their fulfillment flow — the agent slots in before dispatch.
+
+### What happens if the customer doesn't pick up?
+The DND-aware scheduler retries on a configurable interval (default: 3 attempts over 6 hours) and falls back to SMS via Twilio. If all attempts fail, the order is flagged for human review in the merchant's dashboard.
+
+## References
+
+- [LiveKit Agents documentation](https://docs.livekit.io/agents/)
+- [Sarvam AI — speech models](https://www.sarvam.ai/)
+- [Voice AI Agent boilerplate](/products/cod-confirm) — the full stack as source
+- [Glitch Grow vs Vapi](/vs/vapi) — head-to-head with the closest managed-platform alternative
+- [What is a voice agent?](/glossary/voice-agent) — short definition
+
+Indian D2C voice is one of the niches where the buy-once argument is sharpest. The merchant volume is real, the per-call savings are real, and the language coverage is meaningfully better when the stack is yours to tune.

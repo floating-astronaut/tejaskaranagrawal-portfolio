@@ -1,0 +1,26 @@
+---
+term: chain-of-thought (CoT)
+title: What is chain-of-thought prompting?
+definition: Chain-of-thought (CoT) is a prompting technique that asks an LLM to show its reasoning step-by-step before producing a final answer, which improves accuracy on complex reasoning tasks.
+summary: CoT was introduced as a few-shot prompting trick (showing the model examples of step-by-step solutions); modern instruction-tuned models often produce CoT-style reasoning by default when asked. Production agents use CoT explicitly when the task benefits from intermediate reasoning steps — math, multi-hop questions, code planning. The cost is more output tokens; the benefit is materially higher accuracy on hard tasks.
+related:
+  - ai-agent
+  - system-prompt
+relatedProducts:
+  []
+citations:
+  - label: "Wei et al — Chain-of-Thought Prompting"
+    url: https://arxiv.org/abs/2201.11903
+publishedAt: 2026-05-07
+---
+
+## When CoT helps
+
+- Multi-step math or logic
+- Multi-hop reasoning over retrieved documents (RAG)
+- Code planning before code generation
+- Decisions where the rationale itself is part of the output
+
+## When it doesn't
+
+Simple classification, formatting tasks, or anything where the answer is one well-defined output. CoT just adds tokens.

@@ -1,0 +1,133 @@
+---
+/**
+ * YouTube facade — renders a thumbnail + play button. Clicking swaps
+ * the iframe in. Saves ~500KB of YouTube player JS + ~10 third-party
+ * connections on initial page load (which would otherwise tank LCP +
+ * fail any "no third-party requests on first byte" Lighthouse audit).
+ *
+ * Pattern is the same one Google's web.dev recommends — the only
+ * trade-off is the user has to click play (which they were going to
+ * do anyway).
+ *
+ * Uses youtube-nocookie.com (privacy-enhanced mode) so we don't drop
+ * a YouTube tracking cookie until the visitor actually plays.
+ */
+
+interface Props {
+  /** YouTube video ID (the v= part of the watch URL). */
+  id: string;
+  /** Accessible title for the iframe + play button. */
+  title: string;
+  /** Optional subtitle rendered above the player. */
+  caption?: string;
+  /** Optional thumbnail variant. `maxres` is sharp but doesn't exist
+   *  for every video; `hqdefault` is universal at 480x360. Default:
+   *  `hqdefault` — safe choice. */
+  thumb?: 'maxres' | 'hqdefault';
+  /** When true, the autoplay query param is set so the player starts
+   *  immediately after the user clicks. Default true — they clicked. */
+  autoplay?: boolean;
+}
+
+const {
+  id,
+  title,
+  caption,
+  thumb = 'hqdefault',
+  autoplay = true,
+} = Astro.props;
+
+const thumbUrl = `https://i.ytimg.com/vi/${id}/${thumb}.jpg`;
+const watchUrl = `https://www.youtube.com/watch?v=${id}`;
+---
+
+<figure class="not-prose">
+  {caption && (
+    <figcaption class="label-ui mb-3">{caption}</figcaption>
+  )}
+  <div
+    class="group relative aspect-video w-full rounded-xl overflow-hidden border border-border/60 bg-surface/30 shadow-[0_24px_48px_-24px_rgb(var(--color-brand)/0.35)]"
+    data-yt-facade
+    data-yt-id={id}
+    data-yt-autoplay={String(autoplay)}
+  >
+    {/* Static thumbnail — pre-rendered, no JS needed for the visual. */}
+    <img
+      src={thumbUrl}
+      alt={`${title} — video thumbnail`}
+      width="1280"
+      height="720"
+      loading="lazy"
+      decoding="async"
+      class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.015]"
+    />
+    {/* Subtle dim overlay so the play button reads against bright thumbnails. */}
+    <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-b from-black/0 via-black/10 to-black/40"></div>
+
+    {/* Play button — actual button so keyboard users can hit Enter / Space. */}
+    <button
+      type="button"
+      class="absolute inset-0 grid place-items-center cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand/50"
+      aria-label={`Play video: ${title}`}
+      data-yt-play
+    >
+      <span
+        class:list={[
+          'inline-flex items-center justify-center size-20 rounded-full',
+          'bg-bg/90 text-brand backdrop-blur-md',
+          'border border-brand/40 shadow-[0_12px_36px_-8px_rgb(var(--color-brand)/0.6)]',
+          'transition-transform duration-300 group-hover:scale-110',
+        ]}
+      >
+        {/* Triangle play glyph — slightly offset right so the optical centre matches the circle's centre. */}
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" class="ml-1">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  {/* Fallback link for ad-blockers / no-JS — bots crawling the page
+      still see a real YouTube link that schema validators recognise. */}
+  <noscript>
+    <p class="mt-3 text-fluid-sm text-muted">
+      <a href={watchUrl} target="_blank" rel="noopener noreferrer" class="text-brand hover:underline">
+        Watch on YouTube →
+      </a>
+    </p>
+  </noscript>
+</figure>
+
+<script is:inline>
+  // Idempotent registration — the same script can mount multiple times
+  // across View-Transition navigations without double-binding.
+  (() => {
+    const facades = document.querySelectorAll('[data-yt-facade]:not([data-yt-bound])');
+    facades.forEach((facade) => {
+      facade.setAttribute('data-yt-bound', 'true');
+      const trigger = facade.querySelector('[data-yt-play]');
+      if (!trigger) return;
+      trigger.addEventListener('click', () => {
+        const id = facade.getAttribute('data-yt-id');
+        const autoplay = facade.getAttribute('data-yt-autoplay') !== 'false';
+        if (!id) return;
+        const params = new URLSearchParams({
+          autoplay: autoplay ? '1' : '0',
+          rel: '0',
+          modestbranding: '1',
+          playsinline: '1',
+        });
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${id}?${params}`;
+        iframe.title = trigger.getAttribute('aria-label') || 'YouTube video player';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.className = 'absolute inset-0 w-full h-full border-0';
+        // Drop the thumbnail + button, mount the iframe.
+        facade.innerHTML = '';
+        facade.appendChild(iframe);
+      }, { once: true });
+    });
+  })();
+</script>

@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+
+const entries = (await getCollection('vs', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.competitor.localeCompare(b.data.competitor));
+---
+
+<Base
+  title="Glitch Grow vs — head-to-head comparisons"
+  description="Glitch Grow compared head-to-head with Zapier, Make, n8n, Vapi, Smartlead, Lindy AI and more. Pick the right tool for the job — including when not to pick us."
+  pageType="WebPage"
+>
+  <article class="container-app pt-14 pb-20 md:pt-20">
+    <header class="max-w-3xl">
+      <p class="eyebrow"><Icon name="layers" size={14} /> Comparisons</p>
+      <h1 class="mt-4">Glitch Grow vs the rest.</h1>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Side-by-side comparisons against the tools agencies and indie devs actually consider. We say when to pick the other tool too — that's the only honest way to do this.
+      </p>
+    </header>
+
+    <ul class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3" role="list">
+      {entries.map((e) => (
+        <li>
+          <a href={`/vs/${e.slug}`} class="card p-5 block h-full hover:-translate-y-0.5 transition-transform hover:border-brand/40">
+            <p class="font-mono text-fluid-xs text-subtle uppercase tracking-wider">vs {e.data.competitor}</p>
+            <h2 class="mt-2 text-fluid-base font-medium leading-tight">{e.data.title}</h2>
+            <p class="mt-2 text-muted text-fluid-sm leading-snug">{e.data.summary}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </article>
+</Base>

@@ -1,0 +1,85 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Keep copy structured — makes A/B content swaps trivial.
+const services = [
+  {
+    icon: 'target' as const,
+    title: 'Meta + Amazon Ads Optimization',
+    blurb:
+      'An ensemble agent rebalances spend across Meta and Amazon on actual profit — not surface ROAS — and flags waste in real time.',
+    bullets: [
+      'Cross-platform bid & budget rebalancing',
+      'Geo, placement, audience waste detection',
+      'Creative fatigue + refresh triggers',
+    ],
+  },
+  {
+    icon: 'phone' as const,
+    title: 'Voice AI for COD Confirmation',
+    blurb:
+      'AI agent calls every COD order, confirms intent in the customer\'s language, and filters fakes before you ship. Every call becomes training data you own.',
+    bullets: [
+      'Hindi, English, Hinglish + regional',
+      'Live Shopify + CRM sync',
+      'Call-audio dataset — your moat compounds',
+    ],
+  },
+  {
+    icon: 'shopping-cart' as const,
+    title: 'Shopify Automation',
+    blurb:
+      'Theme, product, and flow automation across multi-store fleets. Bulk changes ship as pull requests, not admin-tab archaeology.',
+    bullets: [
+      'Theme-as-code, multi-store safe',
+      'Auto product enrichment + SEO',
+      'Abandoned-cart + win-back flows',
+    ],
+  },
+  {
+    icon: 'link' as const,
+    title: 'Cross-Platform Attribution',
+    blurb:
+      'Meta CAPI, Amazon attribution, and first-party pageviews unified into one conversion graph — so you stop paying twice for the same customer.',
+    bullets: [
+      'Server-side CAPI with deduplication',
+      'Amazon attribution tags auto-generated',
+      'UTM + device graph stitching',
+    ],
+  },
+];
+---
+
+<section id="services" class="py-8 md:py-10 lg:py-12">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="layers" size={14} /> What we run</p>
+      <h2 class="mt-4">One AI ensemble. Four revenue levers.</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Each service plugs into a shared agent brain — so insights from your Amazon account inform your Meta creative, and your COD call logs sharpen your targeting.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-5 md:grid-cols-2" role="list">
+      {services.map((s) => (
+        <li class="card p-6 md:p-8 reveal group">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex size-10 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+              <Icon name={s.icon} size={20} />
+            </span>
+            <h3 class="text-fluid-xl">{s.title}</h3>
+          </div>
+          <p class="mt-4 text-muted text-fluid-sm">{s.blurb}</p>
+          <ul class="mt-5 space-y-2 text-fluid-sm" role="list">
+            {s.bullets.map((b) => (
+              <li class="flex items-start gap-2">
+                <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+                <span class="text-fg/90">{b}</span>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

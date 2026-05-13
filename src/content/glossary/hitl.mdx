@@ -1,0 +1,27 @@
+---
+term: human-in-the-loop (HITL)
+title: What is human-in-the-loop (HITL) in AI agents?
+definition: Human-in-the-loop (HITL) is a pattern where an AI agent pauses at predefined checkpoints to wait for a human's approval, edit, or rejection before continuing — typically for actions that are public, irreversible, or risky.
+summary: HITL is the pragmatic answer to the gap between agent capability and trust. Modern agents can draft a personalized email or schedule an ad budget change competently, but a single bad action visible to a client can blow up an account. HITL puts a human review step at the moment of public action, letting the agent do everything else autonomously. Common patterns include Discord/Slack approval queues, edit-and-send flows, and per-recipe autonomy thresholds that loosen as the agent earns trust.
+related:
+  - ai-agent
+  - agentic-workflow
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+citations:
+  - label: Anthropic — Building effective agents
+    url: https://www.anthropic.com/research/building-effective-agents
+publishedAt: 2026-05-06
+---
+
+## The first-click-wins reconciler
+
+A common HITL implementation problem: if you queue an approval to both Discord and Telegram (so the operator can approve from whichever they're already in), you need to make sure exactly one channel commits the action. The Glitch Grow Sales Agent and Ads Operator use a "first-click-wins" reconciler — both channels read and write the same Postgres row, the first commit wins, the other channel's button becomes a no-op.
+
+## Autonomy thresholds
+
+Pure HITL on every action is exhausting. The pattern that works is per-recipe autonomy: once a particular email recipe earns N consecutive approvals with low edit distance, the agent gets to auto-send within a daily cap. The operator's bandwidth shifts to the recipes that aren't yet trusted.
+
+This is how the Sales Agent and Ads Operator both ship their HITL flows.

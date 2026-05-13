@@ -1,0 +1,120 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import JsonLd from '~/components/JsonLd.astro';
+import BreadcrumbSchema from '~/components/schema/BreadcrumbSchema.astro';
+import { team, type TeamMember } from '~/data/team';
+import { site } from '~/lib/site';
+
+export function getStaticPaths() {
+  return team.map((m) => ({ params: { slug: m.slug }, props: { member: m } }));
+}
+
+interface Props { member: TeamMember; }
+const { member } = Astro.props;
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: member.name,
+  jobTitle: member.role,
+  description: member.headline,
+  image: new URL(member.avatar, site.url).toString(),
+  url: new URL(`/team/${member.slug}`, site.url).toString(),
+  worksFor: {
+    '@type': 'Organization',
+    name: site.parent,
+    url: 'https://glitchexecutor.com',
+  },
+  knowsAbout: member.expertise,
+  sameAs: member.sameAs,
+};
+---
+
+<Base
+  title={`${member.name} — ${member.role}`}
+  description={member.headline}
+  image={member.avatar}
+  pageType="WebPage"
+>
+  <Fragment slot="head">
+    <JsonLd data={personLd} />
+    <BreadcrumbSchema items={[
+      { name: 'Home', url: '/' },
+      { name: 'Team', url: '/team' },
+      { name: member.name, url: `/team/${member.slug}` },
+    ]} />
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <nav aria-label="Breadcrumb" class="text-fluid-xs text-subtle">
+      <a href="/team" class="hover:text-fg">Team</a>
+      <span class="mx-1">/</span>
+      <span class="text-muted">{member.name}</span>
+    </nav>
+
+    <header class="mt-6 grid gap-8 md:grid-cols-12 items-start">
+      <div class="md:col-span-4">
+        <img
+          src={member.avatar}
+          alt={member.avatarAlt}
+          width="800"
+          height="1000"
+          loading="eager"
+          class="w-full h-auto rounded-xl object-cover aspect-[4/5]"
+        />
+        {member.unsplashPhotographer && (
+          <p class="mt-2 text-fluid-xs text-subtle">
+            Portrait via Unsplash · {member.unsplashPhotographer}
+          </p>
+        )}
+      </div>
+      <div class="md:col-span-8">
+        <p class="eyebrow"><Icon name="spark" size={14} /> Team</p>
+        <h1 class="mt-4">{member.name}</h1>
+        <p class="mt-2 text-fluid-base font-mono text-brand">{member.role}</p>
+        <p class="mt-5 text-fluid-lg text-muted">{member.headline}</p>
+
+        {member.expertise.length > 0 && (
+          <ul class="mt-6 flex flex-wrap gap-2" aria-label="Areas of expertise">
+            {member.expertise.map((e) => (
+              <li class="inline-flex items-center px-3 py-1 rounded-md border border-border/60 text-fluid-xs text-fg/90">
+                {e}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </header>
+
+    <section class="mt-12 max-w-3xl">
+      <h2 class="text-fluid-2xl">About</h2>
+      <div class="mt-5 space-y-4 text-fluid-base text-muted leading-relaxed">
+        {member.bio.map((p) => <p>{p}</p>)}
+      </div>
+    </section>
+
+    {member.sameAs.length > 0 && (
+      <section class="mt-12 max-w-3xl">
+        <h2 class="text-fluid-xl">Find me on</h2>
+        <ul class="mt-4 flex flex-wrap gap-3" role="list">
+          {member.sameAs.map((url) => {
+            const host = new URL(url).hostname.replace('www.', '');
+            return (
+              <li>
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  class="card px-4 py-2 inline-flex items-center gap-2 text-fluid-sm text-fg/90 hover:border-brand/40 hover:text-brand"
+                >
+                  {host} <Icon name="arrow-up-right" size={12} />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
+  </article>
+</Base>

@@ -1,0 +1,475 @@
+---
+// LeadFormModal — single global modal triggered by any [data-cta="kit"] click.
+//
+// Mounted once in Base layout so every CTA across the site (Hero, Nav,
+// AnnouncementBar, KitCtaStrip, FounderSpotlight, CallToAction, etc.) opens
+// the same dialog instance.
+//
+// Native <dialog> element gives us free focus-trap, ESC-to-close, ::backdrop
+// pseudo-element, and accessibility tree integration. No JS framework needed.
+//
+// On submit: POST JSON to /api/capture-lead. On success, swap the form for a
+// thank-you state. On error, surface inline message and re-enable submit.
+//
+// Day-2 scope: the CF Function `/api/capture-lead` is a stub (validates +
+// returns success). Day-3 wires Resend audience + welcome email + Sheet
+// backup; we don't need to change this component when that ships.
+
+import Icon from '~/components/Icon.astro';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+
+const professionOptions = [
+  { value: '',                            label: 'Select your role…', disabled: true },
+  { value: 'indie-dev',                   label: 'Indie developer / solo founder' },
+  { value: 'marketing-freelancer',        label: 'Marketing freelancer / consultant' },
+  { value: 'agency-owner',                label: 'Agency owner' },
+  { value: 'in-house-marketing',          label: 'Marketing or growth at a company' },
+  { value: 'student',                     label: 'Student / learning AI' },
+  { value: 'other',                       label: 'Other' },
+];
+---
+
+<dialog
+  id="lead-form-modal"
+  class="lead-modal m-0 p-0 bg-transparent backdrop:bg-bg/80 backdrop:backdrop-blur-sm w-full max-w-xl rounded-2xl border border-border/80 shadow-glow-brand outline-none"
+  aria-labelledby="lead-modal-title"
+>
+  {/* Modal panel — uses our card token + glow */}
+  <div class="relative bg-bg rounded-2xl">
+    {/* Glow plate */}
+    <div aria-hidden="true" class="absolute -inset-1 rounded-2xl pointer-events-none -z-10
+                                    bg-[radial-gradient(circle_at_50%_0%,rgb(var(--color-brand)/0.40),transparent_70%)] blur-2xl"></div>
+
+    {/* Header */}
+    <div class="flex items-start justify-between gap-4 p-6 md:p-7 border-b border-border/60">
+      <div>
+        <p class="eyebrow"><Icon name="bolt" size={14} /> Free Vibe Coder Kit</p>
+        <h2 id="lead-modal-title" class="mt-2 text-fluid-2xl font-bold tracking-tight">
+          Get the kit. <span class="gradient-text">Ship like a vibe coder.</span>
+        </h2>
+        <p class="mt-2 text-fluid-sm text-muted max-w-md">
+          Installs into Claude Code, Codex, or OpenClaws in under a minute. Required to deploy our paid agents.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="shrink-0 size-9 inline-flex items-center justify-center rounded-md text-subtle hover:text-fg hover:bg-surface focus-visible:ring-2 focus-visible:ring-brand"
+        aria-label="Close"
+        data-modal-close
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+
+    {/* Form */}
+    <form
+      id="lead-form"
+      class="grid gap-4 p-6 md:p-7"
+      method="post"
+      action="/api/capture-lead"
+      novalidate
+      data-state="idle"
+    >
+      <div class="grid gap-1.5">
+        <label for="lf-name" class="text-fluid-sm font-medium">Name</label>
+        <input
+          id="lf-name"
+          name="name"
+          required
+          autocomplete="name"
+          class="bg-surface-2 border border-border rounded-md px-3 py-3 text-base focus-visible:border-brand"
+        />
+      </div>
+
+      <div class="grid gap-1.5">
+        <label for="lf-email" class="text-fluid-sm font-medium">Email</label>
+        <input
+          id="lf-email"
+          type="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="bg-surface-2 border border-border rounded-md px-3 py-3 text-base focus-visible:border-brand"
+        />
+      </div>
+
+      <div class="grid gap-1.5">
+        <label for="lf-phone" class="text-fluid-sm font-medium">
+          Phone <span class="text-subtle font-normal">(used for WhatsApp follow-up)</span>
+        </label>
+        {/* intl-tel-input attaches a flag dropdown to this input on first open */}
+        <input
+          id="lf-phone"
+          type="tel"
+          name="phone"
+          required
+          autocomplete="tel"
+          placeholder="98xxxxxxxx"
+          class="bg-surface-2 border border-border rounded-md px-3 py-3 text-base focus-visible:border-brand"
+        />
+      </div>
+
+      <div class="grid gap-1.5">
+        <label for="lf-profession" class="text-fluid-sm font-medium">Which describes you best?</label>
+        <select
+          id="lf-profession"
+          name="profession"
+          required
+          class="bg-surface-2 border border-border rounded-md px-3 py-3 text-base focus-visible:border-brand"
+        >
+          {professionOptions.map((opt) => (
+            <option value={opt.value} disabled={opt.disabled} selected={opt.disabled}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Honeypot — bots fill this, humans never see it */}
+      <input
+        type="text"
+        name="company_url"
+        tabindex="-1"
+        autocomplete="off"
+        class="sr-only"
+        aria-hidden="true"
+      />
+
+      {/* Hidden context field — UTM source set by JS on open */}
+      <input type="hidden" name="utm_source" id="lf-utm-source" value="" />
+
+      {/* Turnstile target — invisible managed mode */}
+      {siteKey && (
+        <div
+          class="cf-turnstile min-h-[65px]"
+          data-sitekey={siteKey}
+          data-theme="dark"
+          data-size="flexible"
+          data-appearance="interaction-only"
+        ></div>
+      )}
+
+      <div class="flex items-center justify-between gap-3 flex-wrap mt-1">
+        <p id="lead-form-status" class="text-fluid-xs text-muted" role="status" aria-live="polite"></p>
+        <button type="submit" class="btn btn-primary" id="lead-form-submit">
+          Get the free kit
+          <Icon name="arrow-right" size={14} />
+        </button>
+      </div>
+
+      <p class="text-fluid-xs text-subtle">
+        Protected by Cloudflare Turnstile. We never share your details. Unsubscribe any time.
+      </p>
+    </form>
+
+    {/* Success state — replaces form on successful submission */}
+    <div id="lead-form-success" class="hidden p-6 md:p-7 text-center">
+      <div class="inline-flex size-14 items-center justify-center rounded-full bg-brand/10 text-brand border border-brand/40">
+        <Icon name="check" size={28} />
+      </div>
+      <h3 class="mt-5 text-fluid-2xl font-bold">You're in.</h3>
+      <p class="mt-3 text-muted text-fluid-sm max-w-md mx-auto">
+        Welcome email is on the way with your kit access link and a Discord invite. Check spam if you don't see it within 2 minutes.
+      </p>
+      <button
+        type="button"
+        class="btn btn-secondary mt-6"
+        data-modal-close
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+
+{siteKey && (
+  <script
+    src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+    async
+    defer
+    is:inline
+  ></script>
+)}
+
+<script>
+  // Global click-delegation: any element with `data-cta="kit"` opens the modal.
+  // Day-1 has 8 of these scattered across hero, nav, announcement bar, mid-page
+  // strips, founder spotlight, call-to-action.
+  const modal = document.getElementById('lead-form-modal') as HTMLDialogElement | null;
+  const form = document.getElementById('lead-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('lead-form-submit') as HTMLButtonElement | null;
+  const statusEl = document.getElementById('lead-form-status') as HTMLElement | null;
+  const successEl = document.getElementById('lead-form-success') as HTMLElement | null;
+  const utmSource = document.getElementById('lf-utm-source') as HTMLInputElement | null;
+
+  // intl-tel-input handle — initialised lazily on first modal open. The
+  // ~120KB module + CSS only ships when a user actually engages, keeping the
+  // initial-page weight low. Cloudflare's free `/cdn-cgi/trace` endpoint
+  // gives us GeoIP country detection with zero third-party dependency.
+  let itiPromise: Promise<{ getNumber: () => string; isValidNumber: () => boolean } | null> | null = null;
+
+  async function ensureIti() {
+    if (itiPromise) return itiPromise;
+    itiPromise = (async () => {
+      const phoneInput = document.getElementById('lf-phone') as HTMLInputElement | null;
+      if (!phoneInput) return null;
+      try {
+        const [{ default: intlTelInput }] = await Promise.all([
+          import('intl-tel-input/intlTelInputWithUtils'),
+          // CSS side-effect import — Vite extracts and lazy-loads alongside the JS chunk
+          import('intl-tel-input/styles' as string),
+        ]);
+        // intl-tel-input v28's strict typings declare geoIpLookup as a
+        // zero-arg function returning Promise<CountryIso>, which doesn't
+        // match the documented (success, failure) callback shape. Cast
+        // the options object to bypass — runtime behaviour is correct.
+        const itiOptions = {
+          // Try Cloudflare's free /cdn-cgi/trace for country detection. Falls
+          // back to 'us' if the page isn't behind Cloudflare or the request
+          // fails for any reason.
+          initialCountry: 'auto',
+          geoIpLookup: (success: (iso2: string) => void, failure: (err: Error) => void) => {
+            fetch('/cdn-cgi/trace')
+              .then((r) => (r.ok ? r.text() : Promise.reject(new Error('cdn-cgi 4xx'))))
+              .then((text) => {
+                const match = text.match(/loc=([A-Z]{2})/);
+                if (match?.[1]) success(match[1].toLowerCase());
+                else failure(new Error('no loc'));
+              })
+              .catch(() => failure(new Error('fetch failed')));
+          },
+          separateDialCode: false,    // dial code lives inside the input, not in a sibling
+          formatAsYouType: true,       // 4165551234 → 416 555 1234 as user types
+          nationalMode: false,         // user can paste a +XX number and it keeps it
+          strictMode: false,           // don't block submit on lengthy international #s
+        };
+        return intlTelInput(phoneInput, itiOptions as unknown as Parameters<typeof intlTelInput>[1]) as unknown as { getNumber: () => string; isValidNumber: () => boolean };
+      } catch (err) {
+        // If the chunk fails to load (offline, CDN flake), fall back to plain input.
+        // Phone field still works — just no flag picker, no auto-format.
+        // eslint-disable-next-line no-console
+        console.warn('[lead-modal] intl-tel-input failed to load; falling back', err);
+        return null;
+      }
+    })();
+    return itiPromise;
+  }
+
+  if (!modal) {
+    /* no-op — modal not on this page */
+  } else {
+    function openModal(source: string = 'unknown'): void {
+      if (!modal) return;
+      // Reset state on each open
+      if (form && successEl) {
+        form.classList.remove('hidden');
+        successEl.classList.add('hidden');
+        form.dataset.state = 'idle';
+        if (statusEl) statusEl.textContent = '';
+      }
+      if (utmSource) utmSource.value = source;
+      modal.showModal();
+      // Lazy-init the phone picker on first open (idempotent — subsequent
+      // opens reuse the cached promise).
+      void ensureIti();
+      // Focus the first input
+      const firstInput = modal.querySelector<HTMLInputElement>('input[name="name"]');
+      firstInput?.focus();
+    }
+
+    function closeModal(): void {
+      modal?.close();
+    }
+
+    // Open on any [data-cta="kit"] click anywhere on the page
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const trigger = target.closest<HTMLElement>('[data-cta="kit"]');
+      if (!trigger) return;
+      e.preventDefault();
+      const source = trigger.getAttribute('data-cta-source')
+        ?? trigger.id
+        ?? trigger.tagName.toLowerCase();
+      openModal(source);
+    });
+
+    // Close handlers
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('[data-modal-close]')) {
+        e.preventDefault();
+        closeModal();
+      }
+    });
+
+    // Click on backdrop closes (the dialog::backdrop pseudo-element catches
+    // clicks outside the panel; clicks inside the panel bubble up to the
+    // form/header which don't have data-modal-close, so they stay)
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Auto-open via ?lead=open URL param (cold-ad clean URL: /kit?lead=open)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('lead') === 'open') {
+      // Small delay so any analytics scripts initialise first
+      requestAnimationFrame(() => openModal('url-param'));
+    }
+  }
+
+  // ── Form submission ────────────────────────────────────────────────────
+  if (form && submitBtn && statusEl && successEl) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form.dataset.state === 'submitting') return;
+
+      // Honeypot check
+      const fd = new FormData(form);
+      if (fd.get('company_url')) {
+        // Pretend success silently
+        form.classList.add('hidden');
+        successEl.classList.remove('hidden');
+        return;
+      }
+
+      form.dataset.state = 'submitting';
+      submitBtn.disabled = true;
+      statusEl.textContent = 'Sending…';
+      statusEl.style.color = '';
+
+      try {
+        // Replace the phone value with the full E.164 number (`+14165551234`)
+        // from intl-tel-input. Falls back gracefully if the picker failed to
+        // load (treats whatever's in the input as-is).
+        const iti = await ensureIti();
+        if (iti) {
+          const e164 = iti.getNumber();
+          if (e164) fd.set('phone', e164);
+        }
+
+        const payload: Record<string, string> = {};
+        for (const [k, v] of fd.entries()) {
+          payload[k] = typeof v === 'string' ? v : '';
+        }
+
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: `HTTP ${res.status}` })) as { error?: string };
+          throw new Error(err.error || `HTTP ${res.status}`);
+        }
+
+        // capture-lead returns the event_id its server-side CAPI / TikTok
+        // forwarders used. Reuse it client-side so browser-side fbq /
+        // ttq fires + dataLayer push share dedup with the server fires.
+        const ok = await res.json().catch(() => ({})) as { event_id?: string };
+        const leadId = ok.event_id || `lead-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+        try {
+          (window as any).glitchPushDL?.({
+            event: 'generate_lead',
+            event_id: leadId,
+            email: payload.email,
+            profession: payload.profession,
+            utm_source: payload.utm_source || '',
+          });
+          // Browser pixel fires — share leadId with the server CAPI fires
+          // already done by /api/capture-lead so Meta + TikTok dedupe.
+          // Without these, Pixel Helper / Test Events show no Lead event
+          // even when the server-side CAPI accepted it.
+          (window as any).fbFire?.('Lead', {
+            content_name: 'vibe-kit',
+            content_category: 'free-kit-capture',
+            currency: 'USD',
+            value: 0,
+          }, { event_id: leadId });
+          (window as any).ttFire?.('CompleteRegistration', {
+            content_id: 'vibe-kit-lead',
+            content_name: 'vibe-kit',
+            content_type: 'product',
+            currency: 'USD',
+            value: 0,
+          }, { event_id: leadId });
+        } catch { /* never block UI on telemetry */ }
+
+        // Success
+        form.classList.add('hidden');
+        successEl.classList.remove('hidden');
+        form.dataset.state = 'success';
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Something went wrong';
+        statusEl.textContent = `Couldn't send — ${msg}. Try again?`;
+        statusEl.style.color = 'rgb(var(--color-error, 244 63 94))';
+        submitBtn.disabled = false;
+        form.dataset.state = 'error';
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  /* Native <dialog> needs help: by default it sits in the top-layer but the
+     positioning is browser-default. Centre it. */
+  dialog.lead-modal {
+    margin: auto;
+  }
+  dialog.lead-modal[open] {
+    animation: leadModalIn 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes leadModalIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+  }
+
+  /* ── intl-tel-input theme overrides ────────────────────────────────────
+     The default CSS targets light-theme inputs; we skin its container +
+     dropdown to match our dark surface tokens. Scoped is:global because
+     the .iti class is applied at runtime inside the form. */
+  .iti { width: 100%; }
+  .iti__country-list {
+    background: rgb(var(--color-surface-2));
+    color: rgb(var(--color-fg));
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.5rem;
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6);
+  }
+  .iti__country.iti__highlight {
+    background: rgb(var(--color-brand) / 0.18);
+  }
+  .iti__dial-code { color: rgb(var(--color-subtle)); }
+  .iti__search-input {
+    background: rgb(var(--color-bg));
+    color: rgb(var(--color-fg));
+    border-bottom: 1px solid rgb(var(--color-border));
+  }
+  .iti__search-input::placeholder { color: rgb(var(--color-subtle)); }
+  .iti--inline-dropdown .iti__dropdown-content {
+    background: rgb(var(--color-surface-2));
+    border-color: rgb(var(--color-border));
+  }
+  /* Match input height to other form inputs */
+  .iti input.iti__tel-input,
+  .iti input[type="tel"] {
+    width: 100%;
+    background: rgb(var(--color-surface-2));
+    border: 1px solid rgb(var(--color-border));
+    border-radius: 0.375rem;
+    color: rgb(var(--color-fg));
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  .iti input.iti__tel-input:focus-visible {
+    outline: none;
+    border-color: rgb(var(--color-brand));
+  }
+</style>

@@ -1,0 +1,25 @@
+---
+term: orchestration
+title: What is workflow orchestration?
+definition: Orchestration is the coordination of multiple services, tools, or steps into a single coherent workflow — handling sequencing, retries, conditional branches, and state across the workflow's lifetime.
+summary: Orchestration is what turns a collection of API calls and LLM calls into a reliable, observable agent. Frameworks like LangGraph, Temporal, and Apache Airflow all solve different shapes of orchestration. For AI agents specifically, the orchestration layer must handle LLM-driven branching (the agent decides what to do next), persistent state across long-running workflows, and human-in-the-loop interrupts.
+related:
+  - ai-agent
+  - agentic-workflow
+  - langgraph
+  - llm-orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  []
+publishedAt: 2026-05-07
+---
+
+## AI orchestration vs traditional workflow orchestration
+
+Airflow and Temporal handle deterministic workflows where the next step is known at design time. LangGraph adds the missing piece for agents: the next step is decided at runtime by an LLM, and the framework persists state across that decision.
+
+## Why orchestration matters in production
+
+Without it, every agent reinvents retries, state persistence, observability, and HITL — usually with bugs that show up at 3am. With it, the agent's logic is just the nodes.

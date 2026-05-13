@@ -1,0 +1,67 @@
+name: Competitor pricing watch
+
+# Weekly cron that fetches each competitor's pricing page, hashes the
+# normalized content, and opens an issue (or fails the run) when prices
+# change. Comparison and pSEO pages depend on these numbers being current
+# — drift triggers a content refresh.
+
+on:
+  schedule:
+    # 06:00 UTC every Monday.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run pricing watcher
+        id: watch
+        run: |
+          set +e
+          node --experimental-strip-types scripts/pricing-watcher.ts > pricing-report.txt 2>&1
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          cat pricing-report.txt
+          {
+            echo 'report<<EOF'
+            cat pricing-report.txt
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Commit refreshed snapshots
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add scripts/pricing-snapshots/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(seo): weekly competitor pricing snapshots"
+            git push
+          else
+            echo "No snapshot changes."
+          fi
+
+      - name: Open issue on pricing change
+        if: steps.watch.outputs.exit_code == '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `Competitor pricing page changed. Update the affected /alternatives, /vs, and pSEO entries.\n\n\`\`\`\n${process.env.REPORT}\n\`\`\`\n\nSee \`scripts/pricing-snapshots/<slug>.json\` for the new hashes.`;
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Pricing changed: ${new Date().toISOString().slice(0,10)}`,
+              body,
+              labels: ['seo', 'content-refresh'],
+            });
+        env:
+          REPORT: ${{ steps.watch.outputs.report }}

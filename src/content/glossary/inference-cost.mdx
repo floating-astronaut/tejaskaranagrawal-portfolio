@@ -1,0 +1,24 @@
+---
+term: inference cost
+title: What is LLM inference cost?
+definition: Inference cost is the per-call cost of running an LLM — measured in dollars per million input tokens and dollars per million output tokens, varying widely between models and providers.
+summary: A typical agent workload (1,500 input + 500 output tokens per call, 1,000 calls/day) costs roughly $0.10–$30/month per agent depending on model selection. Self-hosted Llama on a shared GPU is roughly $0.30/M tokens; managed APIs like Claude Sonnet are $3/M input / $15/M output; flagship models like Claude Opus or GPT-4o run higher. Use the [Prompt Cost Estimator](/tools/prompt-cost-estimator) to project monthly spend for a specific workload.
+related:
+  - token
+  - context-window
+relatedProducts:
+  []
+citations:
+  - label: "OpenAI pricing"
+    url: https://openai.com/api/pricing
+publishedAt: 2026-05-07
+---
+
+## Levers for reducing inference cost
+
+1. **Smaller models for routing** — use cheap models (Haiku, GPT-4o-mini) to decide which expensive model to call
+2. **Prompt caching** — providers cache repeated input tokens at lower rates
+3. **Streaming + early termination** — stop generation when the answer is complete
+4. **RAG over long context** — retrieve only the relevant 2K tokens instead of stuffing 200K
+
+Check the [Prompt Cost Estimator](/tools/prompt-cost-estimator) to model these trade-offs.

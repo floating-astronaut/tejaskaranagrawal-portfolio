@@ -1,0 +1,143 @@
+---
+import Icon from '~/components/Icon.astro';
+import { getGeo } from '~/lib/geo';
+import InlineCta from '~/components/InlineCta.astro';
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+
+const personas = [
+  {
+    key: 'agency',
+    label: 'Agency owner',
+    icon: 'layers' as const,
+    starting: 'You already sell retainers and need a productized AI layer clients can understand.',
+    first: 'Ads Operator + Social Agent',
+    monetize: isIN ? 'Bundle as a ₹50K/mo growth-ops retainer.' : 'Bundle as a $2K/mo growth-ops retainer.',
+    avoid: 'Do not pitch "automation". Pitch owned infrastructure and weekly outcomes.',
+  },
+  {
+    key: 'freelancer',
+    label: 'Freelancer',
+    icon: 'send' as const,
+    starting: 'You have service clients but no repeatable delivery system yet.',
+    first: 'Sales Agent',
+    monetize: isIN ? 'Sell outbound setup plus ₹15K/mo list + send ops.' : 'Sell outbound setup plus $797/mo send ops.',
+    avoid: 'Avoid custom-building every workflow. Standardize one vertical first.',
+  },
+  {
+    key: 'marketer',
+    label: 'Marketing operator',
+    icon: 'chart' as const,
+    starting: 'You run paid + organic for one brand in-house and want AI to do the repeatable work.',
+    first: 'AI Ads Agent + AI SEO Agent',
+    monetize: isIN ? 'Replace ₹15K–₹40K/mo of SaaS subscriptions with one stack you own.' : 'Replace $500–$1,200/mo of SaaS subscriptions with one stack you own.',
+    avoid: "Do not bolt this on top of your existing tool stack. Pick what it replaces, then cancel those subscriptions.",
+  },
+  {
+    key: 'performance',
+    label: 'Performance marketer',
+    icon: 'target' as const,
+    starting: 'You buy paid ads for D2C brands and burn budget on creative testing every week.',
+    first: 'AI UGC Agent + AI Ads Agent',
+    monetize: isIN ? 'Ship 5–8 hook variants per launch at ₹1–3 each. Bill ₹25,000/mo per managed brand.' : 'Ship 5–8 hook variants per launch at $1–3 each. Bill $1,497/mo per managed brand.',
+    avoid: "Do not pitch creative as the differentiator. Pitch CPA outcomes and how fast you iterate.",
+  },
+  {
+    key: 'solo',
+    label: 'Solo founder',
+    icon: 'cobra' as const,
+    starting: 'You move fast with Claude Code and need a real revenue lever, not another project.',
+    first: 'AI Digital Marketing Stack',
+    monetize: 'Pick one agent, land one paying client, recoup the license in week one.',
+    avoid: 'Avoid trying to learn all six agents at once. One vertical, one client, then expand.',
+  },
+  {
+    key: 'voice',
+    label: 'D2C operator (India)',
+    icon: 'phone' as const,
+    starting: 'You run a Shopify store with COD orders and want to cut RTOs without hiring callers.',
+    first: 'Voice AI Agent',
+    monetize: 'COD-confirm calls at ₹3–5/call. Mid-volume store = ₹18,000–30,000/mo saved on RTO.',
+    avoid: 'Do not skip the DND scheduler. RBI / TRAI rules apply 20:00–10:05 IST and we hard-wire compliance.',
+  },
+];
+---
+
+<section id="who-its-for" class="py-10 md:py-12 lg:py-16 relative">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[55rem] max-w-[100vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.10),transparent_60%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-3xl reveal mx-auto text-center">
+      <p class="eyebrow justify-center"><Icon name="layers" size={14} /> Who it is for</p>
+      <h2 class="display-heading mt-4">
+        Pick your starting point.<br/>
+        <span class="gradient-text">The first agent should match how you monetize.</span>
+      </h2>
+      <p class="section-lead mt-5">
+        The same source stack fits different builders, but the first deployment should be chosen by your route to revenue.
+      </p>
+    </div>
+
+    <div class="persona-selector mt-12 reveal">
+      {personas.map((p, i) => (
+        <input type="radio" id={`persona-${p.key}`} name="persona" class={`persona-input--${p.key}`} checked={i === 0} />
+      ))}
+
+      <div class="persona-tabs" role="tablist" aria-label="Buyer personas">
+        {personas.map((p) => (
+          <label for={`persona-${p.key}`} data-persona-label={p.key} role="tab">
+            <Icon name={p.icon} size={16} />
+            <span>{p.label}</span>
+          </label>
+        ))}
+      </div>
+
+      <div class="persona-panels">
+        {personas.map((p) => (
+          <article class="offer-card persona-panel" data-persona-panel={p.key}>
+            <div class="flex items-center gap-3">
+              <span class="inline-flex size-10 items-center justify-center rounded-md border border-brand/25 bg-brand/10 text-brand">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <div>
+                <p class="metadata text-brand">Recommended path</p>
+                <h3 class="mt-1 text-fluid-2xl">{p.label}</h3>
+              </div>
+            </div>
+
+            <dl class="mt-6 grid gap-3 md:grid-cols-2">
+              <div class="persona-fact">
+                <dt>Starting point</dt>
+                <dd>{p.starting}</dd>
+              </div>
+              <div class="persona-fact">
+                <dt>Best first agent</dt>
+                <dd>{p.first}</dd>
+              </div>
+              <div class="persona-fact">
+                <dt>How they monetize</dt>
+                <dd>{p.monetize}</dd>
+              </div>
+              <div class="persona-fact danger">
+                <dt>What to avoid</dt>
+                <dd>{p.avoid}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+  <div class="container-app">
+    <InlineCta
+      source="twopaths"
+      variant="kit"
+      headline="Pick your path. Grab the kit."
+      sub="Free Vibe Coder Kit installs the AI coding agent setup that every persona above runs on."
+    />
+  </div>
+</section>

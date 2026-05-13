@@ -1,0 +1,42 @@
+---
+import Icon from '~/components/Icon.astro';
+import ContactForm from '~/components/ContactForm.astro';
+import { site } from '~/lib/site';
+---
+
+<section id="contact" class="py-8 md:py-10 lg:py-12 relative">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 mask-fade-b">
+    <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/40 to-transparent"></div>
+  </div>
+
+  <div class="container-app grid md:grid-cols-12 gap-10">
+    <div class="md:col-span-5 reveal">
+      <p class="eyebrow"><Icon name="send" size={14} /> Pre-purchase questions</p>
+      <h2 class="mt-4">Not sure which SKU fits your build?</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Drop a line and we'll point you at the right agent — or the bundle.
+        Reply within one business day. If it's urgent,
+        <a href={`mailto:${site.contactEmail}`} class="text-brand underline decoration-brand/40 hover:decoration-brand">{site.contactEmail}</a>.
+      </p>
+
+      <ul class="mt-8 space-y-3 text-fluid-sm text-muted">
+        <li class="flex items-start gap-2">
+          <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+          14-day refund — no support ticket, no questionnaire.
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+          BSL 1.1 source-available — modify, deploy, deliver to your clients.
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+          Discord access included — architecture help, deployment debugging, recipe contributions.
+        </li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-7 reveal">
+      <ContactForm />
+    </div>
+  </div>
+</section>

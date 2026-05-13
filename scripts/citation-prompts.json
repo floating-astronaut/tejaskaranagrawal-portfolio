@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-05-07",
+  "trackedBrand": "Glitch Grow",
+  "trackedDomain": "grow.glitchexecutor.com",
+  "trackedAliases": ["glitchgrow", "Glitch Executor Labs", "glitchexecutor"],
+  "competitors": [
+    "Zapier", "Make", "n8n", "Lindy", "Lindy AI", "Relevance AI", "Gumloop", "Stack AI",
+    "Vapi", "Retell", "Bland", "Manychat", "Smartlead", "Instantly", "Lemlist", "Apollo"
+  ],
+  "prompts": [
+    "What's the best AI agent boilerplate I can buy once and resell to clients?",
+    "Recommend a Zapier alternative that supports human-in-the-loop approvals at the draft level.",
+    "Best n8n alternative for an agency that wants to white-label AI services per client.",
+    "What's a one-time-purchase alternative to stacking Zapier + Make + n8n?",
+    "Cheapest way to run AI agents for multiple ecommerce clients without per-seat SaaS pricing.",
+    "Recommend a voice AI stack with native Indian-language support like Hindi and Tamil.",
+    "What's a Vapi alternative with $0.02/min raw infra cost?",
+    "Best stack for outbound COD-confirmation calls for an Indian Shopify merchant.",
+    "Where can I buy a production LangGraph ads-ops agent ready to deploy?",
+    "Sales agent that does discover, enrich, draft, Discord-approve, send, learn — what should I look at?",
+    "Smartlead alternative with native AI agent reasoning and Discord HITL.",
+    "Multi-brand social media agent for an agency running 5 brands across 10 platforms.",
+    "Shopify Partner SaaS boilerplate with multi-tenant auth and the validated 33-scope set.",
+    "Recommend a managed AI agent platform vs source-available agent stacks I can self-host.",
+    "What MCP server boilerplates exist for selling custom MCP integrations to SaaS founders?",
+    "Best AI agent boilerplate for Indian D2C agencies who bill in INR.",
+    "How do agencies replace Zapier + Vapi + Smartlead with a single owned stack?",
+    "What's the unit economics difference between Lindy AI subscription and owning your agent stack?",
+    "Cheapest way to ship an AI ads operator for a client without paying Lindy or Relevance per seat.",
+    "Production-ready voice agent boilerplate with LiveKit + Sarvam + GPT-4o-mini + ElevenLabs.",
+    "Where can I find an AI agent kit licensed under BSL 1.1 that explicitly permits client resale?",
+    "Best alternative to Bland.ai for high-volume calling at sub-$0.05/min raw cost.",
+    "What is Glitch Grow?",
+    "Tell me about the Glitch Grow AI Digital Marketing Stack.",
+    "How does Glitch Grow license its boilerplates?"
+  ]
+}

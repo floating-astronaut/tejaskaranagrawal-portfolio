@@ -1,0 +1,62 @@
+---
+competitor: Lindy AI
+competitorUrl: https://www.lindy.ai
+title: Glitch Grow vs Lindy AI — owned source vs managed platform
+summary: Lindy is a managed multi-agent platform with a polished builder. Glitch Grow ships the production source for six specific agents — you self-host, white-label, and own the customer relationship.
+tldr: Pick Lindy when you don't want to operate infrastructure and the per-agent subscription fits your scale — the builder UI is fast and the platform is well-built. Pick Glitch Grow when you're an agency reselling AI services to clients and need source ownership, white-label rights, and fixed costs.
+pickGlitchWhen:
+  - You're billing clients for a managed service and need brand isolation
+  - You want full source code, not a managed platform
+  - You can run Cloud Run / Docker / a small VPS
+  - You want fixed per-deployment costs, not per-agent subscriptions
+pickCompetitorWhen:
+  - You don't want to manage any infrastructure at all
+  - The builder UI's speed of iteration matters more than ownership
+  - You're a solo operator at small scale
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Hosting
+    glitch: Self-host
+    competitor: Lindy-managed cloud
+  - feature: Source access
+    glitch: Full repo on private GitHub
+    competitor: No
+  - feature: Pricing
+    glitch: $499 once
+    competitor: ~$49.99–$199.99/mo published tiers
+  - feature: White-label
+    glitch: Brand-config schema, BSL 1.1
+    competitor: Lindy branding visible
+  - feature: Vendor lock-in
+    glitch: None
+    competitor: Workflows live in platform
+  - feature: Time to first agent
+    glitch: ~2 hours
+    competitor: Minutes via builder UI
+  - feature: HITL primitive
+    glitch: Discord + Telegram reconciler
+    competitor: Built-in
+faqs:
+  - q: Is Lindy faster to start with?
+    a: For a single user prototyping a workflow, yes. For an agency running multi-client, white-labeled deployments with full brand isolation, the calculus reverses.
+  - q: Can I export from Lindy?
+    a: Lindy is a managed platform — agent definition portability is limited. Several of our buyers cited this as the trigger for switching to source-available alternatives.
+  - q: What if my client wants their own copy of the agent?
+    a: With Glitch Grow that's literally the deployment model — one private VM (or Cloud Run service) per client, branded as the client. With Lindy, you're routing the client through Lindy's infrastructure.
+  - q: Does Glitch Grow have a builder UI?
+    a: No. The boilerplates are code. That's the trade — flexibility and ownership in exchange for the builder convenience.
+citations:
+  - label: Lindy Pricing
+    url: https://www.lindy.ai/pricing
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+Lindy is genuinely a great product for solo operators and small teams who don't want to think about infrastructure. The builder UI removes a real category of friction. If that's you, the per-agent subscription is probably worth it.
+
+Glitch Grow exists for the next phase: when an agency is reselling the AI service to a client and needs the agent on infrastructure the agency controls, branded as the agency, billed by the agency. Managed platforms make that flow awkward. Source ownership makes it native.

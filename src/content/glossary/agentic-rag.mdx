@@ -1,0 +1,26 @@
+---
+term: agentic RAG
+title: What is agentic RAG?
+definition: Agentic RAG is a pattern where an AI agent decides at runtime which retrieval queries to issue, iterates on results, and synthesizes across multiple retrieval rounds — instead of doing one fixed retrieval step.
+summary: "Classical RAG retrieves once and generates once. Agentic RAG treats retrieval as a tool the agent can call multiple times: the agent reads the question, decides what to search for, evaluates the results, refines the query, and synthesizes across rounds. This handles complex multi-hop questions that one-shot RAG fails on. The cost is more LLM calls and latency; the benefit is materially higher accuracy on hard retrieval tasks."
+related:
+  - rag
+  - ai-agent
+  - tool-use
+  - agentic-workflow
+relatedProducts:
+  []
+citations:
+  []
+publishedAt: 2026-05-07
+---
+
+## When agentic RAG wins
+
+- Multi-hop questions that need information from multiple sources
+- Questions where the right query isn't obvious from the user's phrasing
+- Tasks that need fact-checking against retrieved sources
+
+## When one-shot RAG is enough
+
+Single-fact lookups, FAQ-style questions, anything where the relevant document is one keyword away. Agentic RAG's overhead isn't justified.

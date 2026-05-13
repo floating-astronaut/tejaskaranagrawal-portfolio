@@ -1,0 +1,276 @@
+---
+const gtmId = import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? '';
+import '~/styles/global.css';
+import { site } from '~/lib/site';
+import Nav from '~/components/Nav.astro';
+import Footer from '~/components/Footer.astro';
+import JsonLd from '~/components/JsonLd.astro';
+import Analytics from '~/components/Analytics.astro';
+import AnnouncementBar from '~/components/AnnouncementBar.astro';
+import LeadFormModal from '~/components/LeadFormModal.astro';
+import RazorpayCheckout from '~/components/RazorpayCheckout.astro';
+import TikTokFunnel from '~/components/TikTokFunnel.astro';
+import MobileStickyCta from '~/components/MobileStickyCta.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path to an OG image. Defaults to /api/og/<slug>.png if `ogSlug` set. */
+  image?: string;
+  ogSlug?: string;
+  /** Per-page noindex flag (default false). */
+  noindex?: boolean;
+  /** Page type for JSON-LD. */
+  pageType?: 'WebPage' | 'Article' | 'ContactPage' | 'AboutPage';
+}
+
+const {
+  title,
+  description = site.description,
+  image,
+  ogSlug,
+  noindex = false,
+  pageType = 'WebPage',
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} · ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+const ogImage = image
+  ? new URL(image, site.url).toString()
+  : ogSlug
+    ? new URL(`/api/og/${ogSlug}.png`, site.url).toString()
+    : new URL(site.ogImage, site.url).toString();
+
+// Organization.sameAs is a strong off-page signal — Google + LLMs use
+// it to cluster verified-identity profiles for the brand. Add every
+// canonical profile we maintain. Don't add aspirational URLs we don't
+// actually post on; Google can detect mismatch.
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.parent,
+  url: 'https://glitchexecutor.com',
+  logo: new URL('/assets/brand/icon-512.png', site.url).toString(),
+  description: site.description,
+  sameAs: [
+    // GitHub org is currently suspended; Codeberg is the primary public
+    // host. Re-add the github.com URL when the org is reinstated.
+    'https://codeberg.org/glitch-executor',
+    'https://www.linkedin.com/company/glitchexecutor',
+    'https://twitter.com/glitchexecutor',
+    'https://x.com/glitchexecutor',
+    'https://www.producthunt.com/@glitchexecutor',
+    'https://www.indiehackers.com/glitchexecutor',
+    'https://discord.gg/HBZFKMts',
+    'https://grow.glitchexecutor.com',
+    'https://trade.glitchexecutor.com',
+    'https://edge.glitchexecutor.com',
+  ],
+  contactPoint: [{
+    '@type': 'ContactPoint',
+    email: site.contactEmail,
+    contactType: 'customer support',
+    areaServed: 'Worldwide',
+    availableLanguage: ['en', 'hi'],
+  }],
+};
+
+const siteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+  publisher: { '@type': 'Organization', name: site.parent },
+};
+
+const pageLd = {
+  '@context': 'https://schema.org',
+  '@type': pageType,
+  name: fullTitle,
+  url: canonical,
+  description,
+  image: ogImage,
+  inLanguage: site.locale,
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="facebook-domain-verification" content="ycy2tipxnp5u6js0d8zhmfplczfpiv" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
+
+    {/* Hreflang — only emit on pages that have a complete /in/ counterpart.
+        Currently just the homepage; extend the map as more parallel pages ship. */}
+    {(Astro.url.pathname === '/' || Astro.url.pathname === '/in' || Astro.url.pathname === '/in/') && (
+      <>
+        <link rel="alternate" hreflang="en-US" href={new URL('/', site.url).toString()} />
+        <link rel="alternate" hreflang="en-IN" href={new URL('/in/', site.url).toString()} />
+        <link rel="alternate" hreflang="x-default" href={new URL('/', site.url).toString()} />
+      </>
+    )}
+
+    {/* RSS autodiscovery */}
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} blog`} href={new URL('/rss.xml', site.url).toString()} />
+
+    {/* Brand icons */}
+    <link rel="icon" type="image/x-icon" href="/assets/brand/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    {/* Open Graph / Twitter */}
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+
+    <JsonLd data={[orgLd, siteLd, pageLd]} />
+    <Analytics />
+
+    {/* dataLayer bootstrap — defined in <head> so per-page inline scripts
+        further down the DOM (e.g. /thanks Purchase, /products view_item)
+        can call window.glitchPushDL without a race against TikTokFunnel
+        mounting at <body> end. */}
+    <script is:inline>
+      (() => {
+        if (typeof window === 'undefined') return;
+        window.dataLayer = window.dataLayer || [];
+        window.glitchPushDL = window.glitchPushDL || function (ev) {
+          try { window.dataLayer.push(ev); } catch (e) { /* swallow */ }
+        };
+      })();
+    </script>
+
+    {/* Embed mode — when a tool page is loaded with ?embed=1 (e.g. inside
+        an iframe on another site), strip the chrome (nav, footer, announcement
+        bar) and reveal the embed credit. Powers the calculator-iframe
+        backlink program; harmless on non-embeddable pages because nothing
+        renders for those. */}
+    <script is:inline>
+      (() => {
+        try {
+          const u = new URL(window.location.href);
+          if (u.searchParams.get('embed') === '1') {
+            document.documentElement.setAttribute('data-embed', '1');
+          }
+        } catch (e) { /* ignore */ }
+      })();
+    </script>
+    <style is:inline>
+      html[data-embed] #header-stack,
+      html[data-embed] footer,
+      html[data-embed] [data-hide-in-embed],
+      html[data-embed] [aria-label="Breadcrumb"] { display: none !important; }
+      html[data-embed] main { padding-top: 0 !important; }
+      html[data-embed] body { background: transparent !important; }
+      .embed-credit { display: none; }
+      html[data-embed] .embed-credit { display: block; }
+    </style>
+
+    <slot name="head" />
+  </head>
+
+  <body class="bg-bg text-fg">
+    {gtmId && (
+      <noscript>
+        <iframe src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+      </noscript>
+    )}
+    {/* Stack the announcement bar + nav inside one fixed container at top-0.
+        Previously AnnouncementBar lived in normal flow and Nav was the only
+        fixed element — so on scroll-to-top Nav covered the bar. They now
+        share a single fixed wrapper. A small inline script measures the
+        wrapper's actual height (announcement may wrap on mobile, may be
+        dismissed entirely) and exposes it as --header-stack-h so <main>
+        and the mobile drawer offset by the right amount. */}
+    <div id="header-stack" class="fixed top-0 inset-x-0 z-50">
+      <AnnouncementBar />
+      <Nav />
+    </div>
+
+    <main id="main" tabindex="-1" class="pt-[var(--header-stack-h,calc(var(--nav-h)+2.25rem))]">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* Single global lead-capture modal triggered by [data-cta="kit"]. */}
+    <LeadFormModal />
+
+    {/* Single global Razorpay checkout handler triggered by
+        [data-razorpay-sku]. Lazy-loads checkout.js on first click. */}
+    <RazorpayCheckout />
+
+    {/* Single global TikTok funnel-event delegate. Listens for clicks
+        on Buy buttons, fires AddToCart + InitiateCheckout (Stripe rail);
+        observes elements with data-view-sku and fires ViewContent
+        when they enter the viewport; exposes window.ttFire so the
+        Razorpay modal hook + /thanks page can fire InitiateCheckout
+        and Purchase respectively. No-op when the TikTok pixel isn't
+        loaded (gated separately by Analytics.astro). */}
+    <TikTokFunnel />
+
+    {/* Mobile-only sticky bottom CTA bar. Auto-reveals after the user
+        scrolls past 80vh and hides when within 240px of the footer
+        (CallToAction already has its own CTAs). md+ breakpoints are
+        no-op. Tuned for in-app browser traffic from Meta/TikTok ads. */}
+    <MobileStickyCta />
+
+    {/* Header-stack height tracker. Measures the fixed announcement+nav
+        wrapper and writes its height to --header-stack-h on the document
+        root. <main> and the mobile drawer both consume that variable so
+        their offset matches the actual stack at every breakpoint. Recomputes
+        on resize and on AnnouncementBar dismissal (the bar's own dismiss
+        handler dispatches a `header-stack:resize` event we listen for). */}
+    <script is:inline>
+      (() => {
+        const stack = document.getElementById('header-stack');
+        if (!stack) return;
+        const root = document.documentElement;
+        const apply = () => {
+          root.style.setProperty('--header-stack-h', stack.offsetHeight + 'px');
+        };
+        apply();
+        // ResizeObserver catches both viewport changes and announcement-bar
+        // dismiss (which sets display:none, shrinking offsetHeight to nav-only).
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(apply).observe(stack);
+        } else {
+          window.addEventListener('resize', apply, { passive: true });
+        }
+      })();
+    </script>
+
+    {/* Motion + smooth scroll — code-split + truly deferred. requestIdleCallback
+        keeps it off the critical hydration path on mobile, where loading it
+        eagerly was contributing to >30s freezes during refresh. */}
+    <script>
+      const loadMotion = () => import('~/lib/motion.ts').catch(() => { /* non-critical */ });
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(loadMotion, { timeout: 2000 });
+      } else {
+        // Safari < 16.4 fallback — defer to after first paint.
+        setTimeout(loadMotion, 800);
+      }
+    </script>
+  </body>
+</html>

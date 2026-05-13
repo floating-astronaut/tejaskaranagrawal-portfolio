@@ -1,0 +1,62 @@
+---
+competitor: n8n
+competitorUrl: https://n8n.io
+title: Glitch Grow vs n8n — finished agents vs node assembly
+summary: n8n gives you nodes and a workflow canvas; Glitch Grow gives you six finished AI agents already running in production. Different abstraction layer, different time-to-revenue.
+tldr: Pick n8n when your team's value is workflow design itself and you want maximum flexibility (it's open core, self-hostable, free). Pick Glitch Grow when you want the finished agent — outbound, ads, voice, social, MCPs — ready to deploy to a client this week, with HITL reconciliation, memory, and white-label config already wired.
+pickGlitchWhen:
+  - You want shipped agents, not a node graph to assemble
+  - You need LangGraph-style plan-execute-reflect loops out of the box
+  - You're billing clients per managed service line and need fixed costs
+  - You want resale-ready white-label config schemas included
+pickCompetitorWhen:
+  - You enjoy designing workflows visually and need broad connector coverage
+  - You have unique vertical logic that doesn't map to the six Glitch Grow agents
+  - You're an internal-tools team automating a single org, not selling to clients
+relatedProducts:
+  - ads-agent
+  - sales-agent
+  - ugc-agent
+comparison:
+  - feature: License
+    glitch: BSL 1.1 — rebrand and resell
+    competitor: Sustainable Use License (n8n core)
+  - feature: Out-of-the-box agents
+    glitch: 6 production agents
+    competitor: Build with the AI Agent node
+  - feature: HITL queue
+    glitch: Discord + Telegram first-click reconciler shipped
+    competitor: Wait-for-webhook node — you build the queue
+  - feature: Memory primitive
+    glitch: Postgres + pgvector indexed
+    competitor: Bring your own vector store
+  - feature: Multi-tenant config
+    glitch: Brand-config JSON schema in every kit
+    competitor: Workflow-per-tenant or you build it
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Self-host free; Cloud from $20/mo
+  - feature: Voice agents
+    glitch: Full LiveKit + Sarvam stack
+    competitor: Not in scope
+faqs:
+  - q: Can I run n8n and Glitch Grow together?
+    a: Yes — many buyers use n8n for cross-app glue and the Glitch Grow boilerplates for the agent-shaped workloads. Glitch Grow agents are themselves MCP servers callable from n8n.
+  - q: Is n8n more flexible?
+    a: n8n's node library is broader than any single Glitch Grow boilerplate. The trade-off is that flexibility is also assembly time. The boilerplates trade flexibility for finished, production-tested patterns.
+  - q: Which is cheaper for one user?
+    a: Self-hosted n8n is free, so the floor is lower. Once you account for the months of work to build agent reasoning + HITL + memory yourself on n8n, the $499 is usually the cheaper path to revenue.
+  - q: Does Glitch Grow handle integrations as broadly as n8n?
+    a: "Out of the box: Meta Ads, Google Ads, TikTok, LinkedIn, Amazon Attribution, Gmail, Discord, Telegram, Shopify, Postgres, R2, ElevenLabs, Sarvam, LiveKit. The AI Ads Agent + AI SEO Agent both ship with patterns for adding new integrations."
+citations:
+  - label: n8n Pricing
+    url: https://n8n.io/pricing/
+  - label: n8n Sustainable Use License
+    url: https://docs.n8n.io/sustainable-use-license/
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+The honest framing: n8n is the better product if you want a workflow runner. Glitch Grow is the better product if you want a finished agent.
+
+The boilerplates are not "n8n with fewer nodes." They're the production output of six months of building specific agents — the kind of code an n8n user would write on top of n8n once they realized the node graph wasn't where their value was.

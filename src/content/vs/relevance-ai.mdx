@@ -1,0 +1,59 @@
+---
+competitor: Relevance AI
+competitorUrl: https://relevance.ai
+title: Glitch Grow vs Relevance AI — owned source vs managed platform
+summary: Relevance AI is a polished managed agent platform with a low-code builder. Glitch Grow ships six AI agents as source — different ownership model, different cost curve at scale.
+tldr: Pick Relevance AI when you don't want to operate infrastructure and the per-agent subscription fits your scale. Pick Glitch Grow when you're an agency reselling AI services to clients and need source ownership, white-label rights, and fixed costs.
+pickGlitchWhen:
+  - You're billing clients for managed services and need brand isolation
+  - You want full source code, not a managed platform
+  - You can run Cloud Run / Docker / a small VPS
+  - You want fixed per-deployment costs, not per-agent subscriptions
+pickCompetitorWhen:
+  - You don't want infrastructure responsibility at all
+  - The builder UI's iteration speed matters more than ownership
+  - You're a solo operator at small scale
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - ugc-agent
+comparison:
+  - feature: Hosting
+    glitch: Self-host
+    competitor: Relevance-managed cloud
+  - feature: Source access
+    glitch: Full repo on private GitHub
+    competitor: No
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Tiered subscription
+  - feature: White-label
+    glitch: Brand-config schema, BSL 1.1
+    competitor: Relevance branding
+  - feature: Vendor lock-in
+    glitch: None
+    competitor: Workflows live in platform
+  - feature: HITL primitive
+    glitch: Discord + Telegram reconciler
+    competitor: Built-in
+faqs:
+  - q: Is Relevance AI faster to start with?
+    a: For a solo user prototyping a workflow, yes. For an agency running multi-client white-labeled deployments, the calculus reverses.
+  - q: Can I export from Relevance?
+    a: Limited — agent definitions live inside the platform. Several buyers cited this as the trigger for switching.
+  - q: What if my client wants their own copy of the agent?
+    a: With Glitch Grow that's literally the deployment model — one VM per client, branded as the client. Managed platforms route clients through their infrastructure.
+  - q: Does Glitch Grow have a builder UI?
+    a: No — the boilerplates are code. The trade is flexibility and ownership in exchange for builder convenience.
+citations:
+  - label: Relevance AI Pricing
+    url: https://relevance.ai/pricing
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+Relevance AI is genuinely a great product for solo operators who don't want infrastructure responsibility. The builder removes a real category of friction.
+
+Glitch Grow exists for the next phase: when an agency is reselling the AI service to a client and needs the agent on infrastructure they control, branded as them. Different operating shape.

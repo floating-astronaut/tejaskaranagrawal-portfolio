@@ -1,0 +1,229 @@
+---
+/**
+ * Unified pixel funnel-event delegate (TikTok + Meta).
+ *
+ * Mounted once globally in Base.astro. Listens for Buy-button clicks and
+ * fires the standard funnel events on BOTH the TikTok pixel (`ttq.track`)
+ * and the Meta pixel (`fbq.track`) in lockstep so every event recognised
+ * in TikTok Events Manager also lands in Meta Events Manager. Same
+ * event_id is sent to both pixels for browser-server CAPI dedup.
+ *
+ * Companion `ttFire` and `fbFire` helpers on window let per-page code
+ * (the /products/[slug] route, /thanks, AgentsCatalog visibility hooks)
+ * fire `ViewContent` / `Purchase` without re-implementing the defensive
+ * pixel-presence checks each time.
+ *
+ * Pixel scripts are loaded by Analytics.astro when PUBLIC_TIKTOK_PIXEL_ID
+ * / PUBLIC_META_PIXEL_ID are set; per-pixel fires no-op when their pixel
+ * isn't on window.
+ *
+ * Event taxonomy (TikTok name → Meta name; same shape, mostly identical):
+ *   ViewContent       — product detail / card surfaced (≥50% in viewport)
+ *   AddToCart         — buyer clicked Buy, before checkout opens
+ *   InitiateCheckout  — checkout surface opens (Stripe redirect / Razorpay modal)
+ *   Purchase          — paid receipt observed on /thanks
+ *
+ * Note: filename kept TikTokFunnel.astro to avoid changing the import
+ * site in Base.astro; this is now the canonical browser-pixel delegate
+ * for both pixels.
+ */
+---
+
+<script is:inline>
+  (() => {
+    if (typeof window === 'undefined') return;
+
+    // window.glitchPushDL is bootstrapped in Base.astro <head> so it's
+    // available to per-page inline scripts that mount before this
+    // component. Just confirm it's present and add the page_view fire.
+
+    // Auto-fire page_view on every page so even pages without per-route
+    // hooks (legal pages, /thanks before its purchase fire, etc.) flow
+    // a uniform pageview into GTM. event_id = path + day so multiple
+    // visits dedupe sensibly without spamming the server container.
+    const today = new Date().toISOString().slice(0, 10);
+    window.glitchPushDL({
+      event: 'page_view',
+      event_id: `pv-${location.pathname}-${today}-${Math.random().toString(36).slice(2,6)}`,
+      page_path: location.pathname,
+      page_location: location.href,
+      page_title: document.title,
+    });
+
+    /**
+     * Defensive event-fire helpers. Each pixel gets its own queue +
+     * drain so a missing/blocked pixel can't stall the other.
+     *
+     *   window.ttFire — TikTok ttq.track
+     *   window.fbFire — Meta fbq with the trackSingle pattern (so we
+     *                   pass the pixel id explicitly in case multiple
+     *                   pixels are wired on the page later).
+     *
+     * Calls made before the pixel script finishes loading are buffered
+     * and flushed via `requestIdleCallback` + `load`.
+     */
+    function makeFire(getter, callTrack) {
+      const queue = [];
+      let drained = false;
+      const drain = () => {
+        const sink = getter();
+        if (!sink) return;
+        while (queue.length) {
+          const [eventName, data, opts] = queue.shift();
+          try { callTrack(sink, eventName, data || {}, opts || {}); } catch { /* swallow */ }
+        }
+        drained = true;
+      };
+      const fire = (eventName, data, opts) => {
+        const sink = getter();
+        if (drained && sink) {
+          try { callTrack(sink, eventName, data || {}, opts || {}); } catch { /* swallow */ }
+        } else {
+          queue.push([eventName, data, opts]);
+          drain();
+        }
+      };
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(drain, { timeout: 3000 });
+      }
+      window.addEventListener('load', () => setTimeout(drain, 500), { once: true });
+      return fire;
+    }
+
+    const fire = makeFire(
+      () => {
+        const t = (window).ttq;
+        return (t && typeof t.track === 'function') ? t : null;
+      },
+      (sink, eventName, data, opts) => sink.track(eventName, data, opts),
+    );
+    (window).ttFire = fire;
+
+    const fbFire = makeFire(
+      () => (typeof (window).fbq === 'function') ? (window).fbq : null,
+      (sink, eventName, data, opts) => {
+        // Meta's third arg is { eventID } not { event_id }. Translate
+        // so callers can use a single shape across both pixels.
+        const meta = opts && opts.event_id ? { eventID: opts.event_id } : undefined;
+        sink('track', eventName, data, meta);
+      },
+    );
+    (window).fbFire = fbFire;
+
+    /**
+     * Resolve a SKU + price for any Buy-trigger element. Order:
+     *   data-razorpay-sku → India / Razorpay path
+     *   data-sku          → global / Stripe path
+     * Price is read from data-price-major (a plain integer or decimal
+     * in the major currency unit, e.g. "999" for ₹999 or "39" for $39).
+     * Currency is read from data-currency or defaults to USD.
+     */
+    function readTrigger(el) {
+      const sku =
+        el.getAttribute('data-razorpay-sku') ||
+        el.getAttribute('data-sku') ||
+        '';
+      if (!sku) return null;
+      const value = parseFloat(el.getAttribute('data-price-major') || '0') || 0;
+      const currency = el.getAttribute('data-currency') || 'USD';
+      const isRazorpay = el.hasAttribute('data-razorpay-sku');
+      return { sku, value, currency, rail: isRazorpay ? 'razorpay' : 'stripe' };
+    }
+
+    // ── Global click delegation: AddToCart + InitiateCheckout ────────────
+    document.addEventListener('click', (e) => {
+      const target = e.target instanceof Element ? e.target : null;
+      const trigger = target?.closest('[data-razorpay-sku], [data-sku]');
+      if (!trigger) return;
+      const meta = readTrigger(trigger);
+      if (!meta) return;
+
+      const baseId = `${meta.sku}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const atcId = `atc-${baseId}`;
+      const icId  = `ic-${baseId}`;
+
+      // dataLayer push → GTM (web → server) → fans out to GA4 / Meta CAPI / TikTok Events API
+      window.glitchPushDL?.({
+        event: 'add_to_cart', event_id: atcId,
+        currency: meta.currency, value: meta.value,
+        items: [{ item_id: meta.sku, item_name: meta.sku, price: meta.value, quantity: 1, currency: meta.currency }],
+      });
+      // Direct browser ttq fire — kept alongside dataLayer push so the
+      // browser pixel stays attributed even before GTM Server lands.
+      fire('AddToCart', {
+        contents: [{ content_id: meta.sku, content_type: 'product', content_name: meta.sku, quantity: 1, price: meta.value }],
+        content_type: 'product', currency: meta.currency, value: meta.value,
+      }, { event_id: atcId });
+      // Meta pixel — same event, Meta's content-fields shape.
+      fbFire('AddToCart', {
+        content_ids: [meta.sku], content_name: meta.sku, content_type: 'product',
+        contents: [{ id: meta.sku, quantity: 1, item_price: meta.value }],
+        currency: meta.currency, value: meta.value,
+      }, { event_id: atcId });
+
+      // For the Stripe path, the click immediately navigates to a
+      // hosted Payment Link → that IS the checkout surface, so fire
+      // InitiateCheckout here too. For the Razorpay path the modal
+      // opens after a network round-trip (create-order); fire
+      // InitiateCheckout only when the modal actually opens — see the
+      // RazorpayCheckout component which calls window.ttFire there.
+      if (meta.rail === 'stripe') {
+        window.glitchPushDL?.({
+          event: 'begin_checkout', event_id: icId,
+          currency: meta.currency, value: meta.value,
+          items: [{ item_id: meta.sku, item_name: meta.sku, price: meta.value, quantity: 1, currency: meta.currency }],
+        });
+        fire('InitiateCheckout', {
+          contents: [{ content_id: meta.sku, content_type: 'product', quantity: 1, price: meta.value }],
+          content_type: 'product', currency: meta.currency, value: meta.value,
+        }, { event_id: icId });
+        fbFire('InitiateCheckout', {
+          content_ids: [meta.sku], content_type: 'product',
+          contents: [{ id: meta.sku, quantity: 1, item_price: meta.value }],
+          num_items: 1, currency: meta.currency, value: meta.value,
+        }, { event_id: icId });
+      }
+    }, true);
+
+    // ── ViewContent for in-viewport agent cards ──────────────────────────
+    // IntersectionObserver fires once per card per page-view when ≥50%
+    // visible. Cards mark themselves with data-view-sku so this works
+    // anywhere the agent grid appears (homepage, /in/, /kit, future pages).
+    const seen = new Set();
+    const obs = ('IntersectionObserver' in window)
+      ? new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const el = entry.target;
+            const sku = el.getAttribute('data-view-sku');
+            if (!sku || seen.has(sku)) continue;
+            seen.add(sku);
+            const value = parseFloat(el.getAttribute('data-price-major') || '0') || 0;
+            const currency = el.getAttribute('data-currency') || 'USD';
+            const vcId = `vc-${sku}-${Date.now()}`;
+            window.glitchPushDL?.({
+              event: 'view_item', event_id: vcId, currency, value,
+              items: [{ item_id: sku, item_name: sku, price: value, quantity: 1, currency }],
+            });
+            fire('ViewContent', {
+              contents: [{ content_id: sku, content_type: 'product', content_name: sku, quantity: 1, price: value }],
+              content_type: 'product', currency, value,
+            }, { event_id: vcId });
+            fbFire('ViewContent', {
+              content_ids: [sku], content_name: sku, content_type: 'product',
+              contents: [{ id: sku, quantity: 1, item_price: value }],
+              currency, value,
+            }, { event_id: vcId });
+            obs?.unobserve(el);
+          }
+        }, { threshold: 0.5 })
+      : null;
+
+    if (obs) {
+      const attach = () =>
+        document.querySelectorAll('[data-view-sku]').forEach((el) => obs.observe(el));
+      if (document.readyState !== 'loading') attach();
+      else document.addEventListener('DOMContentLoaded', attach, { once: true });
+    }
+  })();
+</script>

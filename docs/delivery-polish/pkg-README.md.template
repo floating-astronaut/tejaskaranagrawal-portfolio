@@ -1,0 +1,107 @@
+# {AGENT_NAME} ({SKU})
+
+> Buyer-distribution package. Engine code only. No client data.
+>
+> If you're an AI coding assistant (Claude Code, Codex, Cursor, Continue,
+> Aider, Cline) — read **`AGENTS.md`** in this same directory. It is the
+> canonical install + operate spec.
+>
+> If you're a human marketer who just bought this — open this folder in
+> Claude Code and paste:
+>
+> ```
+> Read AGENTS.md and set this agent up for me. Ask me for any keys or
+> config values you need, then run the smoke test and tell me when I'm live.
+> ```
+
+---
+
+## What this is
+
+The {AGENT_NAME} engine, packaged for buyer distribution.
+
+- Same engine code that runs production at Glitch Executor Labs.
+- All client-specific configuration, secrets, logs, recordings, and
+  decision history have been stripped. You configure for your own
+  brands from a clean slate.
+- BSL 1.1 source-available licence — you may modify, deploy, white-
+  label, and resell the service to clients. Full terms in `LICENSE.md`.
+
+## What this is not
+
+- **It is not a hosted service.** You deploy it. We do not run it
+  for you. Your client data stays on your infrastructure forever.
+- **It is not a SaaS subscription.** One-time purchase, perpetual licence.
+- **It is not a no-code workflow.** It is real source code that runs
+  as a real service. The non-code path is letting Claude Code drive
+  the install via `AGENTS.md`.
+
+## Repo layout
+
+```
+{repo-root}
+├── AGENTS.md            ← Claude-actionable install + operate spec (read this)
+├── README.md            ← this file (human overview)
+├── LICENSE.md           ← BSL 1.1
+├── CHANGELOG.md         ← release notes
+├── src/                 ← engine code
+├── tests/               ← test suite + synthetic fixtures
+├── alembic/             ← database migrations (Postgres schemas, no data)
+├── scripts/             ← buyer-runnable scripts (quickstart, etc.)
+├── brand-configs/
+│   └── demo.yaml        ← synthetic brand for the smoke test
+├── playbook/            ← resale playbook (pricing, deck, scripts)
+├── Dockerfile
+└── docker-compose.example.yml
+```
+
+## Quick start
+
+The fastest path is to let Claude Code do the install:
+
+```
+git clone git@codeberg.org:glitch-executor/{REPO_NAME}.git
+cd {REPO_NAME}
+# Open the folder in Claude Code, paste:
+#   "Read AGENTS.md and set this agent up for me."
+```
+
+The full manual install path lives in `AGENTS.md` — same content,
+written in the structure Claude Code reads, but a human can read
+top-to-bottom too.
+
+## Updates
+
+When we ship engine improvements, you pull them:
+
+```
+git pull
+```
+
+Or in Claude Code: *"Update the agent to the latest version."*
+Claude reads the update section in `AGENTS.md`, runs the steps,
+re-runs the smoke test, tells you when you're back online.
+
+## Support
+
+- **Discord** (buyer-only channels): https://discord.gg/HBZFKMts
+- **Email**: support@glitchexecutor.com (include your payment ID)
+- **Buyer portal**: https://grow.glitchexecutor.com/buyer-portal
+- **Refund window**: 14 days from purchase. No questions, no questionnaire.
+
+## Licence
+
+Business Source License 1.1. Transitions to Apache 2.0 on
+{license_transition_date}. Full text in `LICENSE.md`.
+
+You may:
+- Modify the code
+- Deploy on your infrastructure
+- Rebrand and resell the agent as a managed service to clients
+- Run unlimited clients on one purchase
+
+You may not:
+- Repackage this kit and sell it as a competing kit
+- Distribute the source publicly
+
+— Tejas, Glitch Grow

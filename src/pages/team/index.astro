@@ -1,0 +1,49 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import { team } from '~/data/team';
+---
+
+<Base
+  title="Team — Glitch Grow"
+  description="The team behind Glitch Grow's AI agent boilerplates — Toronto + India, building production agents for agencies and indie devs."
+  pageType="WebPage"
+>
+  <article class="container-app pt-14 pb-20 md:pt-20">
+    <header class="max-w-3xl">
+      <p class="eyebrow"><Icon name="spark" size={14} /> Team</p>
+      <h1 class="mt-4">The team behind Glitch Grow.</h1>
+      <p class="mt-5 text-fluid-lg text-muted">
+        We build production AI agents that real businesses run on. Each agent in the catalog comes from work we've shipped for paying clients — not from research notebooks.
+      </p>
+    </header>
+
+    <ul class="mt-12 grid gap-8 md:grid-cols-2 max-w-4xl" role="list">
+      {team.map((m) => (
+        <li>
+          <a href={`/team/${m.slug}`} class="card p-6 block h-full hover:-translate-y-0.5 transition-transform hover:border-brand/40">
+            <div class="flex items-start gap-4">
+              <img
+                src={m.avatar}
+                alt={m.avatarAlt}
+                width="120"
+                height="150"
+                loading="lazy"
+                class="rounded-lg object-cover aspect-[4/5] w-24 h-30 shrink-0"
+              />
+              <div class="min-w-0">
+                <h2 class="text-fluid-lg font-medium leading-tight">{m.name}</h2>
+                <p class="mt-1 font-mono text-fluid-xs text-brand">{m.role}</p>
+                <p class="mt-3 text-muted text-fluid-sm leading-snug">{m.headline}</p>
+              </div>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-12 text-fluid-xs text-subtle max-w-3xl">
+      Portraits sourced from <a href="https://unsplash.com" target="_blank" rel="noopener" class="text-brand underline">Unsplash</a> under the Unsplash License (free for commercial + editorial use). Photographer credits per portrait on individual team pages.
+    </p>
+  </article>
+</Base>

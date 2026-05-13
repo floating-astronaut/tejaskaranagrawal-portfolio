@@ -1,0 +1,268 @@
+---
+// RazorpayCheckout — single global handler mounted in Base layout.
+//
+// Listens for clicks on `[data-razorpay-sku]` anywhere on the page, then:
+//   1. POSTs the SKU to /api/razorpay/create-order — server looks up the
+//      authoritative INR amount and creates a Razorpay Order via REST API.
+//   2. Lazy-loads https://checkout.razorpay.com/v1/checkout.js (only on
+//      first click — no impact on initial page weight).
+//   3. Opens the Razorpay modal with the order_id + key_id from step 1.
+//   4. On user pay → razorpay handler fires → POSTs payment_id + signature
+//      to /api/razorpay/verify-payment for server-side HMAC verification.
+//   5. On verify success → redirects to /thanks?provider=razorpay&...
+//
+// Same DOM-event-delegation pattern used by LeadFormModal so any new SKU
+// card anywhere on the site picks up the handler automatically by adding
+// the data attribute. Buttons that are NOT meant to trigger Razorpay
+// simply omit the attribute.
+//
+// Environmental requirements (Cloudflare Pages env, Production + Preview):
+//   RAZORPAY_KEY_ID      — server-side, used by create-order.ts
+//   RAZORPAY_KEY_SECRET  — server-side, never sent to browser
+// (No PUBLIC_ env var needed — the create-order response carries the
+// public Key ID so the client can initialise the modal.)
+---
+
+<script>
+  // The Razorpay constructor is attached to window once checkout.js loads.
+  declare global {
+    interface Window {
+      Razorpay?: new (opts: RazorpayOptions) => RazorpayInstance;
+    }
+  }
+
+  interface RazorpayOptions {
+    key: string;
+    amount: number;
+    currency: string;
+    name: string;
+    description?: string;
+    order_id: string;
+    image?: string;
+    notes?: Record<string, string>;
+    prefill?: { name?: string; email?: string; contact?: string };
+    theme?: { color?: string };
+    modal?: { ondismiss?: () => void };
+    handler?: (response: RazorpaySuccessResponse) => void;
+  }
+
+  interface RazorpaySuccessResponse {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }
+
+  interface RazorpayInstance {
+    open(): void;
+    on(event: 'payment.failed', handler: (resp: { error: { code?: string; description?: string } }) => void): void;
+  }
+
+  interface CreateOrderResponse {
+    ok: boolean;
+    error?: string;
+    orderId?: string;
+    amount?: number;
+    currency?: string;
+    keyId?: string;
+    sku?: string;
+    name?: string;
+    description?: string;
+  }
+
+  const SCRIPT_SRC = 'https://checkout.razorpay.com/v1/checkout.js';
+  let scriptPromise: Promise<void> | null = null;
+
+  function ensureRazorpayScript(): Promise<void> {
+    if (window.Razorpay) return Promise.resolve();
+    if (scriptPromise) return scriptPromise;
+    scriptPromise = new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+      if (existing) {
+        existing.addEventListener('load', () => resolve(), { once: true });
+        existing.addEventListener('error', () => reject(new Error('script-load-failed')), { once: true });
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = SCRIPT_SRC;
+      s.async = true;
+      s.addEventListener('load', () => resolve(), { once: true });
+      s.addEventListener('error', () => reject(new Error('script-load-failed')), { once: true });
+      document.head.appendChild(s);
+    });
+    return scriptPromise;
+  }
+
+  function showInlineError(near: HTMLElement, msg: string): void {
+    // Lightweight inline error indicator — set on the trigger button so
+    // the user sees the failure without a full alert/modal flow.
+    const original = near.getAttribute('data-original-text') || near.textContent || 'Buy';
+    near.setAttribute('data-original-text', original);
+    near.textContent = msg;
+    setTimeout(() => {
+      near.textContent = original;
+    }, 4000);
+  }
+
+  async function startCheckout(trigger: HTMLElement): Promise<void> {
+    const sku = trigger.getAttribute('data-razorpay-sku') || '';
+    if (!sku) return;
+
+    // Double-click guard
+    if (trigger.dataset.busy === '1') return;
+    trigger.dataset.busy = '1';
+
+    const originalDisabled = (trigger as HTMLButtonElement).disabled;
+    if (trigger instanceof HTMLButtonElement) trigger.disabled = true;
+
+    try {
+      // 1. Create order server-side. Auto-applies the active promo code
+      //    (server-side allowlist; client may suggest, server decides).
+      //    Resolution order for the promo code:
+      //      a) ?promo=GLITCH20 in the URL — explicit campaign link
+      //      b) sessionStorage key 'glitch.promo' — set by the announcement
+      //         bar on first paint when announcementBar.promoCode is set
+      //      c) data-promo-code on the clicked element — for special CTAs
+      //    First non-empty wins.
+      const url = new URL(window.location.href);
+      const promoCode =
+        url.searchParams.get('promo') ||
+        (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('glitch.promo') : null) ||
+        trigger.getAttribute('data-promo-code') ||
+        '';
+      const createRes = await fetch('/api/razorpay/create-order', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({ sku, ...(promoCode ? { promoCode } : {}) }),
+      });
+      const createData = (await createRes.json().catch(() => ({}))) as CreateOrderResponse;
+
+      if (!createRes.ok || !createData.ok || !createData.orderId || !createData.keyId) {
+        showInlineError(trigger, `Couldn’t start — ${createData.error ?? createRes.status}`);
+        return;
+      }
+
+      // 2. Lazy-load Razorpay checkout.js (only on first click)
+      try {
+        await ensureRazorpayScript();
+      } catch {
+        showInlineError(trigger, 'Couldn’t load checkout. Try again?');
+        return;
+      }
+      if (!window.Razorpay) {
+        showInlineError(trigger, 'Razorpay script not ready');
+        return;
+      }
+
+      // 3. Open the modal — fire begin_checkout / InitiateCheckout right
+      //    before .open() so it lines up with the moment the buyer enters
+      //    payment-instrument selection. Both dataLayer (GTM-routed) and
+      //    direct ttq fire share event_id = `ic-<orderId>` for dedup.
+      const valueAfterPromo = (createData.amount ?? 0) / 100; // paise → INR
+      const icEventId = `ic-${createData.orderId}`;
+      try {
+        (window as any).glitchPushDL?.({
+          event: 'begin_checkout', event_id: icEventId,
+          currency: createData.currency ?? 'INR', value: valueAfterPromo,
+          items: [{ item_id: sku, item_name: createData.name ?? sku, price: valueAfterPromo, quantity: 1, currency: createData.currency ?? 'INR' }],
+        });
+        (window as any).ttFire?.('InitiateCheckout', {
+          contents: [{
+            content_id: sku,
+            content_type: 'product',
+            content_name: createData.name ?? sku,
+            quantity: 1,
+            price: valueAfterPromo,
+          }],
+          content_type: 'product',
+          currency: createData.currency ?? 'INR',
+          value: valueAfterPromo,
+        }, { event_id: icEventId });
+        (window as any).fbFire?.('InitiateCheckout', {
+          content_ids: [sku],
+          content_type: 'product',
+          contents: [{ id: sku, quantity: 1, item_price: valueAfterPromo }],
+          num_items: 1,
+          currency: createData.currency ?? 'INR',
+          value: valueAfterPromo,
+        }, { event_id: icEventId });
+      } catch { /* swallow */ }
+
+      const rzp = new window.Razorpay({
+        key: createData.keyId,
+        amount: createData.amount ?? 0,
+        currency: createData.currency ?? 'INR',
+        name: 'Glitch Grow',
+        description: createData.description ?? createData.name ?? sku,
+        order_id: createData.orderId,
+        image: '/assets/brand/logo-256.png',
+        notes: { sku },
+        theme: { color: '#00ff9d' },
+        modal: {
+          ondismiss: () => {
+            // user closed the modal without paying — silent, no-op
+          },
+        },
+        handler: async (resp) => {
+          // 4. Verify signature server-side
+          try {
+            const verifyRes = await fetch('/api/razorpay/verify-payment', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: resp.razorpay_order_id,
+                razorpay_payment_id: resp.razorpay_payment_id,
+                razorpay_signature: resp.razorpay_signature,
+                sku,
+              }),
+            });
+            const verifyData = (await verifyRes.json().catch(() => ({ ok: false }))) as {
+              ok?: boolean;
+            };
+            if (verifyRes.ok && verifyData.ok) {
+              // 5. Redirect to /thanks with Razorpay context
+              const params = new URLSearchParams({
+                provider: 'razorpay',
+                payment_id: resp.razorpay_payment_id,
+                order_id: resp.razorpay_order_id,
+                sku,
+              });
+              window.location.href = `/thanks?${params.toString()}`;
+            } else {
+              // Verify failed — payment may have gone through on Razorpay's
+              // side but signature didn't match. Surface to user, ask them
+              // to email support with payment_id.
+              showInlineError(trigger, 'Payment received — verifying. Email support if not delivered in 1h.');
+              // eslint-disable-next-line no-console
+              console.error('[razorpay] verify-payment failed', verifyData, resp);
+            }
+          } catch (err) {
+            showInlineError(trigger, 'Verification network error. Email support with payment_id.');
+            // eslint-disable-next-line no-console
+            console.error('[razorpay] verify-payment exception', err, resp);
+          }
+        },
+      });
+
+      rzp.on('payment.failed', (resp) => {
+        const code = resp.error.code ? ` (${resp.error.code})` : '';
+        showInlineError(trigger, `Payment failed${code}`);
+      });
+
+      rzp.open();
+    } finally {
+      trigger.dataset.busy = '0';
+      if (trigger instanceof HTMLButtonElement) trigger.disabled = originalDisabled;
+    }
+  }
+
+  // Global click-delegation listener — picks up any [data-razorpay-sku]
+  // element added now or in the future.
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement | null;
+    if (!target) return;
+    const trigger = target.closest<HTMLElement>('[data-razorpay-sku]');
+    if (!trigger) return;
+    e.preventDefault();
+    void startCheckout(trigger);
+  });
+</script>

@@ -1,0 +1,304 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import FAQSchema from '~/components/schema/FAQSchema.astro';
+import BreadcrumbSchema from '~/components/schema/BreadcrumbSchema.astro';
+import { competitors, type CompetitorCategory } from '~/data/pseo-matrix';
+import { products } from '~/lib/products';
+import { bundles } from '~/lib/bundles';
+
+// Group competitors by category for the master comparison table.
+const categoryOrder: CompetitorCategory[] = ['workflow', 'agent-platform', 'voice', 'sequence', 'chat'];
+const categoryLabels: Record<CompetitorCategory, string> = {
+  workflow: 'Workflow runners',
+  'agent-platform': 'Managed agent platforms',
+  voice: 'Voice AI platforms',
+  sequence: 'Cold-email senders',
+  chat: 'Chat marketing',
+};
+// Tagline + icon per category for the new chip rail.
+type CatIcon = 'layers' | 'cpu' | 'phone' | 'send' | 'link';
+const categoryMeta: Record<CompetitorCategory, { tagline: string; icon: CatIcon }> = {
+  workflow:          { tagline: 'API glue · no agent reasoning',     icon: 'layers' },
+  'agent-platform':  { tagline: 'Builder UI on top of LangGraph',     icon: 'cpu' },
+  voice:             { tagline: 'Per-minute, English-only by default', icon: 'phone' },
+  sequence:          { tagline: 'Deliverability senders, no agent',    icon: 'send' },
+  chat:              { tagline: 'Meta-channel DM flows',                icon: 'link' },
+};
+
+const grouped = categoryOrder.map((cat) => ({
+  category: cat,
+  label: categoryLabels[cat],
+  tagline: categoryMeta[cat].tagline,
+  icon: categoryMeta[cat].icon,
+  rows: competitors.filter((c) => c.category === cat),
+}));
+
+const founderStack = bundles[0];
+
+const faqs = [
+  {
+    q: 'How was this comparison built?',
+    a: `Each row pulls from each competitor's published 2026 pricing page (linked under "Source"), plus our own analysis of feature parity. We update prices when they change — last updated ${new Date().toISOString().slice(0, 10)}.`,
+  },
+  {
+    q: 'Why not score each competitor 1–10?',
+    a: 'Numerical scores hide trade-offs. The honest answer to "which tool wins" is "the one that fits your audience" — agencies, freelancers, indie devs, ecommerce founders, and B2B SaaS operators all have different right answers.',
+  },
+  {
+    q: 'How do I pick if I\'m a multi-line agency?',
+    a: 'Most agencies running 3+ service lines benefit from owning the agent layer (Glitch Grow) on top of a sender layer (Smartlead/Instantly) and where applicable a managed voice platform. The /vs/ pages cover the head-to-head trade-offs.',
+  },
+  {
+    q: 'Where can I see persona-specific advice?',
+    a: 'Each competitor row links to its persona-specific pages (agency owners, freelancers, indie devs, ecommerce founders, B2B SaaS) under /alternatives/{competitor}/for-{persona}.',
+  },
+];
+
+const lastUpdated = '2026-05-07';
+
+// ItemList JSON-LD — every competitor row as a structured list item.
+// Google + AI assistants extract this for "best AI agent tools" /
+// "Zapier alternatives" listicle-style answers. The same shape that
+// powers Google's rich-result tables.
+import { site } from '~/lib/site';
+
+const itemListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'AI agent and automation tools — master comparison',
+  description: 'Sourced comparison of 12 AI agent / automation tools agencies typically evaluate.',
+  url: new URL('/compare', site.url).toString(),
+  numberOfItems: competitors.length,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  itemListElement: competitors.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    item: {
+      '@type': 'SoftwareApplication',
+      name: c.name,
+      description: `${c.oneLiner} Pricing: ${c.pricingNote}`,
+      url: c.url,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+    },
+  })),
+};
+---
+
+<Base
+  title="AI agent & automation tools — master comparison matrix"
+  description="A single sourced comparison table across the 12 tools agencies and indie devs evaluate when picking an AI agent stack: Zapier, Make, n8n, Lindy, Relevance, Vapi, Retell, Smartlead, Instantly, Manychat, Gumloop, Stack AI."
+  pageType="WebPage"
+>
+  <Fragment slot="head">
+    <FAQSchema faqs={faqs} />
+    <BreadcrumbSchema items={[
+      { name: 'Home', url: '/' },
+      { name: 'Compare', url: '/compare' },
+    ]} />
+    <script type="application/ld+json" set:html={JSON.stringify(itemListLd).replaceAll('</', '<\\/')} is:inline />
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <header class="max-w-3xl">
+      <p class="eyebrow"><Icon name="layers" size={14} /> Compare</p>
+      <h1 class="mt-4">AI agent & automation — master comparison matrix.</h1>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Every AI/automation tool agencies typically evaluate, side by side, with sourced pricing and links to deep comparisons. Last updated <time datetime={lastUpdated}>{lastUpdated}</time>.
+      </p>
+    </header>
+
+    {/* Category chip rail — matches the persona-selector pattern on the
+        homepage and the agent-chip pattern in KitPricing. Click a chip
+        to filter the matrix to that category; click "All" to restore. */}
+    <div
+      class="mt-10 -mx-1 px-1 flex gap-2 overflow-x-auto snap-x snap-mandatory pb-1
+             sm:mx-0 sm:px-0 sm:overflow-visible sm:grid sm:grid-cols-3 md:grid-cols-6 sm:gap-3"
+      role="tablist"
+      aria-label="Comparison categories"
+      data-compare-chiprow
+    >
+      <button
+        type="button"
+        role="tab"
+        aria-selected="true"
+        data-compare-chip="all"
+        class:list={[
+          'group flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition',
+          'min-w-[10rem] w-[10rem] sm:min-w-0 sm:w-auto h-[7.25rem] shrink-0 snap-start',
+          'border-border/60 bg-surface/40 hover:border-brand/60 hover:bg-surface/70',
+          'aria-selected:border-brand aria-selected:bg-brand/10',
+        ]}
+      >
+        <span class="text-brand shrink-0"><Icon name="bolt" size={20} /></span>
+        <span class="min-w-0 w-full">
+          <span class="block font-medium text-fluid-sm text-fg truncate">All categories</span>
+          <span class="mt-0.5 block text-fluid-xs text-subtle line-clamp-2">Every tool, side by side</span>
+        </span>
+      </button>
+      {grouped.map((g) => (
+        <button
+          type="button"
+          role="tab"
+          aria-selected="false"
+          data-compare-chip={g.category}
+          class:list={[
+            'group flex flex-col items-start gap-2 rounded-lg border p-4 text-left transition',
+            'min-w-[10rem] w-[10rem] sm:min-w-0 sm:w-auto h-[7.25rem] shrink-0 snap-start',
+            'border-border/60 bg-surface/40 hover:border-brand/60 hover:bg-surface/70',
+            'aria-selected:border-brand aria-selected:bg-brand/10',
+          ]}
+        >
+          <span class="text-brand shrink-0"><Icon name={g.icon} size={20} /></span>
+          <span class="min-w-0 w-full">
+            <span class="block font-medium text-fluid-sm text-fg truncate">{g.label}</span>
+            <span class="mt-0.5 block text-fluid-xs text-subtle line-clamp-2">{g.tagline}</span>
+          </span>
+        </button>
+      ))}
+    </div>
+
+    <p class="mt-4 text-fluid-sm text-subtle">
+      Or jump to: <a href="#choose" class="text-brand hover:underline">How to choose</a> · <a href="#faq" class="text-brand hover:underline">FAQ</a>
+    </p>
+
+    {grouped.map((g) => (
+      <section id={g.category} class="mt-14" data-compare-section={g.category}>
+        <h2 class="text-fluid-2xl">{g.label}</h2>
+
+        <div class="mt-5 overflow-x-auto">
+          <table class="w-full text-fluid-sm border border-border/60 rounded-lg overflow-hidden">
+            <thead class="bg-bg-elev">
+              <tr>
+                <th class="text-left p-3 font-medium border-b border-border/60 w-[18%]">Tool</th>
+                <th class="text-left p-3 font-medium border-b border-border/60">Positioning</th>
+                <th class="text-left p-3 font-medium border-b border-border/60 w-[22%]">Pricing (2026)</th>
+                <th class="text-left p-3 font-medium border-b border-border/60 w-[16%]">Glitch Grow alt.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {g.rows.map((c) => {
+                const altPath = `/alternatives/${c.slug}`;
+                const vsPath  = `/vs/${c.slug}`;
+                return (
+                  <tr class="border-b border-border/40 align-top">
+                    <td class="p-3 font-medium">
+                      <div>
+                        <a href={c.url} target="_blank" rel="noopener noreferrer" class="text-fg hover:text-brand">
+                          {c.name} <Icon name="arrow-up-right" size={11} />
+                        </a>
+                      </div>
+                      <div class="mt-1 flex gap-2 flex-wrap">
+                        <a href={altPath} class="text-fluid-xs text-brand hover:underline">alt</a>
+                        <span class="text-subtle text-fluid-xs">·</span>
+                        <a href={vsPath} class="text-fluid-xs text-brand hover:underline">vs</a>
+                      </div>
+                    </td>
+                    <td class="p-3 text-fg/85">{c.oneLiner}</td>
+                    <td class="p-3 text-muted">{c.pricingNote}</td>
+                    <td class="p-3 text-fg/85">
+                      {c.glitchProducts.slice(0, 2).map((slug, i) => {
+                        const p = products.find((x) => x.slug === slug);
+                        if (!p) return null;
+                        return (
+                          <div class={i ? 'mt-1' : ''}>
+                            <a href={`/products/${p.slug}`} class="text-brand hover:underline text-fluid-xs">
+                              {p.sku}
+                            </a>
+                            <span class="text-subtle text-fluid-xs"> · ${p.priceUsd}</span>
+                          </div>
+                        );
+                      })}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Brief category summary, helpful for AI search extraction */}
+        <p class="mt-4 text-muted text-fluid-sm leading-relaxed max-w-3xl">
+          {g.category === 'workflow' && 'Workflow runners (Zapier, Make, n8n) connect APIs in node graphs. They\'re great for cross-app glue but lack agent reasoning, HITL queues, and memory primitives that production AI agents need.'}
+          {g.category === 'agent-platform' && 'Managed agent platforms (Lindy, Relevance, Gumloop, Stack AI) abstract LangGraph, vector stores, and HITL behind a builder UI. Faster to start with; harder to white-label and scale per-client.'}
+          {g.category === 'voice' && 'Voice AI platforms (Vapi, Retell) charge per-minute on top of model + telephony. Glitch Grow\'s owned LiveKit + Sarvam stack runs at $0.02/min raw, with native Indian-language coverage.'}
+          {g.category === 'sequence' && 'Cold-email senders (Smartlead, Instantly) run sequences with strong deliverability. The agent layer above them — discover, enrich, draft, approve, learn — is where Glitch Grow\'s Sales Agent slots in.'}
+          {g.category === 'chat' && 'Chat marketing tools (Manychat) excel at Meta-channel DM flows. Different category from broad multi-platform publishing or ORM monitoring.'}
+        </p>
+      </section>
+    ))}
+
+    <section id="choose" class="mt-16 max-w-3xl">
+      <h2 class="text-fluid-2xl">How to choose</h2>
+      <ol class="mt-5 space-y-4 text-fluid-base text-fg/90 leading-relaxed list-decimal pl-6">
+        <li>
+          <strong>Identify the bottleneck.</strong> Sender deliverability, agent reasoning, voice infrastructure, multi-platform publishing — each is a different category.
+        </li>
+        <li>
+          <strong>Run the <a href="/tools/saas-vs-own-calculator" class="text-brand underline">3-year TCO calculator</a></strong> with your real spend. If the math doesn't move materially, stay where you are.
+        </li>
+        <li>
+          <strong>Match audience.</strong> Solo / low-volume → managed platforms usually win. Multi-client agency → owned stacks usually win.
+        </li>
+        <li>
+          <strong>Pick one agent first.</strong> Don't migrate six categories on day one. Sales or Ads is usually the highest-value first move.
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" class="mt-16 max-w-3xl">
+      <h2 class="text-fluid-2xl">Frequently asked questions</h2>
+      <ul class="mt-5 divide-y divide-border/60 border-y border-border/60" role="list">
+        {faqs.map((f) => (
+          <li>
+            <details class="group">
+              <summary class="flex items-start justify-between gap-4 py-5 cursor-pointer list-none">
+                <span class="text-fluid-base font-medium pr-2">{f.q}</span>
+                <span aria-hidden="true" class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle transition-transform group-open:rotate-45 group-open:text-brand">
+                  <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </span>
+              </summary>
+              <p class="pb-5 pr-8 text-fluid-sm text-muted leading-relaxed">{f.a}</p>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <aside class="mt-16 card p-6 md:p-8 flex flex-wrap gap-4 items-center justify-between border-brand/30">
+      <div>
+        <p class="eyebrow"><Icon name="bolt" size={14} /> One bundle, six agents.</p>
+        <p class="mt-2 text-fluid-base">${founderStack.priceUsd} once · 14-day refund · BSL 1.1 license permits client resale.</p>
+      </div>
+      <a href="/products/founder-stack" class="btn btn-primary">
+        Get the AI Digital Marketing Stack <Icon name="arrow-right" size={16} />
+      </a>
+    </aside>
+  </article>
+
+  {/* Chip-rail filter — click a chip to scope the matrix to that
+      category. Vanilla JS, mirrors the pattern used by KitPricing's
+      agent-selector + ResellerMath's persona-selector. */}
+  <script is:inline>
+    (() => {
+      const chips = document.querySelectorAll('[data-compare-chip]');
+      const sections = document.querySelectorAll('[data-compare-section]');
+      if (!chips.length || !sections.length) return;
+      function activate(slug) {
+        chips.forEach((c) => c.setAttribute('aria-selected', c.getAttribute('data-compare-chip') === slug ? 'true' : 'false'));
+        sections.forEach((s) => {
+          const match = slug === 'all' || s.getAttribute('data-compare-section') === slug;
+          s.classList.toggle('hidden', !match);
+        });
+        if (slug !== 'all') {
+          const target = document.querySelector('[data-compare-section="' + slug + '"]');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => activate(chip.getAttribute('data-compare-chip')));
+      });
+    })();
+  </script>
+</Base>

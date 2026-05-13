@@ -1,0 +1,25 @@
+---
+term: structured output
+title: What is LLM structured output?
+definition: Structured output is the LLM capability of returning responses that conform to a predefined schema (typically JSON) — guaranteed by the model's API, not just requested in the prompt.
+summary: Most modern LLM APIs support a "JSON mode" or "structured output" feature that constrains the model's output to match a JSON schema you provide. This eliminates the parsing-failure class of bugs that plague prompt-only approaches. OpenAI's structured outputs, Anthropic's tool use, and Gemini's response schema all do this. For production agents, structured output is non-optional — without it you're writing brittle string parsers.
+related:
+  - tool-use
+  - system-prompt
+  - function-calling
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "OpenAI — structured outputs"
+    url: https://platform.openai.com/docs/guides/structured-outputs
+publishedAt: 2026-05-07
+---
+
+## Why "JSON mode" beats "asking for JSON"
+
+Pre-structured-output, you'd ask `respond with JSON like {x: ..., y: ...}` and parse the response. Failure modes: trailing commas, wrong keys, prose before/after the JSON, hallucinated fields. Structured output eliminates these by constraining the model's sampling to valid schema-conforming tokens.
+
+## Where it fits in agents
+
+Anywhere the agent's next step depends on parsing structured fields out of the LLM output: tool calls, classification labels, decisions to escalate, etc.

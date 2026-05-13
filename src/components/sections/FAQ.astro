@@ -1,0 +1,99 @@
+---
+import Icon from '~/components/Icon.astro';
+import FAQSchema from '~/components/schema/FAQSchema.astro';
+import { getGeo, resellSingleClient } from '~/lib/geo';
+import InlineCta from '~/components/InlineCta.astro';
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+const single = resellSingleClient(geo);
+const band = isIN ? '₹25,000–₹50,000/mo' : '$1,497–$2,997/mo';
+
+// Trimmed to 9 highest-friction Qs. Top 4 are non-coder-buyer objection
+// killers (can I use this, what's Claude Code, hosting, updates). Lower
+// 5 are agency/economic Qs that the original list covered.
+const faqs = [
+  {
+    q: "I can't code. Can I still use this?",
+    a: `Yes. Every agent ships with an AGENTS.md file at the repo root. You open the repo in any AI coding agent — Claude Code, Codex, OpenClaw, Hermes, NemoClaw, Cursor — paste one prompt ("Read AGENTS.md and set this agent up for me") and the AI walks you through everything. It asks for keys one at a time in plain language, runs the install, validates each step, runs the smoke test, tells you when you're live. You don't open a terminal yourself; your AI agent does it on your behalf.`,
+  },
+  {
+    q: 'Which AI coding agent should I use? Do I need a specific one?',
+    a: "No specific one. The Stack works with any AI coding agent that can read project files and run shell commands. Most popular options: Claude Code (Anthropic, free tier exists, paid $20/mo), Codex (OpenAI), OpenClaw, Hermes, NemoClaw, and Cursor (anysphere). All run on Mac, Windows, and Linux. Pick the one you already use — AGENTS.md reads the same in all of them.",
+  },
+  {
+    q: 'Do I need to host anything? Where does my data live?',
+    a: 'You run it on whatever machine you point it at — your laptop for testing, a $5/mo VPS for production. We do not host. We never see your data. Your client tokens, your client data, your decision history — all stays on your infrastructure forever. We just sell you the source.',
+  },
+  {
+    q: 'How do updates work?',
+    a: 'When we ship engine improvements, you tell Claude Code "update the agent to the latest version." Claude runs git pull, reinstalls dependencies, runs migrations, re-runs the smoke test, tells you when you are back online. No app store, no auto-updater, no surprise breaking changes — you control the timing.',
+  },
+  {
+    q: 'Can I rebrand and resell to clients?',
+    a: `Yes. BSL 1.1 license explicitly permits client delivery and rebranding. Charge ${single}, never mention Glitch. You just can't repackage the Stack itself as a competing stack.`,
+  },
+  {
+    q: "Can't Claude Code rebuild this in 30 minutes?",
+    a: 'From a public README, into a toy — yes. The multi-tenant token vault, HITL patterns, voice stack, 10-platform Upload-Post integration and 33-scope Shopify validation took six months in production. The Stack is that artifact, not the prompts.',
+  },
+  {
+    q: 'Deploy time per client?',
+    a: 'Around 30 minutes for client #1 (Claude Code asks for the keys + runs the install). Client #2 onward is muscle memory — Claude reuses the brand-config pattern. Ships systemd, nginx, GCE cloud-init, Cloud Run YAML, Docker — pick whichever stack you already run.',
+  },
+  {
+    q: 'Infra cost per agent?',
+    a: `$40–$150/month single-VM. At your client rate of ${band}, infra is 5–10% of revenue.`,
+  },
+  {
+    q: 'Refund policy?',
+    a: '14 days, no questions. Refund hits your card or UPI within 5 business days. Discord access + Codeberg invite are revoked on refund.',
+  },
+];
+---
+
+<FAQSchema faqs={faqs} />
+
+<section id="faq" class="py-8 md:py-10 lg:py-12 border-t border-border/40">
+  <div class="container-app grid md:grid-cols-12 gap-10">
+    <div class="md:col-span-4 reveal">
+      <p class="eyebrow"><Icon name="spark" size={14} /> FAQ</p>
+      <h2 class="mt-4 text-fluid-3xl font-bold tracking-tight">Common questions, answered.</h2>
+    </div>
+
+    <div class="md:col-span-8">
+      <ul class="divide-y divide-border/60 border-y border-border/60" role="list">
+        {faqs.map((f) => (
+          <li>
+            <details class="group">
+              <summary
+                class="flex items-start justify-between gap-4 py-5 cursor-pointer list-none
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-md"
+              >
+                <span class="text-fluid-base font-medium pr-2">{f.q}</span>
+                <span
+                  aria-hidden="true"
+                  class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle
+                         transition-transform duration-200 group-open:rotate-45 group-open:text-brand group-open:border-brand/50"
+                >
+                  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+                    <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </span>
+              </summary>
+              <div class="pb-5 pr-8 text-fluid-sm text-muted leading-relaxed" set:html={f.a} />
+            </details>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="container-app">
+    <InlineCta
+      source="faq"
+      variant="kit"
+      headline="Still on the fence? The kit is free. Yours to keep."
+      sub="Decide on the paid Stack later. Get the foundation now."
+    />
+  </div>
+</section>

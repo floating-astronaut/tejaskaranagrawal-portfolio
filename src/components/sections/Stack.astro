@@ -1,0 +1,126 @@
+---
+import Icon from '~/components/Icon.astro';
+
+const stack = [
+  { icon: 'meta' as const,     name: 'Meta Marketing API',    note: 'Ads Manager + CAPI' },
+  { icon: 'amazon' as const,   name: 'Amazon Ads + SP-API',   note: 'Seller Central + Attribution' },
+  { icon: 'shopify' as const,  name: 'Shopify Admin API',     note: 'Theme + products + orders' },
+  { icon: 'phone' as const,    name: 'Voice AI (LLM + TTS)',  note: 'In-house; audio dataset owned' },
+  { icon: 'database' as const, name: 'Postgres + pgvector',   note: 'Agent memory + embeddings' },
+  { icon: 'cpu' as const,      name: 'Claude + open-weight ensemble', note: '8-model router' },
+  { icon: 'layers' as const,   name: 'Cloudflare Pages + Workers', note: 'Edge compute for webhooks' },
+  { icon: 'shield' as const,   name: 'Turnstile + CSP',       note: 'Bot + abuse protection' },
+];
+---
+
+<section id="stack" class="py-8 md:py-10 lg:py-12">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="code" size={14} /> Under the hood</p>
+      <h2 class="mt-4">A stack built to survive vendor lock-in.</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Open-weight models where it makes sense, frontier models where it matters,
+        your own data where the moat lives. No Zapier spaghetti, no black-box
+        agencies.
+      </p>
+    </div>
+
+<div aria-hidden="true" class="hidden md:block reveal mt-12 mb-4">
+      <svg viewBox="0 0 1080 300" xmlns="http://www.w3.org/2000/svg" class="w-full max-w-5xl mx-auto">
+        <defs>
+          <marker id="arr-grow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="rgb(var(--color-brand) / 0.7)" />
+          </marker>
+          <marker id="arr-grow-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 Z" fill="rgb(var(--color-border) / 0.9)" />
+          </marker>
+        </defs>
+
+        <!-- Input stack (4 sources) -->
+        <g font-family="ui-monospace, monospace" font-size="12">
+          <g transform="translate(40 30)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-border))" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Meta · Pixel + CAPI</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">events, server-to-server</text>
+          </g>
+          <g transform="translate(40 90)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-border))" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Amazon SP-API</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">attribution tags, ASIN flows</text>
+          </g>
+          <g transform="translate(40 150)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-border))" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Shopify webhook</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">order.created, refunds</text>
+          </g>
+          <g transform="translate(40 210)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-border))" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Voice AI log</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">COD confirm, transcript</text>
+          </g>
+        </g>
+
+        <!-- Core box -->
+        <g transform="translate(420 68)">
+          <rect width="240" height="170" rx="12"
+                fill="rgb(var(--color-brand) / 0.06)"
+                stroke="rgb(var(--color-brand))" stroke-width="1.5" />
+          <text x="120" y="32" text-anchor="middle"
+                font-family="ui-monospace, monospace" font-size="13" font-weight="700"
+                fill="rgb(var(--color-brand))">GLITCH · GROW CORE</text>
+          <g font-family="ui-monospace, monospace" font-size="11" fill="rgb(var(--color-fg))">
+            <text x="24" y="68">• event_id dedup</text>
+            <text x="24" y="92">• UTM + device stitch</text>
+            <text x="24" y="116">• attribution unifier</text>
+            <text x="24" y="140">• Meta/Amazon rebalancer</text>
+          </g>
+        </g>
+
+        <!-- Output stack -->
+        <g font-family="ui-monospace, monospace" font-size="12">
+          <g transform="translate(840 60)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-brand) / 0.5)" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Unified conversion graph</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">one row, one source of truth</text>
+          </g>
+          <g transform="translate(840 120)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-brand) / 0.5)" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Budget rebalancer</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">cross-platform, on-profit</text>
+          </g>
+          <g transform="translate(840 180)">
+            <rect width="200" height="44" rx="8" fill="rgb(var(--color-surface) / 0.9)" stroke="rgb(var(--color-brand) / 0.5)" />
+            <text x="14" y="19" fill="rgb(var(--color-fg))" font-weight="700">Shopify theme automation</text>
+            <text x="14" y="35" fill="rgb(var(--color-subtle))">PRs, not admin tabs</text>
+          </g>
+        </g>
+
+        <!-- Arrows in -->
+        <g stroke="rgb(var(--color-border) / 0.9)" stroke-width="1.5" fill="none" marker-end="url(#arr-grow-dim)">
+          <path d="M244 52 Q340 52 416 100" />
+          <path d="M244 112 Q340 112 416 130" />
+          <path d="M244 172 Q340 172 416 170" />
+          <path d="M244 232 Q340 232 416 200" />
+        </g>
+
+        <!-- Arrows out -->
+        <g stroke="rgb(var(--color-brand) / 0.7)" stroke-width="1.5" fill="none" marker-end="url(#arr-grow)">
+          <path d="M664 100 Q750 100 836 82" />
+          <path d="M664 140 Q750 140 836 142" />
+          <path d="M664 180 Q750 180 836 202" />
+        </g>
+      </svg>
+    </div>
+    <ul class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3" role="list">
+      {stack.map((s) => (
+        <li class="card px-4 py-4 flex items-center gap-3 reveal">
+          <span class="text-brand"><Icon name={s.icon} size={22} /></span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-fluid-sm font-medium truncate">{s.name}</span>
+            <span class="block text-fluid-xs text-subtle">{s.note}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

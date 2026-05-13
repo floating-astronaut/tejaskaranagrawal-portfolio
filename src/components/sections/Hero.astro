@@ -1,0 +1,167 @@
+---
+import Icon from '~/components/Icon.astro';
+import HeroVideo from '~/components/HeroVideo.astro';
+import { kit } from '~/lib/kit';
+import { aiClients } from '~/lib/site';
+import { getGeo } from '~/lib/geo';
+
+// Hero — dual-CTA, free-kit-led-funnel positioning. Primary CTA opens the
+// (Day-2) lead-capture modal; secondary CTA scrolls to the agent storefront.
+//
+// Buttons that should trigger the lead modal carry `data-cta="kit"`. Day 2
+// wires a global click listener on that selector to open the modal. Day-1
+// fallback href is `#kit-cta` so the page still works pre-modal.
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+// Reseller benchmark band shifts per market. Indian agencies bill in
+// rupees not US dollars — the PPP-equivalent for "$1.5K–$3K/mo" is
+// roughly "₹25K–₹50K/mo". Quoting USD on /in/ would tank trust.
+const resellRange = isIN ? '₹25K–₹50K/mo' : '$1.5K–$3K/mo';
+
+// Terminal-mock comment line shifts currency too — small detail, but a
+// US visitor seeing "₹25,000/mo" or an Indian visitor seeing "$1,497/mo"
+// in the demo undermines the localisation pretence everywhere else.
+const billLine = isIN ? '$ # bill your client ₹25,000/mo' : '$ # bill your client $1,497/mo';
+
+// Hero terminal mock — the BUYER'S experience, not the engineer's.
+// Frames the install as a coding-AI conversation because that's what
+// actually happens after purchase: open the repo in Claude Code (or
+// Codex, OpenClaw, Hermes, NemoClaw, Cursor — any AI coding agent),
+// paste one prompt, the AI reads AGENTS.md and walks the buyer through
+// everything. Honest demo. Closes the "but I can't code" objection.
+const installLines = [
+  { kind: 'prompt', text: '> Read AGENTS.md and set this agent up for me.' },
+  { kind: 'log', text: '✓ detected macOS · Node 20 ✓ · Postgres ✓' },
+  { kind: 'cmd', text: '? paste your Meta long-lived token' },
+  { kind: 'log', text: '✓ verified · ad account "Skincare Co" · 247 active ads' },
+  { kind: 'cmd', text: '? paste a Discord webhook URL for approvals' },
+  { kind: 'log', text: '✓ install complete · agent ready' },
+  { kind: 'log', text: '' },
+  { kind: 'prompt', text: '> Pause anything below 1.5 ROAS in Skincare' },
+  { kind: 'log', text: '⠹ analysing 247 ads · last 7 days · blended ROAS' },
+  { kind: 'log', text: '✓ proposed 3 pauses · awaiting Discord approval' },
+  { kind: 'ok',  text: '✓ approved → 3 ads paused · est. saved ' + (isIN ? '₹6,800/day' : '$84/day') },
+  { kind: 'cmd', text: billLine },
+];
+---
+
+<section class="relative pt-4 pb-10 md:pt-6 md:pb-12 lg:pt-8 lg:pb-14 overflow-hidden">
+  {/* Layered ambient glow */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute -top-32 left-1/2 -translate-x-1/2 h-[44rem] w-[68rem] max-w-[100vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.20),transparent_60%)] blur-3xl"></div>
+    <div class="absolute top-32 -right-32 h-[28rem] w-[28rem] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.18),transparent_60%)] blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 h-[20rem] w-[28rem] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.10),transparent_60%)] blur-3xl"></div>
+  </div>
+
+  {/* Vertical alignment per side:
+       - Left (copy) column = lg:items-start so the audience pill anchors
+         right under the nav (was the user-reported dead-zone-above-pill bug).
+       - Right (terminal mock) column = self-center on lg so it floats
+         vertically against the taller left column instead of leaving a
+         void below the terminal (was the user-reported dead-zone-below-
+         terminal bug). Effectively gives us a per-column alignment without
+         needing CSS subgrids. */}
+  <div class="container-app grid lg:grid-cols-12 gap-10 lg:gap-12 lg:items-start">
+    {/* LEFT — copy column */}
+    <div class="lg:col-span-7 reveal">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-brand/30 bg-brand/10 text-brand">
+        <span class="inline-block size-1.5 rounded-full bg-brand animate-pulse"></span>
+        <span class="font-mono text-fluid-xs uppercase tracking-wider">For agencies · freelancers · marketing operators</span>
+      </div>
+
+      <h1 class="mt-5 text-fluid-5xl md:text-fluid-6xl font-bold tracking-tighter leading-[0.95]">
+        Your AI Digital<br/>
+        <span class="gradient-text">Marketing Stack.</span><br/>
+        Six agents. Six MCPs.
+      </h1>
+
+      {/* Subhead cut from 3 lines to 2 — tightens scroll, sharpens promise.
+          Reseller-price band is geo-aware: $1.5K–$3K/mo (global) vs
+          ₹25K–₹50K/mo (India). */}
+      <p class="mt-7 text-fluid-lg text-muted max-w-[52ch]">
+        The full <strong class="text-fg">AI Digital Marketing Stack</strong> — six AI agents (ads, sales, social, voice, SEO, UGC) that plug into Claude Code, Codex, OpenClaw, Cursor — <strong class="text-fg">any AI coding agent</strong>. Buy once, you own the deployment, resell to clients at <strong class="text-fg">{resellRange}</strong>. Your coding agent installs it for you — no terminal required.
+      </p>
+
+      {/* Dual CTA: primary = free kit (lead-magnet, opens modal), secondary = buy agent (scrolls to storefront) */}
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a
+          href="#kit-cta"
+          data-cta="kit"
+          class="btn btn-primary text-fluid-base px-6 py-3.5"
+        >
+          Get the free Vibe Coder Kit
+          <Icon name="arrow-right" size={18} />
+        </a>
+        <a href="#agents" class="btn btn-ghost text-fluid-base">
+          Or buy any agent
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+      </div>
+
+      {/* One-line trust strip — replaces a 3-card chips grid + sub-caption
+          stack that was pushing the left column ~290px taller than the
+          right (terminal mock), creating an asymmetric desktop dead zone
+          below the terminal. Same content, ~90% less vertical footprint. */}
+      <p class="mt-3 text-fluid-xs text-subtle">
+        Free · no card required · works in <span class="text-fg">{aiClients.chips}</span> · Discord included.
+      </p>
+    </div>
+
+    {/* RIGHT — agent-in-action loop video. The terminal mock is now
+        in a collapsed <details> below it for devs who want to see the
+        install (kept honest with the real quickstart.sh commands). */}
+    <div class="lg:col-span-5 reveal lg:self-center">
+      <div class="relative">
+        {/* Glow plate behind the video */}
+        <div aria-hidden="true" class="absolute -inset-4 rounded-2xl bg-[radial-gradient(circle_at_30%_20%,rgb(var(--color-brand)/0.25),transparent_60%)] blur-2xl"></div>
+
+        <HeroVideo
+          src="/hero/agent-loop.mp4"
+          srcWebm="/hero/agent-loop.webm"
+          poster="/hero/agent-loop.jpg"
+          title="Glitch Grow agent shipping a campaign live"
+          width={1280}
+          height={720}
+          class="relative"
+        />
+
+        {/* Caption */}
+        <p class="mt-4 text-center text-fluid-xs text-subtle">
+          One agent. One client invoice. Recorded in production.
+        </p>
+
+        {/* Terminal mock — the buyer's actual experience after purchase.
+            Frames install as a Claude Code conversation (not bash) so
+            non-coder buyers see themselves in the demo. Collapsed by
+            default so the hero leads with the demo video; expandable
+            for the "show me what this looks like" peek. */}
+        <details class="group mt-5 relative card p-0 overflow-hidden border-border/60">
+          <summary class="cursor-pointer list-none flex items-center justify-between px-4 py-3 border-b border-border/60 bg-surface/60 hover:bg-surface/80 transition-colors">
+            <span class="flex items-center gap-2">
+              <span class="size-2.5 rounded-full bg-[#ff5f57]"></span>
+              <span class="size-2.5 rounded-full bg-[#febc2e]"></span>
+              <span class="size-2.5 rounded-full bg-[#28c840]"></span>
+              <span class="ml-2 label-ui">See the AI-agent install — no terminal needed</span>
+            </span>
+            <span class="text-subtle transition-transform group-open:rotate-90">
+              <Icon name="arrow-right" size={12} />
+            </span>
+          </summary>
+          <pre class="m-0 p-5 text-fluid-xs md:text-fluid-sm font-mono leading-relaxed bg-bg/60 overflow-hidden whitespace-pre-wrap">
+{installLines.map((line) => {
+  const tone = line.kind === 'cmd' ? 'text-brand'
+    : line.kind === 'ok' ? 'text-brand font-medium'
+    : line.kind === 'prompt' ? 'text-electric'
+    : 'text-muted';
+  return <span class={`block ${tone}`}>{line.text || ' '}</span>;
+})}
+          </pre>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>

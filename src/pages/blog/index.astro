@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import ImageSlot from '~/components/ImageSlot.astro';
+import { Image } from 'astro:assets';
+
+const entries = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+function fmtDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<Base
+  title="Blog"
+  description="Field notes, playbooks, and post-mortems from Glitch Executor Labs."
+  pageType="WebPage"
+  ogSlug="blog"
+>
+  <section class="container-app pt-16 pb-10 md:pt-24">
+    <p class="eyebrow"><Icon name="spark" size={14} /> Blog</p>
+    <h1 class="mt-4">Field notes &amp; playbooks.</h1>
+    <p class="mt-5 max-w-[60ch] text-fluid-lg text-muted">
+      Short, opinionated writeups from live engagements — what broke, what worked,
+      and what we'd do differently next time. No ghost-written SEO fluff.
+    </p>
+  </section>
+
+  <section class="container-app pb-24">
+    {entries.length === 0 ? (
+      <div class="card p-8 md:p-10">
+        <p class="eyebrow"><Icon name="spark" size={14} /> Coming soon</p>
+        <p class="mt-3 text-fluid-lg">First post is being drafted. Check back shortly.</p>
+      </div>
+    ) : (
+      <ul role="list" class="grid gap-6 md:grid-cols-2">
+        {entries.map((entry) => (
+          <li>
+            <a
+              href={`/blog/${entry.slug}`}
+              class="card p-6 md:p-8 block h-full transition-transform hover:-translate-y-0.5"
+            >
+              {entry.data.cover ? (
+                <Image
+                  src={entry.data.cover}
+                  alt={entry.data.coverAlt ?? entry.data.title}
+                  widths={[360, 480, 720, 960]}
+                  sizes="(min-width: 768px) 480px, 100vw"
+                  loading="lazy"
+                  class="rounded-md mb-6 w-full h-auto"
+                />
+              ) : (
+                <ImageSlot
+                  w={960}
+                  h={540}
+                  ratio="16 / 9"
+                  label={entry.data.coverAlt ?? entry.data.title}
+                  alt={entry.data.coverAlt ?? entry.data.title}
+                  rounded="md"
+                  class="mb-6"
+                />
+              )}
+              <div class="flex items-center gap-3 text-fluid-xs text-subtle">
+                <time datetime={entry.data.publishedAt.toISOString()}>{fmtDate(entry.data.publishedAt)}</time>
+                {entry.data.readingMinutes && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>{entry.data.readingMinutes} min read</span>
+                  </>
+                )}
+              </div>
+              <h2 class="mt-3 text-fluid-2xl">{entry.data.title}</h2>
+              <p class="mt-3 text-muted text-fluid-sm">{entry.data.summary}</p>
+              {entry.data.tags.length > 0 && (
+                <ul class="mt-5 flex flex-wrap gap-2" aria-label="Tags">
+                  {entry.data.tags.map((t) => (
+                    <li class="inline-flex items-center px-2 py-0.5 rounded-md border border-border/60 text-fluid-xs text-muted">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <span class="mt-5 inline-flex items-center gap-1.5 text-fluid-sm">
+                Read post <Icon name="arrow-up-right" size={14} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Base>

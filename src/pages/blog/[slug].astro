@@ -1,0 +1,150 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import { Image } from 'astro:assets';
+import { site } from '~/lib/site';
+import { team, getTeamMember } from '~/data/team';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('blog', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'blog'>; }
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const { title, summary, tags, author, publishedAt, updatedAt, readingMinutes, cover, coverAlt } = entry.data;
+
+function fmtDate(d: Date): string {
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// Resolve author to a Person schema when the `author` field matches a
+// team-member slug; otherwise fall back to Organization for content
+// authored by the org as a whole. Person authors carry sameAs links to
+// LinkedIn / X / Codeberg — strong EEAT signal.
+const authorMember = getTeamMember(author);
+const authorLd = authorMember
+  ? {
+      '@type': 'Person',
+      name: authorMember.name,
+      url: new URL(`/team/${authorMember.slug}`, site.url).toString(),
+      image: new URL(authorMember.avatar, site.url).toString(),
+      jobTitle: authorMember.role,
+      worksFor: { '@type': 'Organization', name: site.parent },
+      sameAs: authorMember.sameAs,
+    }
+  : { '@type': 'Organization', name: author };
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description: summary,
+  datePublished: publishedAt.toISOString(),
+  dateModified: (updatedAt ?? publishedAt).toISOString(),
+  author: authorLd,
+  publisher: {
+    '@type': 'Organization',
+    name: site.parent,
+    logo: { '@type': 'ImageObject', url: new URL('/assets/brand/icon-512.png', site.url).toString() },
+  },
+  mainEntityOfPage: new URL(`/blog/${entry.slug}`, site.url).toString(),
+  inLanguage: site.locale,
+  isAccessibleForFree: true,
+  // Voice-search / AI-assistant extraction hints — Google + assistants
+  // use these to know which parts of the page are worth reading aloud.
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', '.lede', 'header p'],
+  },
+  ...(tags.length ? { keywords: tags.join(', ') } : {}),
+};
+---
+
+<Base
+  title={title}
+  description={summary}
+  pageType="WebPage"
+  ogSlug={`blog-${entry.slug}`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleLd).replaceAll('</', '<\\/')} is:inline />
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <nav aria-label="Breadcrumb" class="text-fluid-xs text-subtle">
+      <a href="/blog" class="hover:text-fg">Blog</a>
+      <span class="mx-1">/</span>
+      <span class="text-muted">{title}</span>
+    </nav>
+
+    <header class="mt-6 max-w-3xl">
+      <div class="flex items-center gap-3 text-fluid-xs text-subtle">
+        <time datetime={publishedAt.toISOString()}>{fmtDate(publishedAt)}</time>
+        {readingMinutes && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>{readingMinutes} min read</span>
+          </>
+        )}
+      </div>
+      <h1 class="mt-4">{title}</h1>
+      <p class="mt-5 text-fluid-lg text-muted">{summary}</p>
+
+      {authorMember && (
+        <a href={`/team/${authorMember.slug}`} class="mt-6 inline-flex items-center gap-3 group" rel="author">
+          <img
+            src={authorMember.avatar}
+            alt={authorMember.avatarAlt}
+            width="40"
+            height="50"
+            loading="lazy"
+            class="rounded-full object-cover aspect-square w-10 h-10"
+          />
+          <span>
+            <span class="block text-fluid-sm font-medium text-fg/90 group-hover:text-brand">{authorMember.name}</span>
+            <span class="block text-fluid-xs text-subtle">{authorMember.role}</span>
+          </span>
+        </a>
+      )}
+      {tags.length > 0 && (
+        <ul class="mt-6 flex flex-wrap gap-2" aria-label="Tags">
+          {tags.map((t) => (
+            <li class="inline-flex items-center px-2 py-0.5 rounded-md border border-border/60 text-fluid-xs text-muted">
+              {t}
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    {cover && (
+      <Image
+        src={cover}
+        alt={coverAlt ?? title}
+        widths={[640, 1024, 1280]}
+        sizes="(min-width: 768px) 800px, 100vw"
+        loading="eager"
+        class="mt-10 w-full h-auto rounded-lg"
+      />
+    )}
+
+    <div class="hairline my-12"></div>
+
+    <div class="prose-tight max-w-3xl text-fg [&_h2]:mt-12 [&_h2]:mb-4 [&_h3]:mt-10 [&_h3]:mb-3 [&_p]:my-4 [&_p]:text-muted [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-muted [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_strong]:text-fg [&_code]:font-mono [&_code]:text-brand [&_a]:text-brand [&_a]:underline [&_a]:decoration-brand/40 [&_blockquote]:border-l-2 [&_blockquote]:border-brand/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted">
+      <Content />
+    </div>
+
+    <aside class="mt-16 card p-6 md:p-8 flex flex-wrap gap-4 items-center justify-between">
+      <div>
+        <p class="eyebrow"><Icon name="spark" size={14} /> Want the same playbook on your stack?</p>
+        <p class="mt-2 text-fluid-lg">Short intro call, no pitch deck.</p>
+      </div>
+      <a href="/#contact" class="btn btn-primary">
+        Book a call <Icon name="arrow-right" size={16} />
+      </a>
+    </aside>
+  </article>
+</Base>

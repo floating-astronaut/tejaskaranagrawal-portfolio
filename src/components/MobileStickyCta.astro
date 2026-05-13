@@ -1,0 +1,72 @@
+---
+// Mobile-only sticky bottom CTA bar. Appears after the user scrolls past
+// the Hero (i.e. they're past the first impression and on the content).
+// Tuned for in-app browser traffic (Instagram, Facebook, TikTok) where
+// the visible viewport is short and the user expects fixed bottom bars.
+//
+// Dual button:
+//   - Primary: "Free kit" → opens LeadFormModal via data-cta="kit"
+//   - Secondary: "$499" → scrolls to #pricing
+//
+// Hidden on md+ breakpoints (desktop has plenty of inline CTAs already).
+---
+
+<div
+  id="mobile-sticky-cta"
+  class="md:hidden fixed inset-x-0 bottom-0 z-40 transform translate-y-full transition-transform duration-300 ease-out"
+  aria-hidden="true"
+>
+  <div class="border-t border-border/80 bg-bg/95 backdrop-blur-md px-3 py-2.5 pb-[max(env(safe-area-inset-bottom),0.625rem)] shadow-[0_-8px_20px_rgba(0,0,0,0.25)]">
+    <div class="flex items-center gap-2">
+      <a
+        href="#kit-cta"
+        data-cta="kit"
+        data-cta-source="mobile-sticky"
+        class="btn btn-primary flex-1 justify-center text-fluid-sm py-2.5 px-3 whitespace-nowrap"
+      >
+        Get the free kit
+      </a>
+      <a
+        href="#pricing"
+        data-cta-source="mobile-sticky"
+        class="btn btn-secondary text-fluid-sm py-2.5 px-3 whitespace-nowrap"
+      >
+        $499 Stack
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Reveal after the user scrolls past 80vh (i.e. past the Hero), hide
+  // when within 200px of the page bottom (CallToAction has its own CTAs).
+  const bar = document.getElementById('mobile-sticky-cta');
+  if (bar) {
+    let visible = false;
+    const setVisible = (next: boolean) => {
+      if (next === visible) return;
+      visible = next;
+      bar.classList.toggle('translate-y-full', !next);
+      bar.setAttribute('aria-hidden', next ? 'false' : 'true');
+    };
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const vh = window.innerHeight;
+      const docH = document.documentElement.scrollHeight;
+      const pastHero = y > vh * 0.8;
+      const nearBottom = y + vh > docH - 240;
+      setVisible(pastHero && !nearBottom);
+    };
+
+    let raf = 0;
+    window.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        onScroll();
+      });
+    }, { passive: true });
+    onScroll();
+  }
+</script>

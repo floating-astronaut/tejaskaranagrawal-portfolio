@@ -1,0 +1,28 @@
+---
+term: agent observability
+title: What is AI agent observability?
+definition: Agent observability is the practice of instrumenting an AI agent so you can see what it did, why it did it, and how it performed — typically via structured logs, traces, and metrics tied to each agent decision.
+summary: Without observability, debugging a production agent means reading raw logs trying to reconstruct what happened. With it, you have a query. The standard pattern uses OpenTelemetry traces with spans for each LLM call, tool invocation, and decision node, plus metrics for latency, cost per call, and HITL escalation rate. Vendors like LangSmith and Helicone wrap this for AI specifically; OTel + Grafana/Honeycomb work for ground-up implementations.
+related:
+  - ai-agent
+  - agent-runtime
+  - orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "LangSmith"
+    url: https://smith.langchain.com/
+publishedAt: 2026-05-07
+---
+
+## What to instrument
+
+- Every LLM call: model, tokens, latency, cost
+- Every tool invocation: tool name, arguments, result, duration
+- Every decision node: what the agent chose and why
+- Every HITL escalation: prompt context, who approved, with what edit
+
+## Why this matters in production
+
+The first time an agent does something unexpected for a paying client, observability is the difference between "we know what happened, here's the fix" and "we're still figuring out what happened."

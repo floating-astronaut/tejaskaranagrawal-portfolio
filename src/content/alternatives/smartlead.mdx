@@ -1,0 +1,62 @@
+---
+competitor: Smartlead
+competitorUrl: https://www.smartlead.ai
+title: Smartlead alternative — outbound that reasons, not just sends
+summary: Smartlead is a high-volume cold-email sender with strong deliverability tools. Glitch Grow's Sales Agent is a full discover → enrich → draft → approve → send → learn loop you self-host and resell as a $797/mo Studio service.
+tldr: Smartlead's basic plan starts around $39/mo (2026 pricing) and scales with sender volume; it's a sequence runner, not an agent. Glitch Grow's Sales Agent ($99 once) discovers prospects from Google Maps + registry data, drafts personalized emails per a tunable recipe library, escalates to Discord for approval, sends through Gmail, tracks replies, and writes every decision to memory. Different category — sequence tool vs production agent.
+audience: agencies, freelancers, and B2B founders running outbound to vertical lists
+competitorPain: Cold-email sending is a solved problem; what's not solved is the reasoning around it — which prospect, which recipe, which time, when to escalate, when to stop. Smartlead automates the send. The agent layer (which most teams build with spreadsheets, Zaps, and a research VA) is what Glitch Grow's Sales Agent ships.
+relatedProducts:
+  - sales-agent
+  - ugc-agent
+comparison:
+  - feature: Discovery + enrichment
+    glitch: Google Maps + AGCO + public-record scrapers, dedup
+    competitor: Bring-your-own list
+  - feature: Drafting
+    glitch: 8 recipes, auto-A/B selected per outcome
+    competitor: Static templates with spintax
+  - feature: HITL approval
+    glitch: Discord one-tap approve/reject/edit-and-send
+    competitor: None — sends per sequence
+  - feature: Memory
+    glitch: Postgres + pgvector + tsvector — every draft, edit, reply indexed
+    competitor: Reply tracking, not decision memory
+  - feature: Per-recipe autonomy
+    glitch: Auto-send threshold per recipe after enough approvals
+    competitor: All-or-nothing automation
+  - feature: Pricing
+    glitch: $99 once + your infra
+    competitor: From ~$39/mo, scaling with senders
+  - feature: License
+    glitch: BSL 1.1 — rebrand and resell
+    competitor: SaaS subscription
+faqs:
+  - q: Is Smartlead's deliverability better?
+    a: Smartlead has invested heavily in warm-up, sender rotation, and inbox-placement tooling — those are real strengths. Glitch Grow's Sales Agent uses Gmail API directly per sender; deliverability is whatever your sender-domain hygiene gives you. Many buyers run both — Smartlead for warm-up, Glitch Grow for the agent layer on top.
+  - q: Can I use my Smartlead inbox pool with Glitch Grow?
+    a: Not natively, but the Sales Agent is open code — adding an SMTP/SMTP-as-a-service adapter is straightforward.
+  - q: Does Glitch Grow handle reply detection?
+    a: Yes — Gmail send + open + reply tracking is wired in. Reply categorization runs through the same LLM stack that drafts.
+  - q: How is this different from Lemlist or Instantly?
+    a: Same shape of difference as Smartlead. They're sequence runners with deliverability layers; Glitch Grow's Sales Agent is the agent layer that decides what to send and when, with human approval at the draft level.
+  - q: What's the resale model?
+    a: $797/mo Studio outbound — 1,000 emails/mo, 3 senders, weekly reporting. Or $5K+ retainers for vertical-specific lists. The boilerplate ships with the pricing playbook.
+citations:
+  - label: Smartlead Pricing
+    url: https://www.smartlead.ai/pricing
+  - label: Glitch Grow Sales Agent
+    url: https://grow.glitchexecutor.com/products/sales-agent
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+## Two categories, often conflated
+
+Smartlead, Instantly, Lemlist, Apollo Sequences — these are sequence runners. Their job is to deliver mail to inboxes reliably across rotating sender pools. They do that job well.
+
+The Sales Agent's job is different: decide who to email, with which recipe, queue it for human review, learn from edits, and tighten autonomy thresholds over time. That's an agent loop, not a sequence.
+
+## Stack pattern that works
+
+Many of the buyers we talk to run Smartlead for warm-up and inbox-placement infrastructure, and the Sales Agent boilerplate for the reasoning + HITL layer. The agent drafts, a human approves, the draft gets handed to Smartlead for delivery. Both tools, each in their lane.

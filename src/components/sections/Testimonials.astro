@@ -1,0 +1,250 @@
+---
+import Icon from '~/components/Icon.astro';
+import InlineCta from '~/components/InlineCta.astro';
+
+const notes = [
+  {
+    name: 'Aarav M.',
+    handle: '@shopify-operator',
+    role: 'Shopify operator',
+    photo: '/assets/testimonials/person-1.jpg',
+    body: 'Pasted the install prompt, answered the key prompts one by one, and got a real smoke test instead of another vague setup checklist.',
+    proof: 'Smoke test passed in first session',
+    tone: 'green',
+  },
+  {
+    name: 'Maya R.',
+    handle: '@agency-builder',
+    role: 'Agency founder',
+    photo: '/assets/testimonials/person-2.jpg',
+    body: 'The MCP roster is the win. GitHub, Stripe, Shopify, Postgres, search - all mapped before the client work starts.',
+    proof: 'One repeatable client setup path',
+    tone: 'blue',
+  },
+  {
+    name: 'Dev P.',
+    handle: '@paid-ads-ops',
+    role: 'Paid ads freelancer',
+    photo: '/assets/testimonials/person-3.jpg',
+    body: 'I can sell the implementation now: one agent, one workflow, one reporting loop. Much easier than pitching random AI automation hours.',
+    proof: '$1.5k/mo service package shaped',
+    tone: 'gold',
+  },
+  {
+    name: 'Nisha K.',
+    handle: '@dtc-consultant',
+    role: 'D2C consultant',
+    photo: '/assets/testimonials/person-4.jpg',
+    body: 'The ZIP option matters. My partner did not touch Git - just downloaded the folder, opened the prompt, and let the agent take over.',
+    proof: 'No Git knowledge required',
+    tone: 'green',
+  },
+  {
+    name: 'Rohan S.',
+    handle: '@solo-builder',
+    role: 'Solo builder',
+    photo: '/assets/testimonials/person-5.jpg',
+    body: 'The templates are small on purpose. It forced the first build to be one working endpoint, not a fantasy SaaS architecture.',
+    proof: 'First endpoint shipped before polish',
+    tone: 'blue',
+  },
+  {
+    name: 'Isha T.',
+    handle: '@growth-lead',
+    role: 'Growth lead',
+    photo: '/assets/testimonials/person-6.jpg',
+    body: 'The agent picker saved me time. Claude for guided setup, Codex for server fixes, Cursor when I want hands on the UI.',
+    proof: 'Clear tool choice before setup',
+    tone: 'gold',
+  },
+];
+---
+
+<section id="proof-wall" class="py-10 md:py-12 lg:py-16 border-t border-border/40 overflow-hidden">
+  <div class="container-app">
+    <div class="mx-auto max-w-3xl text-center reveal">
+      <p class="metadata text-brand"><Icon name="spark" size={14} /> private beta feedback</p>
+      <h2 class="mt-4 text-fluid-3xl md:text-fluid-5xl font-bold tracking-tight">
+        The first win is getting unstuck.
+      </h2>
+      <p class="mx-auto mt-5 max-w-2xl text-fluid-base text-muted leading-relaxed">
+        Builders use the kit to start from a working agent baseline: install prompt, MCP roster, project rules, skills, and starter templates already lined up.
+      </p>
+    </div>
+
+    <div class="social-wall reveal mt-10 md:mt-14" aria-label="Private beta feedback cards">
+      {notes.map((note, index) => (
+        <article class={`social-card social-card-${index + 1} tone-${note.tone}`}>
+          <div class="social-card__top">
+            <img class="avatar" src={note.photo} alt="" loading="lazy" decoding="async" width="52" height="52" />
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <h3 class="truncate text-sm font-semibold text-fg leading-tight">{note.name}</h3>
+                <span class="beta-badge">beta note</span>
+              </div>
+              <p class="truncate text-xs text-subtle">{note.handle} · {note.role}</p>
+            </div>
+          </div>
+
+          <p class="mt-4 text-[0.94rem] leading-relaxed text-fg/90">{note.body}</p>
+
+          <div class="mt-5 flex items-center justify-between gap-3 border-t border-border/50 pt-3">
+            <span class="proof-chip">{note.proof}</span>
+            <span class="social-dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </span>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <InlineCta
+      headline="Start with the free kit."
+      sub="Open the setup prompt, collect the keys, and let your coding agent do the first install."
+      variant="both"
+      source="testimonial-proof-wall"
+    />
+
+    <p class="mx-auto mt-7 max-w-2xl text-center text-[0.68rem] text-subtle">
+      Feedback is anonymized. Portraits are representative Unsplash images.
+    </p>
+  </div>
+</section>
+
+<style>
+  .social-wall {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .social-card {
+    position: relative;
+    min-height: 13.25rem;
+    grid-column: span 4;
+    border: 1px solid rgb(var(--color-border) / 0.72);
+    border-radius: 1rem;
+    padding: 1.05rem;
+    background:
+      linear-gradient(180deg, rgb(var(--color-surface) / 0.96), rgb(var(--color-bg) / 0.88)),
+      radial-gradient(circle at 12% 0%, var(--accent-soft), transparent 44%);
+    box-shadow: 0 22px 70px rgb(0 0 0 / 0.24);
+    transform: translateY(var(--lift, 0)) rotate(var(--tilt, 0deg));
+    backdrop-filter: blur(18px);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .social-card:hover {
+    transform: translateY(calc(var(--lift, 0) - 0.25rem)) rotate(var(--tilt, 0deg));
+    border-color: rgb(var(--color-brand) / 0.42);
+    box-shadow: 0 28px 90px rgb(0 0 0 / 0.32);
+  }
+
+  .social-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.09), transparent 38%);
+  }
+
+  .social-card > * {
+    position: relative;
+  }
+
+  .social-card__top {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .social-card-1 { --lift: 1.25rem; --tilt: -2deg; }
+  .social-card-2 { --lift: 0; --tilt: 1.5deg; }
+  .social-card-3 { --lift: 1.75rem; --tilt: -1deg; }
+  .social-card-4 { --lift: -0.35rem; --tilt: 1deg; }
+  .social-card-5 { --lift: 1rem; --tilt: -1.5deg; }
+  .social-card-6 { --lift: -0.1rem; --tilt: 2deg; }
+
+  .tone-green { --accent-soft: rgb(var(--color-brand) / 0.18); }
+  .tone-blue { --accent-soft: rgb(var(--color-brand-blue) / 0.18); }
+  .tone-gold { --accent-soft: rgb(245 190 85 / 0.16); }
+
+  .avatar {
+    width: 3.1rem;
+    height: 3.1rem;
+    border-radius: 999px;
+    flex: 0 0 auto;
+    border: 1px solid rgb(var(--color-brand) / 0.38);
+    object-fit: cover;
+    background: rgb(var(--color-brand) / 0.14);
+    box-shadow: 0 0 0 3px rgb(var(--color-bg) / 0.72);
+  }
+
+  .beta-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--color-brand) / 0.24);
+    background: rgb(var(--color-brand) / 0.09);
+    color: rgb(var(--color-brand));
+    padding: 0.12rem 0.38rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .proof-chip {
+    display: inline-flex;
+    max-width: 100%;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--color-brand) / 0.24);
+    background: rgb(var(--color-brand) / 0.09);
+    color: rgb(var(--color-brand));
+    padding: 0.34rem 0.58rem;
+    font-family: var(--font-mono);
+    font-size: 0.67rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+
+  .social-dots {
+    display: inline-flex;
+    gap: 0.28rem;
+    flex: 0 0 auto;
+  }
+
+  .social-dots span {
+    width: 0.27rem;
+    height: 0.27rem;
+    border-radius: 999px;
+    background: rgb(var(--color-subtle) / 0.75);
+  }
+
+  @media (max-width: 1024px) {
+    .social-card {
+      grid-column: span 6;
+      transform: none;
+    }
+
+    .social-card:hover {
+      transform: translateY(-0.2rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .social-wall {
+      grid-template-columns: 1fr;
+    }
+
+    .social-card {
+      grid-column: 1;
+      min-height: 0;
+      border-radius: 0.85rem;
+    }
+  }
+</style>

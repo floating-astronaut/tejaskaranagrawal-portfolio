@@ -1,0 +1,26 @@
+---
+term: LangGraph
+title: What is LangGraph?
+definition: LangGraph is a Python and TypeScript framework for building stateful, multi-agent LLM applications as graphs of nodes with conditional edges and persistent state.
+summary: LangGraph builds on LangChain primitives but adds explicit state management, conditional routing, and human-in-the-loop interrupts. Nodes are functions; edges are routing decisions made by the graph or by an LLM. State persists across calls and can be checkpointed to disk or a database. It's the framework underneath most production LangChain agents that need retries, branching, or HITL approval. Glitch Grow's Ads Operator and Sales Agent are both LangGraph-based.
+related:
+  - ai-agent
+  - agentic-workflow
+  - llm-orchestration
+  - hitl
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "LangGraph documentation"
+    url: https://langchain-ai.github.io/langgraph/
+publishedAt: 2026-05-07
+---
+
+## Why graphs and not chains
+
+Linear chains can't represent the loops, branches, and retries that real agents need. LangGraph's graph model maps directly to the underlying control flow without forcing it into a sequence.
+
+## State persistence
+
+LangGraph checkpoints state at each node, so an agent can be paused (waiting for HITL approval), resumed across processes, or replayed for debugging. This is the feature that turns a prototype into a production agent.

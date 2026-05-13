@@ -1,0 +1,172 @@
+---
+/**
+ * Hero loop video — autoplay, muted, looped, click-to-unmute.
+ *
+ * Uses the native <video> element (not a YouTube facade) for three
+ * reasons that matter for a hero surface:
+ *
+ *   1. LCP — poster JPG paints instantly; the video starts streaming
+ *      inline without ~500KB of YouTube player JS.
+ *   2. Autoplay loop without YouTube branding/end-cards/recommended-
+ *      videos chrome polluting the hero.
+ *   3. Browsers reliably autoplay only when the video is `muted`,
+ *      which is what we want anyway. Click-to-unmute is one tap.
+ *
+ * Sources are MP4 (universal) + WebM (VP9, ~30% smaller — modern
+ * browsers prefer it). Poster is a single frame ~1s into the loop.
+ *
+ * Reduced-motion: prefers-reduced-motion users see only the static
+ * poster — the <video> never autoplays. Honours the motion media
+ * query at runtime; switching the OS toggle while the page is open
+ * pauses the loop.
+ */
+
+interface Props {
+  /** Path to the MP4 source (under /public). */
+  src: string;
+  /** Path to the WebM source (under /public). Optional — when set, browsers
+   *  that can play it pick it first for the bandwidth saving. */
+  srcWebm?: string;
+  /** Path to the poster JPG (under /public). Becomes the LCP image, so
+   *  it should be the same dimensions as the video. */
+  poster: string;
+  /** Accessible label — never read aloud while playing, but used by
+   *  screen-readers when the play state changes. */
+  title?: string;
+  /** Width / height attributes the browser uses to reserve layout space.
+   *  Match the source aspect ratio. Default 1280×720 (16:9). */
+  width?: number;
+  height?: number;
+  /** Extra Tailwind classes for the outer wrapper. */
+  class?: string;
+}
+
+const {
+  src,
+  srcWebm,
+  poster,
+  title = 'Glitch Grow agent in action',
+  width = 1280,
+  height = 720,
+  class: className = '',
+} = Astro.props;
+---
+
+<figure
+  class:list={[
+    'relative aspect-video w-full overflow-hidden rounded-2xl border border-border/60',
+    'bg-surface/30 shadow-[0_24px_48px_-24px_rgb(var(--color-brand)/0.40)]',
+    className,
+  ]}
+  data-hero-video
+>
+  <video
+    class="absolute inset-0 w-full h-full object-cover"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster={poster}
+    aria-label={title}
+    width={width}
+    height={height}
+    data-hero-video-el
+  >
+    {srcWebm && <source src={srcWebm} type="video/webm" />}
+    <source src={src} type="video/mp4" />
+    {/* No-JS / unsupported-codec fallback — show the poster. */}
+    <img src={poster} alt={title} width={width} height={height} loading="eager" />
+  </video>
+
+  {/* Subtle bottom gradient so any white-text overlay stays legible. */}
+  <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-bg/40 to-transparent"></div>
+
+  {/* Mute / unmute toggle — small floating control in the bottom-right.
+      The button label updates with the video's actual mute state so
+      screen readers always read the correct next action. */}
+  <button
+    type="button"
+    class:list={[
+      'absolute bottom-3 right-3 z-10',
+      'inline-flex items-center justify-center size-10 rounded-full',
+      'bg-bg/80 text-fg backdrop-blur-md border border-border/60',
+      'hover:bg-bg/95 hover:border-brand/50 transition-colors',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand',
+    ]}
+    aria-label="Unmute video"
+    aria-pressed="false"
+    data-hero-video-toggle
+  >
+    {/* Muted glyph (default visible). The script swaps to the unmuted
+        glyph when `video.muted` flips. */}
+    <svg data-hero-video-icon-muted width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" y1="9"  x2="17" y2="15" />
+      <line x1="17" y1="9"  x2="23" y2="15" />
+    </svg>
+    <svg data-hero-video-icon-unmuted class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+  </button>
+</figure>
+
+<script is:inline>
+  (() => {
+    const wrappers = document.querySelectorAll('[data-hero-video]:not([data-hero-video-bound])');
+    wrappers.forEach((wrap) => {
+      wrap.setAttribute('data-hero-video-bound', 'true');
+      const video  = wrap.querySelector('[data-hero-video-el]');
+      const toggle = wrap.querySelector('[data-hero-video-toggle]');
+      const iconM  = wrap.querySelector('[data-hero-video-icon-muted]');
+      const iconU  = wrap.querySelector('[data-hero-video-icon-unmuted]');
+      if (!video || !toggle || !iconM || !iconU) return;
+
+      // Reduced-motion: pause the loop. The poster stays as the visual.
+      const motionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const applyMotion = () => {
+        if (motionMq.matches) {
+          try { video.pause(); } catch {}
+        } else {
+          video.play().catch(() => { /* autoplay may still be blocked — fine */ });
+        }
+      };
+      applyMotion();
+      motionMq.addEventListener?.('change', applyMotion);
+
+      // Smoother loop than the native `loop` attribute. The browser's
+      // built-in loop seeks to 0 on `ended`, which can stall 50–200ms
+      // while the decoder re-primes — visible as a hitch at the wrap.
+      // Hijack timeupdate, rewind ~80ms before the end, and the browser
+      // never fires the ended/seek path. The native `loop` attribute is
+      // kept as a belt-and-braces fallback if this script doesn't run.
+      const SAFE_REWIND_S = 0.08;
+      video.addEventListener('timeupdate', () => {
+        if (!isFinite(video.duration) || video.duration === 0) return;
+        if (video.currentTime >= video.duration - SAFE_REWIND_S) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      });
+
+      const sync = () => {
+        const muted = video.muted;
+        toggle.setAttribute('aria-label', muted ? 'Unmute video' : 'Mute video');
+        toggle.setAttribute('aria-pressed', String(!muted));
+        iconM.classList.toggle('hidden', !muted);
+        iconU.classList.toggle('hidden', muted);
+      };
+      sync();
+
+      toggle.addEventListener('click', () => {
+        video.muted = !video.muted;
+        // First unmute counts as a user gesture — restart playback if
+        // autoplay was blocked earlier on a reduced-motion-paused load.
+        if (!video.muted) video.play().catch(() => {});
+        sync();
+      });
+      video.addEventListener('volumechange', sync);
+    });
+  })();
+</script>

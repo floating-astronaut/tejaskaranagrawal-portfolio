@@ -1,0 +1,27 @@
+---
+term: agent runtime
+title: What is an agent runtime?
+definition: An agent runtime is the execution environment that runs an AI agent — handling state persistence, tool dispatch, retries, observability, and the LLM API client — so the agent's logic doesn't have to.
+summary: Just as web frameworks abstract HTTP plumbing from request handlers, agent runtimes abstract LLM plumbing from agent logic. Common runtimes include LangGraph, CrewAI, AutoGen, and custom state machines. The runtime provides primitives for tools, memory, branching, parallel execution, and HITL interrupts. Without a runtime, every agent reinvents these primitives — usually badly.
+related:
+  - ai-agent
+  - langgraph
+  - llm-orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "LangGraph documentation"
+    url: https://langchain-ai.github.io/langgraph/
+publishedAt: 2026-05-07
+---
+
+## What runtimes provide
+
+- **State persistence** across LLM calls and process restarts
+- **Tool dispatch** with schema validation and error handling
+- **Retries** with backoff for transient failures
+- **Observability** — every node's input, output, and timing
+- **HITL interrupts** to pause for human approval
+
+A "production agent" without a runtime usually means an agent that can't handle one of those five concerns — and you find out which one in production.

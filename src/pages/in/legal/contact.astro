@@ -1,0 +1,103 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import { site, legalEntityIN } from '~/lib/site';
+const entity = legalEntityIN;
+---
+
+<Base
+  title="Contact Us · India"
+  description={`Contact ${entity.name} for support, refund requests, or grievance redressal. Indian users only.`}
+  pageType="WebPage"
+  noindex={false}
+>
+  <section class="container-app py-20 max-w-prose-tight">
+    <p class="eyebrow">Legal · India</p>
+    <h1 class="mt-4">Contact us</h1>
+    <p class="mt-4 text-subtle text-fluid-sm">
+      Applicable to users of the <code class="font-mono text-xs px-1 py-0.5 rounded bg-surface-2">/in/</code> variant of {site.domain}.
+    </p>
+
+    <div class="prose mt-10 text-muted [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-fluid-xl [&_p]:my-3 [&_strong]:text-fg [&_a]:text-brand">
+
+      <h2>Merchant of record</h2>
+      <p>
+        <strong>{entity.name}</strong>
+        <br/>
+        {entity.type}, owned by <strong>{entity.owner}</strong>
+        <br/>
+        {entity.address}
+      </p>
+      <p>
+        {entity.taxIdLabel}: <strong>{entity.taxId}</strong>
+      </p>
+
+      <h2>Email</h2>
+      <p>
+        For all enquiries — sales, support, refunds, partnership,
+        media — write to:
+      </p>
+      <p>
+        <a class="inline-flex items-center gap-2 font-mono text-fluid-base"
+           href={`mailto:${entity.email}`}>
+          {entity.email}
+          <Icon name="arrow-up-right" size={14} />
+        </a>
+      </p>
+      <p class="text-fluid-sm">
+        We aim to respond within <strong>1 working day</strong> for
+        product / sales / refund queries, and within <strong>30 days</strong>
+        for grievance and data-related queries (see below).
+      </p>
+
+      <h2>Grievance Officer</h2>
+      <p>
+        Per the IT Rules, 2021 (Rule 3(2)) and the Digital Personal
+        Data Protection Act, 2023 (Section 13):
+      </p>
+      <ul class="list-none pl-0 space-y-1">
+        <li><strong>Name</strong>: {entity.owner}</li>
+        <li><strong>Designation</strong>: Proprietor &amp; Grievance Officer</li>
+        <li><strong>Email</strong>: <a href={`mailto:${entity.email}`}>{entity.email}</a></li>
+        <li><strong>Postal address</strong>: {entity.address}</li>
+      </ul>
+      <p class="text-fluid-sm">
+        Acknowledgement within 7 working days, full response within
+        30 days.
+      </p>
+
+      <h2>Payments &amp; data sub-processor grievances</h2>
+      <p>
+        For grievances specifically related to <strong>Razorpay</strong>
+        (the payment aggregator processing all Indian transactions on
+        this site), You may contact Razorpay directly at:
+      </p>
+      <ul class="list-none pl-0 space-y-1">
+        <li><strong>Data Protection Officer</strong>: Mr. Shashank Karincheti</li>
+        <li><strong>Email</strong>: <a href="mailto:dpo@razorpay.com">dpo@razorpay.com</a></li>
+        <li><strong>Grievance portal</strong>: <a href="https://razorpay.com/grievances/" target="_blank" rel="noopener">razorpay.com/grievances</a></li>
+      </ul>
+
+      <h2>Community &amp; informal support</h2>
+      <p>
+        For non-grievance product / kit / technical questions, the
+        fastest channel is our Discord:
+        <a href="https://discord.gg/HBZFKMts" target="_blank" rel="noopener">discord.gg/HBZFKMts</a>.
+        Discord is informal and best-effort — for anything contractual,
+        billing-related, or grievance-status, please use email so we
+        have a written record.
+      </p>
+
+      <h2>Related policies</h2>
+      <p>
+        <a href="/in/legal/terms">Terms of Service</a>
+        &nbsp;·&nbsp;
+        <a href="/in/legal/privacy">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="/in/legal/refund">Cancellation &amp; Refund</a>
+        &nbsp;·&nbsp;
+        <a href="/in/legal/shipping">Shipping &amp; Exchange</a>
+      </p>
+    </div>
+  </section>
+</Base>

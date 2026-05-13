@@ -1,0 +1,55 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Three reasons the kit beats every other "AI productivity" product on the
+// market right now. Calibrated to address the three skeptical priors a
+// cold-traffic buyer brings: "is this real?", "is this just prompts?",
+// "what happens after I buy?"
+const reasons = [
+  {
+    icon: 'spark' as const,
+    title: 'Real shipping, not theory',
+    body:
+      "I'm not a LinkedIn influencer running a course. I run 7 Shopify stores and 9 production AI services on this exact stack. The kit is the artifact of doing the work — not a teaching simulation.",
+  },
+  {
+    icon: 'cpu' as const,
+    title: 'Tools Claude can call, not prompts',
+    body:
+      "A prompt list is what ChatGPT replaced. The kit ships nine MCPs — actual API integrations Claude Code calls directly. The difference is the difference between 'Claude tells you what to do' and 'Claude does it.'",
+  },
+  {
+    icon: 'shield' as const,
+    title: 'The wrong patterns I learned the hard way',
+    body:
+      "The kit includes the configurations that don't work, with notes on why. The single most expensive part of vibe coding is wasted weeks on patterns that look smart and are dead ends. You skip those weeks.",
+  },
+];
+---
+
+<section id="why-it-works" class="py-8 md:py-10 lg:py-12 bg-surface/30 border-y border-border/40">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="bolt" size={14} /> Why this works when nothing else does</p>
+      <h2 class="mt-4">Three things every other "AI productivity" product is missing.</h2>
+    </div>
+
+    <ul class="mt-14 grid gap-6 md:grid-cols-3" role="list">
+      {reasons.map((r, i) => (
+        <li class="card p-6 md:p-7 reveal relative">
+          <span class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-border text-brand rounded-full">
+            0{i + 1}
+          </span>
+          <div class="flex items-center gap-3 mt-3">
+            <span class="inline-flex size-9 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+              <Icon name={r.icon} size={18} />
+            </span>
+            <h3 class="text-fluid-lg">{r.title}</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted leading-relaxed">{r.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

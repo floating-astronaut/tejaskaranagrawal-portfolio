@@ -1,0 +1,31 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Concrete-counter strip. Replaces the abstract TrustStrip ("LangGraph + MCP",
+// "BSL 1.1") with hard numbers buyers can verify against the GitHub org page.
+// Layout adapted from AstroWind Stats.astro.
+const stats = [
+  { value: '9',     label: 'Production AI products shipped solo' },
+  { value: '9',     label: 'MCPs pre-wired in the kit' },
+  { value: '7',     label: 'Live Shopify stores running on this stack' },
+  { value: '~5 min',label: 'From clone to first deployed feature' },
+];
+---
+
+<section class="py-8 md:py-10 lg:py-14 border-y border-border/40 bg-surface/30">
+  <div class="container-app">
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center" role="list">
+      {stats.map((s) => (
+        <li class="reveal">
+          <div class="font-mono text-fluid-4xl md:text-fluid-5xl text-brand leading-none tracking-tight">{s.value}</div>
+          <p class="mt-2 text-fluid-xs md:text-fluid-sm text-muted leading-snug">{s.label}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="mt-8 text-center text-fluid-xs text-subtle">
+      <Icon name="check" size={12} /> Verifiable on
+      <a href="https://codeberg.org/glitch-executor" target="_blank" rel="noopener noreferrer"
+         class="text-brand underline decoration-brand/40 hover:decoration-brand">codeberg.org/glitch-executor</a>
+    </p>
+  </div>
+</section>

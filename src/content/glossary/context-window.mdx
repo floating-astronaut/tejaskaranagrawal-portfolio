@@ -1,0 +1,24 @@
+---
+term: context window
+title: What is an LLM context window?
+definition: A context window is the maximum number of tokens (input + output combined, in most APIs) that an LLM can process in a single call — typically ranging from a few thousand to several million tokens for modern models.
+summary: "Context window size determines how much information you can give a model at once: a system prompt, conversation history, retrieved documents, and the user's message all consume tokens from the window. Long-context models (Claude with 200K+ tokens, Gemini at 2M) enable workflows that earlier-generation models couldn't handle — full codebases, multi-document synthesis, long conversation memory — but throughput and cost still scale with token count."
+related:
+  - token
+  - rag
+  - system-prompt
+relatedProducts:
+  []
+citations:
+  - label: "Anthropic — Claude context windows"
+    url: https://docs.anthropic.com/en/docs/about-claude/models/overview
+publishedAt: 2026-05-07
+---
+
+## Practical limits
+
+Using the full context window isn't free. Latency scales with input token count; cost scales linearly. A 200K-token call is dramatically slower and more expensive than a 5K-token call returning the same answer.
+
+## When to use long context vs RAG
+
+Long context wins when the relevant information is small enough to fit and you don't want to maintain a retrieval index. RAG wins when the corpus is too large for context, or when you want explicit source attribution for each answer.

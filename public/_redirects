@@ -1,0 +1,14 @@
+# Cloudflare Pages redirects (read by CF, not by Astro).
+# https://developers.cloudflare.com/pages/configuration/redirects/
+
+# BSK-006 was briefly renamed to "Shopify AI Agent" (slug: shopify-agent)
+# on 2026-05-08 before being reverted to "AI SEO Agent" (slug: seo-agent)
+# the same day. Anyone who bookmarked the brief shopify-agent URL gets
+# 301-redirected back to the canonical seo-agent page.
+/products/shopify-agent          /products/seo-agent       301
+
+# BSK-001 (MCP Builder Pack) was discontinued 2026-05-08. Existing
+# buyers keep their Codeberg invite indefinitely; new visitors hitting
+# the old detail page bounce to the catalog with a clean 302.
+# When a "we discontinued this" blog post lands, repoint the destination.
+/products/mcp-builder-pack       /products                 302

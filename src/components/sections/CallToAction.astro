@@ -1,0 +1,54 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Final closer before footer. Dual-CTA matching the Hero — primary = free kit
+// modal trigger; secondary scrolls to the agent storefront. Restated value
+// prop: "the difference is one folder."
+---
+
+<section id="final-cta" class="py-8 md:py-10 lg:py-12 relative overflow-hidden">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[36rem] mx-auto max-w-7xl rounded-3xl
+                bg-[radial-gradient(ellipse_at_center,rgb(var(--color-brand)/0.20),transparent_70%)] blur-2xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="relative card border-brand/40 bg-surface/40 backdrop-blur-sm overflow-hidden p-10 md:p-14 lg:p-20 text-center reveal">
+
+      {/* Decorative corner gleams */}
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+        <div class="absolute -top-20 -left-20 size-72 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.25),transparent_60%)] blur-2xl"></div>
+        <div class="absolute -bottom-20 -right-20 size-72 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.20),transparent_60%)] blur-2xl"></div>
+      </div>
+
+      <div class="relative max-w-3xl mx-auto">
+        <p class="eyebrow justify-center"><Icon name="bolt" size={14} /> Last call</p>
+        <h2 class="mt-5 text-fluid-3xl md:text-fluid-5xl font-bold tracking-tight leading-[1.05]">
+          Stop assembling tools.<br/>
+          <span class="gradient-text">Start owning the stack.</span>
+        </h2>
+        <p class="mt-7 text-fluid-lg text-muted">
+          Six AI agents. One stack. $499 once. Your AI coding agent (Claude Code, Codex, OpenClaw, Cursor — any of them) installs it for you in about 30 minutes. No terminal required.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href="#pricing"
+            class="btn btn-primary text-fluid-base px-8 py-4"
+          >
+            Get the Stack — $499
+            <Icon name="arrow-right" size={18} />
+          </a>
+          <a href="#agents" class="btn btn-ghost text-fluid-base">
+            Or pick one agent
+            <Icon name="arrow-up-right" size={16} />
+          </a>
+        </div>
+
+        <p class="mt-5 text-fluid-xs text-subtle">
+          Built and operated solo from Toronto · Discord support · No upsells, no AI guru course
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

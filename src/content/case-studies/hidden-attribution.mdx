@@ -1,0 +1,89 @@
+---
+title: "Recovering the 60% of conversions Meta couldn't see"
+client: "DTC Beauty Brand — UAE"
+industry: "E-commerce · DTC"
+headline: "1.17× → 3.4× ROAS in 21 days"
+summary: "Rebuilt attribution with server-side CAPI, fixed cross-geo routing, and retrained creative rotation — recovering hidden conversions instead of scaling waste."
+services:
+  - "Meta + Amazon Ads Optimization"
+  - "Cross-Platform Attribution"
+metrics:
+  - { label: "ROAS",         value: "1.17× → 3.4×" }
+  - { label: "Attributed conversions", value: "+148%" }
+  - { label: "Wasted spend cut",       value: "34%" }
+  - { label: "Time to ship",           value: "21 days" }
+cover: ./hidden-attribution-cover.png
+coverAlt: "Dashboard showing ROAS recovery after CAPI bridge deployment"
+publishedAt: 2026-03-14
+featured: true
+---
+
+import Icon from '~/components/Icon.astro';
+import { Image } from 'astro:assets';
+import img1 from './hidden-attribution-baseline-roas.png';
+import img2 from './hidden-attribution-architecture.png';
+
+## The situation
+
+The brand was running a mixed Meta + Amazon Ads stack with four active campaigns and
+strong top-of-funnel engagement — but flat revenue. Reported ROAS sat at **1.17×**
+for three consecutive months despite rising spend.
+
+<Image
+  src={img1}
+  alt="Baseline ROAS report showing 1.17x over 90 days"
+  widths={[640, 1024, 1280]}
+  sizes="(min-width: 768px) 720px, 100vw"
+  loading="lazy"
+  class="w-full h-auto rounded-lg"
+/>
+
+## What we found
+
+Two compounding leaks:
+
+1. **Geo routing was broken.** UAE campaign links were landing on `amazon.in` —
+   pricing in INR, shipping rules that excluded GCC. Users hit the PDP,
+   bounced, and Meta's pixel recorded them as "engaged" (not converted).
+2. **Client-side pixel loss.** iOS 17 + ad-block + aggressive tracking prevention
+   was silently dropping ~60% of purchase events. Meta's model was optimizing
+   against the *visible* 40% — which skewed heavily toward lower-AOV repeat buyers.
+
+## What we changed
+
+- Deployed **server-side CAPI** with deterministic event IDs (dedupe against the
+  client pixel when it *does* fire).
+- Rewrote the campaign link generator to respect `ship_to_country` from the
+  product feed — no more INR pricing for GCC customers.
+- Rebuilt **creative rotation** around AOV cohorts (so the model stops optimizing
+  for trial-size repeat orders and starts optimizing for full-price new customers).
+- Bridged **Amazon Attribution tags** into the same conversion graph, so the
+  brand stopped paying Meta and Amazon for the same customer twice.
+
+<Image
+  src={img2}
+  alt="Architecture diagram showing CAPI server-side events feeding into unified conversion graph"
+  widths={[640, 1024, 1280]}
+  sizes="(min-width: 768px) 720px, 100vw"
+  loading="lazy"
+  class="w-full h-auto rounded-lg"
+/>
+
+## Outcome
+
+Twenty-one days after the attribution bridge went live:
+
+- **ROAS: 1.17× → 3.4×** (Meta-reported; confirmed in Shopify revenue).
+- **Attributed conversions: +148%** — most of it was *already* there, just invisible.
+- **CAC: −41%** at the same daily budget.
+
+The lesson: before you scale spend, make sure you're reading the board correctly.
+We didn't make the brand's ads better. We made the *measurement* honest.
+
+<div class="mt-8 card p-6 flex items-start gap-4">
+  <Icon name="spark" size={22} class="text-brand mt-1" />
+  <p class="text-fluid-sm text-muted">
+    This playbook runs on every new client. If your Meta ROAS looks suspiciously
+    flat, there's a good chance the problem is attribution, not creative.
+  </p>
+</div>

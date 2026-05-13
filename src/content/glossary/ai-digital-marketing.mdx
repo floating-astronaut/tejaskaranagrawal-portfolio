@@ -1,0 +1,72 @@
+---
+term: AI digital marketing
+title: What is AI digital marketing?
+definition: AI digital marketing is the use of AI agents to run end-to-end marketing operations — paid ads, outbound sales, social posting, voice outreach, SEO, and creative production — instead of stitching together separate SaaS tools for each.
+summary: AI digital marketing replaces the typical agency stack of Zapier, AdEspresso, Smartlead, Hootsuite, Vapi, and AdCreative.ai with a smaller set of AI agents that each encode an opinionated playbook for one marketing function. The agents expose tools to a coding-AI client like Claude Code, Codex, or Cursor — the operator types instructions in plain English, the agents execute multi-step, approval-gated workflows. Production AI digital marketing systems include human-in-the-loop checkpoints, memory across runs, and per-tenant configuration so one operator can run multiple brands.
+related:
+  - ai-agent
+  - mcp-server
+  - agentic-workflow
+  - hitl
+  - white-label-ai
+relatedProducts:
+  - ads-agent
+  - sales-agent
+  - social-media-agent
+  - cod-confirm
+  - seo-agent
+  - ugc-agent
+citations:
+  - label: Anthropic — Model Context Protocol
+    url: https://modelcontextprotocol.io/
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-08
+---
+
+## Why the term exists
+
+For a decade, "digital marketing" meant operating a stack of point tools — one for ads, one for outbound, one for social, one for SEO, one for landing pages. Each tool was a SaaS subscription, each had its own UI, each integrated with a few others through APIs or a glue layer like Zapier. Agencies billed clients monthly to operate that stack on their behalf.
+
+AI digital marketing is the same outcome — paid acquisition, retention, content, ops — delivered through AI agents instead of point tools. The agent encodes the operating playbook (creative-fatigue checks, audience refresh logic, sequence pacing, schema generation, hook variants for ads) directly. Operators don't click through dashboards; they tell the agent what to do.
+
+## What an AI digital marketing stack looks like
+
+A complete AI digital marketing stack covers six functions. Each is one agent in our catalog:
+
+- **Paid ads** — autonomous ads-ops across Meta, Google, and TikTok with HITL approvals. ([AI Ads Agent](/products/ads-agent))
+- **Outbound sales** — discover, enrich, draft, approve, send, and learn from outcomes. ([AI Sales Agent](/products/sales-agent))
+- **Organic social** — multi-brand publishing across 10+ platforms with reputation monitoring. ([AI Social Media Agent](/products/social-media-agent))
+- **Voice** — outbound voice agents (COD confirm, appointments, receptionists) in 10 Indian languages. ([Voice AI Agent](/products/cod-confirm))
+- **SEO + AI search** — audits, schema, llms.txt, internal-link planning, AI-citation tracking. ([AI SEO Agent](/products/seo-agent))
+- **UGC creative** — production paid-ad creative pipeline that drafts 5–8 hook variants per brief. ([AI UGC Agent](/products/ugc-agent))
+
+Together they form the [AI Digital Marketing Stack](/products/founder-stack) — six MCP agents that plug into Claude Code as one connected system instead of six separate SaaS subscriptions.
+
+## What separates AI digital marketing from "ChatGPT for marketing"
+
+A general-purpose chatbot can write ad copy and answer marketing questions. AI digital marketing is the operations layer above that: an agent that *executes* the work, not just discusses it. Three structural differences separate the two:
+
+1. **Tools, not text.** AI digital marketing agents expose typed tools (function calls) for each operation — `analyze_roas`, `propose_creative_refresh`, `discover_prospects`, `audit_seo`. The reasoning layer (Claude, GPT, etc.) calls them; the tool encodes the actual best practice.
+2. **State across runs.** Memory in Postgres + pgvector means "what did we decide last week and why" is recoverable. ChatGPT loses context the moment the chat closes.
+3. **HITL approvals.** Every action that touches the real world (sending an email, scaling an ad budget, dialling a customer) routes through a Discord or Telegram approval surface before it commits. ChatGPT has no concept of staged actions.
+
+## Why MCP is the right delivery model
+
+Model Context Protocol turns each agent into an installable extension for any AI coding client. The buyer installs an MCP, points Claude Code at it, and starts driving work in plain English without learning a new dashboard. Updates flow via package version bumps. The same agent works in Claude Code, Codex, Cursor, Continue, or any other MCP-compatible client.
+
+This matters specifically for AI digital marketing because the operator wants to *talk* to the system the way they'd brief a junior media buyer or SDR — not click through a dashboard. MCP makes that the default surface.
+
+## How operators actually use it
+
+Real prompts from the AI digital marketing stack in production:
+
+> "Pause anything under 1.5 ROAS in the LiveKit-Indo brand and refresh the audience on the top creative." — AI Ads Agent
+
+> "Find 50 dental clinics in Bangalore that don't show up on the first page for 'dental implants'. Draft outreach using the founder-led recipe. Queue for my approval." — AI Sales Agent
+
+> "Audit grow.glitchexecutor.com, ship schema + llms.txt updates for the top 20 pages, send me the PR." — AI SEO Agent
+
+> "Generate 5 hook variants for the new whey protein launch, drop them as drafts in Meta Ads Manager." — AI UGC Agent
+
+The operator stays in Claude Code. The work ships.

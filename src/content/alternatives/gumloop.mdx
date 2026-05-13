@@ -1,0 +1,56 @@
+---
+competitor: Gumloop
+competitorUrl: https://www.gumloop.com
+title: Gumloop alternative — owned agent stacks vs no-code workflow builder
+summary: Gumloop is a fast no-code AI workflow builder. Glitch Grow ships six AI agents as source — different abstraction, different time-to-revenue once you scale across multiple clients.
+tldr: Gumloop excels at fast prototyping with a node graph. Glitch Grow ships finished, production-tested agents (ads, sales, voice, social, MCPs) as source. Pick Gumloop for solo prototypes; pick Glitch Grow when you're billing clients managed-service retainers and need source ownership + white-label rights.
+audience: builders shipping AI workflows for clients or as products
+competitorPain: No-code builders are fast for the first agent and get costly across many. Subscription scales with workflow count and seats, and reselling a Gumloop-built agent to a client without exposing the platform requires extra work.
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - ugc-agent
+comparison:
+  - feature: Source code
+    glitch: Full repo, BSL 1.1
+    competitor: No-code builder, no source export
+  - feature: Hosting
+    glitch: Self-host
+    competitor: Gumloop-managed
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Subscription tiers
+  - feature: Time to first prototype
+    glitch: ~2 hours first deploy
+    competitor: Minutes via builder
+  - feature: White-label per client
+    glitch: Brand-config JSON, no platform branding
+    competitor: Gumloop branding visible
+  - feature: Multi-agent orchestration
+    glitch: LangGraph state machine
+    competitor: Visual flows
+faqs:
+  - q: Is Gumloop faster to start with?
+    a: Yes — minutes vs hours for the first agent. Glitch Grow's first deploy is the slowest part; client #2 onward takes ~20 minutes thanks to the brand-config schema.
+  - q: Can Gumloop's flows be exported?
+    a: Flows live inside the platform. Agencies that want to deliver a "your agent on your infrastructure" experience to clients usually move to source-available alternatives.
+  - q: Should I migrate existing Gumloop flows?
+    a: Only the agent-shaped ones (LLM loops, retries, HITL). Connector-shaped flows (form → CRM → Slack) should stay where they are.
+  - q: Which is cheaper at 5 clients?
+    a: Glitch Grow's flat $499 + your infra typically beats Gumloop's per-workflow subscription at 3+ clients running any meaningful volume.
+citations:
+  - label: Gumloop
+    url: https://www.gumloop.com
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+## Where Gumloop wins
+
+Visual prototyping speed and broad pre-built tool integrations make Gumloop one of the better no-code AI builders. For a solo operator iterating on a workflow before commitment, it removes friction.
+
+## Where the abstraction breaks
+
+Once an automation is in production for a paying client, the question shifts from "how fast can I prototype" to "who owns the running thing." Source-available stacks answer that cleanly; managed builders answer it with terms-of-service.

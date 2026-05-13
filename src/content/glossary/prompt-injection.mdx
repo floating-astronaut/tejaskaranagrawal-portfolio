@@ -1,0 +1,27 @@
+---
+term: prompt injection
+title: What is prompt injection?
+definition: Prompt injection is a class of attack where malicious instructions hidden in untrusted content (web pages, emails, documents) cause an AI agent to take actions or reveal information against the user's intent.
+summary: Because LLMs read instructions as text, any text the model sees can be interpreted as instructions — including content the agent itself fetched. Indirect prompt injection embeds attack instructions in pages or files the agent visits; direct injection comes through user input. Defenses include instruction hierarchies, content isolation, output filtering, and user-confirmation guardrails on side-effecting actions.
+related:
+  - ai-agent
+  - tool-use
+  - hitl
+relatedProducts:
+  []
+citations:
+  - label: "OWASP — LLM Top 10"
+    url: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+publishedAt: 2026-05-07
+---
+
+## Why HITL matters here
+
+HITL approval queues are not just for trust-building — they're a defense layer against prompt injection. An agent that drafts an outbound email and routes it to Discord for approval gives a human the chance to catch a draft that was steered by injected content.
+
+## Common indirect-injection vectors
+
+- Webpage HTML containing hidden instructions
+- File metadata, EXIF, or comments
+- Email subject lines and HTML content
+- API responses from third-party services

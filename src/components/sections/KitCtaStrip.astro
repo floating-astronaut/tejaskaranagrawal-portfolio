@@ -1,0 +1,66 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Mid-page free-kit CTA strip. Repeated 2× down the page (after AgentsCatalog
+// and before FAQ) to give scroll-bouncers a second + third chance to convert.
+// Same `data-cta="kit"` attribute as the Hero — Day-2 modal will hook into it.
+//
+// Variants accept different visual treatment so consecutive strips don't feel
+// duplicate: `variant="solid"` for a fully-filled card; `variant="outline"`
+// for a quieter outline-only treatment.
+
+interface Props {
+  /** Headline copy override. Default targets agency-resell ICP. */
+  headline?: string;
+  /** Sublhead override. Default leads with "free + required" framing. */
+  subhead?: string;
+  /** Visual treatment. */
+  variant?: 'solid' | 'outline';
+  /** Anchor `id` for the section element (so the parent can `#kit-strip-1` link). */
+  id?: string;
+}
+
+const {
+  headline = 'Stop building infra. Start deploying agents.',
+  subhead = 'The free Vibe Coder Kit installs into Claude Code, Codex, or OpenClaws in under a minute. Required before you can deploy any of our paid agents.',
+  variant = 'solid',
+  id,
+} = Astro.props;
+---
+
+<section id={id} class="py-6 md:py-8 lg:py-12 relative overflow-hidden">
+  {/* Ambient glow only on solid variant */}
+  {variant === 'solid' && (
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[18rem] w-[42rem] max-w-[100vw] rounded-full
+                  bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.16),transparent_60%)] blur-3xl"></div>
+    </div>
+  )}
+
+  <div class="container-app">
+    <div class={[
+      'card flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-10 reveal',
+      variant === 'solid'
+        ? 'p-8 md:p-10 border-brand/40 bg-surface/50'
+        : 'p-8 md:p-10 border-border/60 bg-transparent',
+    ].join(' ')}>
+      <div class="max-w-2xl">
+        <p class="eyebrow"><Icon name="bolt" size={14} /> Free vibe coder kit</p>
+        <h3 class="mt-3 text-fluid-2xl md:text-fluid-3xl font-bold tracking-tight">{headline}</h3>
+        <p class="mt-3 text-muted text-fluid-sm md:text-fluid-base">{subhead}</p>
+      </div>
+
+      <div class="flex flex-col gap-2 md:items-end shrink-0">
+        <a
+          href="#kit-cta"
+          data-cta="kit"
+          class="btn btn-primary text-fluid-base px-6 py-3.5 whitespace-nowrap"
+        >
+          Get the free kit
+          <Icon name="arrow-right" size={16} />
+        </a>
+        <p class="text-fluid-xs text-subtle">No card · No subscription · Yours to keep</p>
+      </div>
+    </div>
+  </div>
+</section>

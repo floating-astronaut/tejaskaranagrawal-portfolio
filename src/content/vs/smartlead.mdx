@@ -1,0 +1,60 @@
+---
+competitor: Smartlead
+competitorUrl: https://www.smartlead.ai
+title: Glitch Grow vs Smartlead — sales agent vs sequence runner
+summary: Smartlead is a high-volume cold-email sender with strong deliverability. Glitch Grow's Sales Agent is a discover → enrich → draft → approve → send → learn loop you self-host.
+tldr: Pick Smartlead when your bottleneck is inbox placement and sender warm-up across rotating pools. Pick Glitch Grow's Sales Agent when your bottleneck is the agent layer above the send — discovery, enrichment, recipe selection, HITL approval, and learning from edits. The two often coexist.
+pickGlitchWhen:
+  - You need an agent that decides who/what/when, not just a sender
+  - HITL approval at the draft level is part of your workflow
+  - You want to white-label outbound as a managed service to clients
+  - Vector + FTS memory of past drafts and outcomes matters
+pickCompetitorWhen:
+  - Your bottleneck is genuinely deliverability and warm-up infrastructure
+  - You already have a strong agent or research VA upstream
+  - You're sending high-volume from rotating sender pools
+relatedProducts:
+  - sales-agent
+comparison:
+  - feature: Discovery + enrichment
+    glitch: Google Maps + AGCO + public-record scrapers
+    competitor: Bring-your-own list
+  - feature: Drafting
+    glitch: 8 recipes, auto-A/B selected
+    competitor: Static templates with spintax
+  - feature: HITL approval
+    glitch: Discord one-tap approve/reject/edit-and-send
+    competitor: None
+  - feature: Memory
+    glitch: Postgres + pgvector + tsvector indexed
+    competitor: Reply tracking only
+  - feature: Pricing
+    glitch: $99 once + your infra
+    competitor: From ~$39/mo, scales with senders
+  - feature: Deliverability tooling
+    glitch: Gmail API direct; you bring sender hygiene
+    competitor: Strong — warm-up, rotation, inbox placement
+  - feature: License
+    glitch: BSL 1.1 — rebrand and resell
+    competitor: SaaS subscription
+faqs:
+  - q: Should I run both?
+    a: Yes — that's the most common pattern. Sales Agent reasons + drafts + collects approval; Smartlead handles deliverability infrastructure. Each does what the other doesn't.
+  - q: Can the Sales Agent do warm-up?
+    a: Not natively — that's not its category. If your sender domains aren't warm yet, run them through Smartlead or Instantly first.
+  - q: Does Glitch Grow handle reply detection?
+    a: Yes — Gmail send + open + reply tracking is wired in. Reply categorization runs through the same LLM stack that drafts.
+  - q: What about Lemlist or Instantly?
+    a: Same category as Smartlead. Same complementary fit with the Sales Agent.
+citations:
+  - label: Smartlead Pricing
+    url: https://www.smartlead.ai/pricing
+  - label: Glitch Grow Sales Agent
+    url: https://grow.glitchexecutor.com/products/sales-agent
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+Most agencies setting up B2B outbound need both a sender layer and an agent layer. Smartlead is one of the better sender layers. Glitch Grow's Sales Agent is the agent layer — the part that decides what to send, queues for human review, and learns from edits.
+
+If you only have budget for one, ask yourself which is the actual bottleneck right now. New agencies with cold sender pools usually need Smartlead first. Established agencies with warm pools but inconsistent reply rates usually need the agent layer.

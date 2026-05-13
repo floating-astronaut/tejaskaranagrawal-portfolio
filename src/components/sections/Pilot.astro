@@ -1,0 +1,68 @@
+---
+import Icon from '~/components/Icon.astro';
+import { getGeo, discordMonthlyLabel } from '~/lib/geo';
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+const discordPrice = discordMonthlyLabel(geo);
+const processor = isIN ? 'Razorpay' : 'Stripe';
+
+// Buyer-confidence guarantees specific to a one-time digital kit. Replaces
+// the older agency 30-day pilot. Same component name kept so existing imports
+// don't break — the section is now branded as "How buying works."
+const guarantees = [
+  {
+    label: '14-day refund',
+    title: 'Buy with confidence',
+    body:
+      `If the kit isn't the right fit — for any reason, no questionnaire, no recovery offer — reply to your ${processor} receipt within 14 days and we wire it back. We'd rather refund a wrong-fit buyer than wrestle them into staying.`,
+  },
+  {
+    label: 'BSL 1.1 license',
+    title: 'You keep what you build',
+    body:
+      'The kit comes with a permissive license for derivatives. You can sell the apps, agents, and businesses you build with it. You can\'t repackage and resell the kit itself as a competing kit. License converts to Apache 2.0 in 4 years.',
+  },
+  {
+    label: 'Discord support',
+    title: 'Architecture help, not on-call',
+    body:
+      `Private Discord with the founder + other buyers. Architecture questions, deployment debugging, prompt patterns. Founding buyers get lifetime access; standard buyers get 30 days then ${discordPrice}.`,
+  },
+];
+---
+
+<section id="how-buying-works" class="py-8 md:py-10 lg:py-12 relative">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[26rem] w-[50rem] max-w-[90vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.10),transparent_60%)] blur-2xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="shield" size={14} /> How buying works · No subscription trap</p>
+      <h2 class="mt-4">One-time payment. 14-day refund. Yours forever.</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        The kit is a one-time purchase. You own the source. You deploy on your own infrastructure
+        of your choice. We don't gate features behind tiers, we don't hold your
+        data hostage, we don't sneak in usage caps.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-5 md:grid-cols-3" role="list">
+      {guarantees.map((g, i) => (
+        <li class="card p-6 md:p-7 reveal relative">
+          <span class="absolute -top-3 left-6 font-mono text-fluid-xs uppercase tracking-wider
+                       bg-bg px-2 py-0.5 border border-border text-brand rounded-full">
+            {g.label}
+          </span>
+          <div class="flex items-center gap-3 mt-3">
+            <span class="font-mono text-fluid-xs text-subtle">0{i + 1}</span>
+            <h3 class="text-fluid-xl">{g.title}</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted leading-relaxed">{g.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,173 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import FAQSchema from '~/components/schema/FAQSchema.astro';
+import BreadcrumbSchema from '~/components/schema/BreadcrumbSchema.astro';
+import { products } from '~/lib/products';
+import { bundles } from '~/lib/bundles';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('vs', ({ data }) => !data.draft);
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'vs'>; }
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const {
+  competitor,
+  competitorUrl,
+  title,
+  summary,
+  tldr,
+  pickGlitchWhen,
+  pickCompetitorWhen,
+  comparison,
+  faqs,
+  citations,
+  relatedProducts,
+  publishedAt,
+  updatedAt,
+} = entry.data;
+
+const founderStack = bundles[0];
+const related = relatedProducts
+  .map((slug) => products.find((p) => p.slug === slug))
+  .filter((p): p is NonNullable<typeof p> => Boolean(p));
+
+const fmtDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+const lastUpdated = updatedAt ?? publishedAt;
+---
+
+<Base title={title} description={summary} pageType="WebPage">
+  <Fragment slot="head">
+    <FAQSchema faqs={faqs} />
+    <BreadcrumbSchema items={[
+      { name: 'Home', url: '/' },
+      { name: 'Comparisons', url: '/vs' },
+      { name: `vs ${competitor}`, url: `/vs/${entry.slug}` },
+    ]} />
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <nav aria-label="Breadcrumb" class="text-fluid-xs text-subtle">
+      <a href="/vs" class="hover:text-fg">Comparisons</a>
+      <span class="mx-1">/</span>
+      <span class="text-muted">vs {competitor}</span>
+    </nav>
+
+    <header class="mt-6 max-w-3xl">
+      <p class="eyebrow"><Icon name="layers" size={14} /> Glitch Grow vs {competitor}</p>
+      <h1 class="mt-4">{title}</h1>
+      <p class="mt-5 text-fluid-lg text-muted">{summary}</p>
+      <p class="mt-2 text-fluid-xs text-subtle">
+        Last updated <time datetime={lastUpdated.toISOString()}>{fmtDate(lastUpdated)}</time>
+      </p>
+    </header>
+
+    <section class="mt-10 max-w-3xl card p-6 md:p-8 border-brand/30">
+      <p class="font-mono text-fluid-xs text-brand uppercase tracking-wider">TL;DR</p>
+      <p class="mt-3 text-fluid-base text-fg/90 leading-relaxed">{tldr}</p>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-fluid-2xl">Feature-by-feature</h2>
+      <div class="mt-5 overflow-x-auto">
+        <table class="w-full text-fluid-sm border border-border/60 rounded-lg overflow-hidden">
+          <thead class="bg-bg-elev text-fg">
+            <tr>
+              <th class="text-left p-3 font-medium border-b border-border/60">Feature</th>
+              <th class="text-left p-3 font-medium border-b border-border/60 text-brand">Glitch Grow</th>
+              <th class="text-left p-3 font-medium border-b border-border/60">{competitor}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row) => (
+              <tr class="border-b border-border/40">
+                <td class="p-3 text-fg/90 align-top font-medium">{row.feature}</td>
+                <td class="p-3 text-fg/85 align-top">{row.glitch}</td>
+                <td class="p-3 text-muted align-top">{row.competitor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mt-12 grid md:grid-cols-2 gap-6 max-w-4xl">
+      <div class="card p-6 border-brand/30">
+        <p class="eyebrow"><Icon name="check" size={14} /> Pick Glitch Grow when</p>
+        <ul class="mt-4 space-y-2.5" role="list">
+          {pickGlitchWhen.map((b) => (
+            <li class="flex items-start gap-2.5 text-fluid-sm text-fg/90 leading-snug">
+              <span class="mt-[3px] text-brand shrink-0"><Icon name="check" size={14} /></span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="card p-6">
+        <p class="eyebrow"><Icon name="arrow-up-right" size={14} /> Pick {competitor} when</p>
+        <ul class="mt-4 space-y-2.5" role="list">
+          {pickCompetitorWhen.map((b) => (
+            <li class="flex items-start gap-2.5 text-fluid-sm text-muted leading-snug">
+              <span class="mt-[3px] text-subtle shrink-0"><Icon name="arrow-right" size={14} /></span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <div class="hairline my-12"></div>
+
+    <div class="prose-tight max-w-3xl text-fg [&_h2]:mt-12 [&_h2]:mb-4 [&_h3]:mt-10 [&_h3]:mb-3 [&_p]:my-4 [&_p]:text-muted [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_li]:text-muted [&_strong]:text-fg [&_a]:text-brand [&_a]:underline [&_a]:decoration-brand/40">
+      <Content />
+    </div>
+
+    <section class="mt-14 max-w-3xl">
+      <h2 class="text-fluid-2xl">Frequently asked questions</h2>
+      <ul class="mt-5 divide-y divide-border/60 border-y border-border/60" role="list">
+        {faqs.map((f) => (
+          <li>
+            <details class="group">
+              <summary class="flex items-start justify-between gap-4 py-5 cursor-pointer list-none">
+                <span class="text-fluid-base font-medium pr-2">{f.q}</span>
+                <span aria-hidden="true" class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle transition-transform group-open:rotate-45 group-open:text-brand">
+                  <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </span>
+              </summary>
+              <div class="pb-5 pr-8 text-fluid-sm text-muted leading-relaxed" set:html={f.a} />
+            </details>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {citations.length > 0 && (
+      <section class="mt-12 max-w-3xl">
+        <h2 class="text-fluid-xl">Sources</h2>
+        <ul class="mt-3 space-y-1.5 text-fluid-sm text-muted" role="list">
+          {citations.map((c) => (
+            <li>
+              <a href={c.url} target="_blank" rel="noopener noreferrer" class="text-brand underline decoration-brand/40 hover:decoration-brand">
+                {c.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <aside class="mt-16 card p-6 md:p-8 flex flex-wrap gap-4 items-center justify-between border-brand/30">
+      <div>
+        <p class="eyebrow"><Icon name="bolt" size={14} /> Pay once, deploy forever.</p>
+        <p class="mt-2 text-fluid-base">All 6 production AI agents · ${founderStack.priceUsd} once · 14-day refund.</p>
+      </div>
+      <a href={`/alternatives/${entry.slug}`} class="btn btn-link">Why people leave {competitor} <Icon name="arrow-right" size={14} /></a>
+      <a href="/products/founder-stack" class="btn btn-primary">Get the AI Digital Marketing Stack <Icon name="arrow-right" size={16} /></a>
+    </aside>
+  </article>
+</Base>

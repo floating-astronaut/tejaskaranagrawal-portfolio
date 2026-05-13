@@ -1,0 +1,146 @@
+---
+/**
+ * Floating "Ask Glitch" widget — bottom-right launcher that opens a
+ * grounded RAG chat panel. Backend: POST /api/ask → Vertex AI Search.
+ *
+ * Behaviour:
+ *   - Launcher button is always visible above the mobile sticky CTA.
+ *   - Click → opens panel, focuses textarea.
+ *   - Submit → calls /api/ask with the query.
+ *   - Renders the synthesized answer + citation chips linking to source pages.
+ *   - One Q&A pair at a time (no thread history — keeps the UI small +
+ *     Turnstile-friendly + cheaper on query volume).
+ *
+ * Hidden in embed mode (?embed=1) via the shared [data-hide-in-embed] hook.
+ */
+---
+
+<div id="ask-widget" data-hide-in-embed class="fixed bottom-5 right-5 z-40 print:hidden">
+  <button
+    id="ask-widget-launcher"
+    type="button"
+    aria-label="Ask anything about Glitch Grow"
+    aria-expanded="false"
+    aria-controls="ask-widget-panel"
+    class="group flex items-center gap-2 rounded-full bg-fg text-bg px-4 py-3 text-sm font-medium shadow-lg shadow-black/30 hover:scale-[1.02] active:scale-[0.98] transition"
+  >
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span>Ask Glitch</span>
+  </button>
+
+  <div
+    id="ask-widget-panel"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="ask-widget-title"
+    hidden
+    class="absolute bottom-16 right-0 w-[min(380px,calc(100vw-2.5rem))] rounded-2xl bg-bg border border-white/10 shadow-2xl shadow-black/50 overflow-hidden"
+  >
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+      <div>
+        <p id="ask-widget-title" class="text-sm font-semibold">Ask Glitch</p>
+        <p class="text-xs text-fg/60">Grounded answers from this site</p>
+      </div>
+      <button id="ask-widget-close" type="button" aria-label="Close" class="text-fg/60 hover:text-fg p-1">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="ask-widget-output" class="px-4 py-3 max-h-[50vh] overflow-y-auto text-sm leading-relaxed empty:hidden"></div>
+
+    <form id="ask-widget-form" class="px-3 pb-3 pt-2 border-t border-white/10">
+      <label for="ask-widget-input" class="sr-only">Your question</label>
+      <div class="flex gap-2">
+        <textarea
+          id="ask-widget-input"
+          name="query"
+          rows="2"
+          maxlength="500"
+          required
+          placeholder="e.g. Which agent fits my Shopify store?"
+          class="flex-1 resize-none rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+        ></textarea>
+        <button
+          id="ask-widget-submit"
+          type="submit"
+          class="self-stretch rounded-lg bg-fg text-bg px-3 text-sm font-medium hover:bg-fg/90 disabled:opacity-50"
+        >
+          Ask
+        </button>
+      </div>
+      <p class="mt-2 text-[10px] text-fg/40">Answers may be wrong — verify before acting.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const launcher = document.getElementById('ask-widget-launcher') as HTMLButtonElement | null;
+    const panel    = document.getElementById('ask-widget-panel')    as HTMLElement | null;
+    const closeBtn = document.getElementById('ask-widget-close')    as HTMLButtonElement | null;
+    const form     = document.getElementById('ask-widget-form')     as HTMLFormElement | null;
+    const input    = document.getElementById('ask-widget-input')    as HTMLTextAreaElement | null;
+    const submit   = document.getElementById('ask-widget-submit')   as HTMLButtonElement | null;
+    const output   = document.getElementById('ask-widget-output')   as HTMLElement | null;
+    if (!launcher || !panel || !closeBtn || !form || !input || !submit || !output) return;
+
+    const open = () => {
+      panel.hidden = false;
+      launcher.setAttribute('aria-expanded', 'true');
+      setTimeout(() => input.focus(), 50);
+    };
+    const close = () => {
+      panel.hidden = true;
+      launcher.setAttribute('aria-expanded', 'false');
+    };
+    launcher.addEventListener('click', () => panel.hidden ? open() : close());
+    closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel.hidden) close();
+    });
+
+    const escapeHtml = (s: string) => s
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const query = input.value.trim();
+      if (!query) return;
+      submit.disabled = true;
+      submit.textContent = '…';
+      output.innerHTML = '<p class="text-fg/60">Thinking…</p>';
+
+      try {
+        const r = await fetch('/api/ask', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ query }),
+        });
+        const data = await r.json() as { answer?: string; citations?: { uri: string; title: string }[]; error?: string };
+        if (!r.ok || data.error) {
+          output.innerHTML = `<p class="text-red-300">Couldn't fetch an answer (${escapeHtml(data.error ?? String(r.status))}). Please try again.</p>`;
+        } else {
+          const answer = escapeHtml(data.answer ?? '').replace(/\n/g, '<br>');
+          const cites = (data.citations ?? []).slice(0, 6).map(c =>
+            `<a href="${escapeHtml(c.uri)}" target="_blank" rel="noopener" class="inline-block mr-1 mb-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 px-2 py-1 text-[11px] text-fg/80">${escapeHtml(c.title)}</a>`
+          ).join('');
+          output.innerHTML = `
+            <div class="mb-2 whitespace-pre-wrap">${answer || '<span class="text-fg/60">No answer found in the site content yet.</span>'}</div>
+            ${cites ? `<div class="mt-3"><p class="text-[11px] uppercase tracking-wide text-fg/40 mb-1">Sources</p>${cites}</div>` : ''}
+          `;
+        }
+        (window as any).glitchPushDL?.({ event: 'ask_glitch_query', query_len: query.length });
+      } catch (err) {
+        output.innerHTML = `<p class="text-red-300">Network error. Please try again.</p>`;
+      } finally {
+        submit.disabled = false;
+        submit.textContent = 'Ask';
+      }
+    });
+  })();
+</script>

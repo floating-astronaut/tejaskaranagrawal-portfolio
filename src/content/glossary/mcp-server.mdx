@@ -1,0 +1,29 @@
+---
+term: MCP server
+title: What is an MCP server?
+definition: An MCP server is a small program that exposes tools, resources, and prompts to an LLM client (like Claude Desktop or an agent) over the Model Context Protocol — a standard for letting AIs interact with external systems.
+summary: Model Context Protocol (MCP) is an open standard introduced by Anthropic in late 2024 for connecting LLMs to data sources and tools. An MCP server speaks the protocol and offers capabilities — for example, "search Notion," "send a Slack message," or "query Postgres." Any MCP-compatible client can discover and use those capabilities. MCP servers can be stdio-based (local) or HTTP/SSE-based (remote, multi-tenant).
+related:
+  - ai-agent
+  - function-calling
+  - llm-orchestration
+relatedProducts:
+  - ugc-agent
+  - ads-agent
+citations:
+  - label: Model Context Protocol — official spec
+    url: https://modelcontextprotocol.io
+  - label: Anthropic — introducing MCP
+    url: https://www.anthropic.com/news/model-context-protocol
+publishedAt: 2026-05-06
+---
+
+## Why MCP matters for resale
+
+Before MCP, if you wanted Claude to interact with your client's CRM, you had two bad options: copy-paste into the chat, or build a one-off integration tied to one product. MCP makes the integration portable — write the server once, any client (Claude Desktop, agents, IDEs) can use it.
+
+For agencies, that means an MCP integration becomes a productized service: the same MCP server can be deployed for many clients with their own credentials, and clients can use it from whichever LLM client they prefer.
+
+## Production patterns
+
+The AI Ads Agent ships five reference MCP servers (Meta Ads, Google Ads, Amazon Attribution, LinkedIn, Supermetrics) and the patterns for multi-tenant token storage, OAuth flows, system-user tokens, and per-tenant rate limiting that take a toy demo and make it sellable.

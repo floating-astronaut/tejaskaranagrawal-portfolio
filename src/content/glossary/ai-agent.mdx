@@ -1,0 +1,30 @@
+---
+term: AI agent
+title: What is an AI agent?
+definition: An AI agent is a software system that uses a large language model to plan, take actions through tools, observe results, and iterate toward a goal — without a human stepping through each action.
+summary: AI agents go beyond single LLM calls by combining a reasoning loop (plan → act → observe → reflect), tool use (function calling, API calls, code execution), and memory of past decisions. The agent decides what to do next based on the goal, the tools available, and what's happened so far. In production, agents typically run inside a state-machine framework like LangGraph and include human-in-the-loop checkpoints for actions that need approval.
+related:
+  - mcp-server
+  - agentic-workflow
+  - hitl
+  - llm-orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: Anthropic — Building effective agents
+    url: https://www.anthropic.com/research/building-effective-agents
+  - label: LangGraph — agent orchestration framework
+    url: https://www.langchain.com/langgraph
+publishedAt: 2026-05-06
+---
+
+## How agents differ from workflows
+
+A workflow is a fixed sequence of steps: when X happens, do A then B then C. An agent decides what to do next based on the goal and the current state — and it can decide to call a tool, ask a clarifying question, retry a failed step, or escalate to a human.
+
+The difference matters operationally. Workflows fail when the world doesn't fit the predefined branches. Agents adapt — but at the cost of needing memory, observability, and approval guardrails for actions that touch the real world.
+
+## Agents in Glitch Grow boilerplates
+
+Every agent boilerplate in the catalog uses LangGraph for the state machine, Postgres + pgvector for memory, and a Discord/Telegram reconciler for HITL approvals. The Ads Operator, Sales Agent, and Social Media Agent all use this same shape.

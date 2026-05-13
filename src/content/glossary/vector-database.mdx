@@ -1,0 +1,24 @@
+---
+term: vector database
+title: What is a vector database?
+definition: A vector database is a data store optimized for similarity search over high-dimensional vectors — used as the retrieval layer for RAG, recommendation, and semantic search applications.
+summary: "Vector databases index embedding vectors and answer \"find the K most similar to this query vector\" in milliseconds even at scale. Common options: pgvector (Postgres extension, simplest path), Pinecone (managed), Qdrant (open-source, performant), Weaviate (graph + vector hybrid), and Chroma (developer-friendly). For small corpora, a flat in-memory index works; for production scale, you want HNSW or IVF indexes."
+related:
+  - embedding
+  - rag
+  - multi-tenancy
+relatedProducts:
+  - sales-agent
+citations:
+  - label: "pgvector"
+    url: https://github.com/pgvector/pgvector
+publishedAt: 2026-05-07
+---
+
+## Picking a vector database
+
+- **Already on Postgres?** pgvector. Same backups, same connection pool, no new ops.
+- **Need scale beyond a single Postgres node?** Pinecone (managed) or Qdrant (self-hosted).
+- **Hybrid search (vector + keyword)?** Weaviate or Postgres with tsvector + pgvector.
+
+Glitch Grow's Sales Agent uses Postgres + pgvector + tsvector — vector for semantic similarity, FTS for exact matches, in one database with one ops surface.

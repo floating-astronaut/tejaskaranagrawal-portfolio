@@ -1,0 +1,55 @@
+---
+competitor: Instantly
+competitorUrl: https://instantly.ai
+title: Instantly alternative — outbound that reasons, not just sends
+summary: Instantly is a strong cold-email sender with inbox-rotation infrastructure. Glitch Grow's Sales Agent is the agent layer above the send — discover, enrich, draft, Discord-approve, send, learn.
+tldr: Instantly's strength is sender-side infrastructure (warm-up, rotation, deliverability). Glitch Grow's Sales Agent is the agent above the send — it decides who to email, with which recipe, queues drafts for human approval, and learns from edits. The two coexist well; pick the one your bottleneck is on.
+audience: agencies and B2B founders running outbound to vertical lists
+competitorPain: Sequence runners automate the send but not the reasoning. Most teams build the agent layer themselves with spreadsheets, Zaps, and a research VA — that's the work the Sales Agent ships, finished, with HITL.
+relatedProducts:
+  - sales-agent
+comparison:
+  - feature: Discovery + enrichment
+    glitch: Google Maps + AGCO + public-record scrapers, dedup
+    competitor: Bring-your-own list
+  - feature: Drafting
+    glitch: 8 recipes, auto-A/B selected per outcome
+    competitor: Spintax templates
+  - feature: HITL approval
+    glitch: Discord one-tap approve / reject / edit-and-send
+    competitor: None — runs sequence
+  - feature: Memory
+    glitch: Postgres + pgvector + tsvector — every draft, edit, reply indexed
+    competitor: Reply tracking, not decision memory
+  - feature: Pricing
+    glitch: $99 once + your infra
+    competitor: From ~$37/mo, scales with sender accounts
+  - feature: Deliverability tooling
+    glitch: Gmail API direct
+    competitor: Strong — warm-up, rotation, inbox placement
+  - feature: License
+    glitch: BSL 1.1 — rebrand and resell
+    competitor: SaaS subscription
+faqs:
+  - q: Should I run both?
+    a: Common pattern. Sales Agent reasons + drafts + collects approval; Instantly handles the deliverability infrastructure underneath. Each does what the other doesn't.
+  - q: Does the Sales Agent do warm-up?
+    a: Not natively. If your sender domains aren't warm, route them through Instantly or Smartlead first.
+  - q: Reply detection?
+    a: Yes — Gmail send + open + reply tracking is wired in. Reply categorization runs through the same LLM as drafting.
+  - q: Lemlist / Smartlead?
+    a: Same category as Instantly — sender layers. Same complementary fit with the Sales Agent.
+citations:
+  - label: Instantly Pricing
+    url: https://instantly.ai/pricing
+  - label: Glitch Grow Sales Agent
+    url: https://grow.glitchexecutor.com/products/sales-agent
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+## Two layers, often confused
+
+The outbound stack splits cleanly into a sender layer (Instantly, Smartlead, Lemlist) and an agent layer (research, drafting, approval, learning). Instantly is one of the better sender layers; the Sales Agent is purpose-built for the agent layer.
+
+Pick the layer your bottleneck is on. New agencies with cold sender pools usually need Instantly first; established agencies with warm pools but inconsistent reply rates usually need the agent layer.

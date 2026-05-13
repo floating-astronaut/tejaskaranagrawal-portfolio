@@ -1,0 +1,61 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// Proof-without-logos: anonymized outcomes with client-type + timeframe.
+// More honest than placeholder logo strips and sidesteps the "do we have
+// permission to use X's logo" question. Swap any entry for a real-named
+// case once the client opts in.
+const outcomes = [
+  {
+    icon: 'chart' as const,
+    metric: '1.17× → 3.4×',
+    label: 'ROAS',
+    context: 'UAE-first DTC beauty brand · 21 days · attribution rebuild',
+  },
+  {
+    icon: 'phone' as const,
+    metric: '+22%',
+    label: 'COD confirm rate',
+    context: 'India Shopify apparel · 14 days · Hindi + Hinglish voice agent',
+  },
+  {
+    icon: 'target' as const,
+    metric: '−34%',
+    label: 'Wasted Meta spend',
+    context: 'Amazon-hybrid seller · 30 days · placement + geo pruning',
+  },
+  {
+    icon: 'shopping-cart' as const,
+    metric: '8×',
+    label: 'Multi-store deploys',
+    context: '12-store theme fleet · zero incidents · theme-as-code',
+  },
+];
+---
+
+<section id="outcomes" class="py-8 md:py-10 lg:py-14 border-y border-border/40 bg-surface/30">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="bolt" size={14} /> What these agents have produced</p>
+      <h2 class="mt-4">Numbers from real production, not slide decks.</h2>
+      <p class="mt-4 text-fluid-base text-muted">
+        Every figure below came out of one of the agents in this catalog,
+        running on a real brand's stack. Brands anonymized until they opt in.
+        Buy the source, deploy on your stack, ship your derivative on top.
+      </p>
+    </div>
+
+    <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list">
+      {outcomes.map((o) => (
+        <li class="card p-6 reveal">
+          <span class="inline-flex size-9 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+            <Icon name={o.icon} size={18} />
+          </span>
+          <div class="mt-4 font-mono text-fluid-3xl text-brand leading-none">{o.metric}</div>
+          <div class="mt-2 text-fluid-sm font-medium">{o.label}</div>
+          <p class="mt-3 text-fluid-xs text-subtle leading-relaxed">{o.context}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+---
+term: retrieval-augmented generation (RAG)
+title: What is retrieval-augmented generation (RAG)?
+definition: Retrieval-augmented generation is a pattern where an LLM retrieves relevant documents from a knowledge base at inference time and uses them as context to ground its response in source material.
+summary: "RAG combines a retrieval step (typically vector similarity over an embedded document corpus) with a generation step (an LLM that conditions on the retrieved chunks). It addresses two LLM weaknesses at once: stale training data and hallucination on facts not in the model's parameters. Production RAG systems add re-ranking, chunking strategies, and citation tracking so the user can verify which source passages influenced the answer."
+related:
+  - ai-agent
+  - embedding
+  - vector-database
+  - agentic-rag
+relatedProducts:
+  - ugc-agent
+citations:
+  - label: "Anthropic — Building effective agents"
+    url: https://www.anthropic.com/research/building-effective-agents
+publishedAt: 2026-05-07
+---
+
+## Where RAG fits
+
+RAG is the right pattern when answers need to be grounded in a corpus the model wasn't trained on — internal docs, recent news, customer-specific data. It's the wrong pattern when the answer is a reasoning task with no obvious source documents.
+
+## Production patterns
+
+- **Chunking** — split documents into 200–800 token chunks with overlap; retrieval quality depends heavily on chunk size matching query granularity.
+- **Re-ranking** — initial vector retrieval pulls candidates; a smaller LLM or cross-encoder re-ranks the top N for final selection.
+- **Citation tracking** — return source IDs alongside the answer so users can verify.

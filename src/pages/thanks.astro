@@ -1,0 +1,193 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import Mascot from '~/components/Mascot.astro';
+import { site } from '~/lib/site';
+import { products } from '~/lib/products';
+import { bundles } from '~/lib/bundles';
+
+// Two redirect sources land on this page:
+//   1. Stripe (global rail) → ?session_id=cs_live_... after Stripe Checkout.
+//   2. Razorpay (India rail) → ?provider=razorpay&payment_id=pay_...&order_id=...&sku=...
+//      after the in-page modal handler verifies signature server-side and
+//      RazorpayCheckout.astro forwards the buyer here.
+//
+// We don't expand the Stripe session or fetch the Razorpay order here —
+// the buyer already has their receipt directly from the processor. This
+// page just confirms purchase visually and queues the manual fulfillment
+// path (private repo invite, Discord invite) which the founder
+// hand-delivers within 24h until webhook automation lands.
+const sessionId = Astro.url.searchParams.get('session_id');
+const provider = Astro.url.searchParams.get('provider');
+const paymentId = Astro.url.searchParams.get('payment_id');
+const sku = Astro.url.searchParams.get('sku');
+const isRazorpay = provider === 'razorpay' && Boolean(paymentId);
+const isStripe = Boolean(sessionId);
+const purchased = isRazorpay || isStripe;
+const processorLabel = isRazorpay ? 'Razorpay' : 'Stripe';
+
+// Resolve the purchased SKU's price + currency for the TikTok Purchase
+// event fired below. Falls back to (0, USD) if the SKU isn't in our
+// catalog (e.g. promo SKUs added later) so the event still fires.
+const sourceItem =
+  products.find((p) => p.sku === sku) ??
+  bundles.find((b) => b.sku === sku);
+const purchaseValue = isRazorpay
+  ? sourceItem?.priceInr ?? 0
+  : sourceItem?.priceUsd ?? 0;
+const purchaseCurrency = isRazorpay ? 'INR' : 'USD';
+---
+
+<Base
+  title={purchased ? "You're in — welcome to the Glitch Builder Stack" : "Thanks — we'll be in touch"}
+  description={purchased
+    ? 'Your purchase is confirmed. Repo and Discord access arriving by email shortly.'
+    : 'Your message reached Glitch.'}
+  noindex
+  pageType="WebPage"
+>
+  <section class="container-app min-h-[60vh] flex items-center py-24">
+    <div class="grid gap-6 max-w-2xl reveal">
+      <Mascot size={72} priority alt="" />
+
+      {purchased ? (
+        <>
+          <p class="eyebrow"><Icon name="check" size={14} /> Purchase confirmed</p>
+          <h1>You're in. Welcome to the Glitch Builder Stack.</h1>
+          <p class="text-fluid-lg text-muted">
+            {processorLabel} has emailed your receipt. Your Codeberg invite, Discord invite, and playbook reference are landing in your inbox <strong class="text-fg">in the next 60 seconds</strong>.
+          </p>
+
+          {sku && (
+            <p class="text-fluid-sm text-subtle">
+              Order reference:
+              <code class="font-mono px-1.5 py-0.5 ml-1 rounded bg-surface-2 text-fg/80">{sku}</code>
+              {paymentId && (
+                <>
+                  {' '}· payment&nbsp;
+                  <code class="font-mono px-1.5 py-0.5 rounded bg-surface-2 text-fg/80">{paymentId.slice(0, 12)}…</code>
+                </>
+              )}
+            </p>
+          )}
+
+          <div class="card p-6 mt-2">
+            <p class="eyebrow"><Icon name="layers" size={14} /> What happens next</p>
+            <ol class="mt-4 space-y-4 text-fluid-sm" role="list">
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-fluid-xs text-brand mt-[2px]">01</span>
+                <div>
+                  <p class="font-medium">Codeberg collaborator invite</p>
+                  <p class="text-muted">Sent to the Codeberg username you entered at checkout. Accept it from your Codeberg notifications — full source access.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-fluid-xs text-brand mt-[2px]">02</span>
+                <div>
+                  <p class="font-medium">Discord community access</p>
+                  <p class="text-muted">Welcome email contains the Discord invite. Your buyer role is granted automatically once you join.</p>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="font-mono text-fluid-xs text-brand mt-[2px]">03</span>
+                <div>
+                  <p class="font-medium">Playbook + first-deploy guide</p>
+                  <p class="text-muted">The pricing + distribution playbook lives in <code class="font-mono text-xs px-1 py-0.5 rounded bg-surface-2">/playbook</code> of your repo. Welcome email links it.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <p class="text-fluid-xs text-subtle mt-2">
+            If nothing arrives within 5 minutes, email
+            <a
+              href={`mailto:${site.contactEmail}?subject=Order ${sku ?? sessionId ?? paymentId ?? ''}`}
+              class="text-brand underline decoration-brand/40 hover:decoration-brand"
+            >{site.contactEmail}</a>
+            with your {processorLabel} receipt and we'll fix it manually. Refunds honoured for 14 days, no questions.
+          </p>
+
+          <div class="flex gap-3 mt-2">
+            <a href="/products" class="btn btn-secondary">
+              Browse the catalog <Icon name="arrow-up-right" size={16} />
+            </a>
+            <a href="/" class="btn btn-ghost">
+              Back to home <Icon name="arrow-right" size={16} />
+            </a>
+          </div>
+        </>
+      ) : (
+        <>
+          <p class="eyebrow"><Icon name="check" size={14} /> Message received</p>
+          <h1>Thanks — we'll be in touch within one business day.</h1>
+          <p class="text-fluid-lg text-muted">
+            If it's urgent, reply to the confirmation email directly and we'll move it to the top of the queue.
+          </p>
+          <div class="flex gap-3">
+            <a href="/" class="btn btn-secondary">
+              Back to home <Icon name="arrow-right" size={16} />
+            </a>
+            <a href="/products" class="btn btn-ghost">
+              Browse the catalog <Icon name="arrow-up-right" size={16} />
+            </a>
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+
+  {/* Fire TikTok Purchase + dataLayer purchase event browser-side. The
+      thanks page is statically pre-rendered (Astro SSG), so query params
+      are read in the browser at runtime — not at build time. The script
+      below ALWAYS ships in the HTML and conditionally fires only when
+      it sees a valid payment_id / session_id in the URL.
+
+      Catalog of SKU prices is inlined at build so the client can resolve
+      a value without an extra fetch. The verify-payment Function fires
+      Purchase server-side for ad-blocked browsers; both share the same
+      event_id (= payment_id) for dedup. */}
+  <script is:inline define:vars={{ priceCatalog: Object.fromEntries([
+    ...products.map(p => [p.sku, { usd: p.priceUsd, inr: p.priceInr }]),
+    ...bundles.map(b => [b.sku, { usd: b.priceUsd, inr: b.priceInr }]),
+  ]) }}>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const paymentId = params.get('payment_id');
+      const sessionId = params.get('session_id');
+      const provider = params.get('provider');
+      const sku = (params.get('sku') || '').toUpperCase();
+      const isRazorpay = provider === 'razorpay' && Boolean(paymentId);
+      const isStripe = Boolean(sessionId);
+      if (!isRazorpay && !isStripe) return;
+
+      const eventId = paymentId || sessionId;
+      const item = priceCatalog[sku];
+      const currency = isRazorpay ? 'INR' : 'USD';
+      const value = item ? (isRazorpay ? item.inr : item.usd) : 0;
+
+      window.glitchPushDL?.({
+        event: 'purchase',
+        event_id: eventId,
+        transaction_id: eventId,
+        currency,
+        value,
+        items: [{ item_id: sku || 'unknown', item_name: sku || 'unknown', price: value, quantity: 1, currency }],
+      });
+      const tt = window.ttFire;
+      if (typeof tt === 'function') {
+        tt('Purchase', {
+          contents: [{ content_id: sku || 'unknown', content_type: 'product', content_name: sku || 'unknown', quantity: 1, price: value }],
+          content_type: 'product', currency, value,
+        }, { event_id: eventId });
+      }
+      const fb = window.fbFire;
+      if (typeof fb === 'function') {
+        fb('Purchase', {
+          content_ids: [sku || 'unknown'], content_name: sku || 'unknown', content_type: 'product',
+          contents: [{ id: sku || 'unknown', quantity: 1, item_price: value }],
+          num_items: 1, currency, value,
+        }, { event_id: eventId });
+      }
+    })();
+  </script>
+</Base>

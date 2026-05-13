@@ -1,0 +1,62 @@
+---
+competitor: Make
+competitorUrl: https://www.make.com
+title: Glitch Grow vs Make — agent stack vs metered scenarios
+summary: Make is a brilliant visual scenario builder priced per operation. Glitch Grow is six self-hosted AI-agent stacks priced once. Different shape of tool, different cost curve at scale.
+tldr: Pick Make when you want fast visual scenario debugging at low-to-medium operation volume and your workload is connector-shaped. Pick Glitch Grow when you're running agent-shaped workloads (LLM loops, retries, HITL) at scale across multiple clients and per-operation pricing has stopped scaling.
+pickGlitchWhen:
+  - Your operation count is climbing past your Make tier
+  - You need plan-execute-reflect agent loops, not module chains
+  - HITL approval queues are part of daily operation
+  - You want fixed infra cost per client, not metered
+pickCompetitorWhen:
+  - You're learning a new API and need visual debugging
+  - Your workload is connector glue, not agent reasoning
+  - You're a non-developer running 1–2 client automations
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Pricing
+    glitch: $499 once
+    competitor: Per-operation tiers
+  - feature: Agent reasoning
+    glitch: LangGraph state machine
+    competitor: Module chains; LLM via OpenAI module
+  - feature: HITL queue
+    glitch: Discord + Telegram reconciler
+    competitor: Custom modules + waiting webhook
+  - feature: Memory
+    glitch: Postgres + pgvector indexed
+    competitor: External — you maintain
+  - feature: Self-host
+    glitch: Yes
+    competitor: No
+  - feature: Cost scaling
+    glitch: Flat — infra is the variable
+    competitor: Operations × clients
+  - feature: White-label
+    glitch: BSL 1.1
+    competitor: Make branding
+faqs:
+  - q: Is Make's debugger really that much better?
+    a: For learning a new API or fixing a fragile scenario, yes — bundle inspection beats tailing logs. Once an agent is in steady state, you're reading metrics not bundle data, and the advantage shrinks.
+  - q: At what client count does Glitch Grow win on cost?
+    a: Roughly the third client running any meaningful operation volume. Single-client, low-volume scenarios stay cheaper on Make.
+  - q: Can I migrate Make scenarios to Glitch Grow?
+    a: Connector-shaped scenarios — don't bother. Agent-shaped scenarios (LLM-driven, looping, with approvals) are the migration candidates.
+  - q: Does Make's enterprise tier solve the cost issue?
+    a: It raises the operation ceiling but doesn't change the model. If your workload is genuinely agent-shaped at scale, the right move is a state-machine runtime, not a higher tier.
+citations:
+  - label: Make Pricing
+    url: https://www.make.com/en/pricing
+  - label: Make Operations explainer
+    url: https://www.make.com/en/help/scenarios/operations
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+Make and Glitch Grow are aimed at different operators in different phases.
+
+Make is the right tool when you're prototyping, learning new APIs, or running a small number of automations where visual clarity matters. Glitch Grow is the right tool once you're running an agent-shaped workload across multiple paying clients and the per-operation bill has stopped feeling proportional to the value delivered.

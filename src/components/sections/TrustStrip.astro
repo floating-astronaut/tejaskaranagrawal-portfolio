@@ -1,0 +1,35 @@
+---
+import Icon from '~/components/Icon.astro';
+
+// "Featured in / built with / made by" — the trust strip from the CRO
+// checklist. Static facts, easy to swap once we have press placements.
+const items = [
+  { icon: 'cpu' as const,      label: 'LangGraph + MCP',                sub: 'Production patterns' },
+  { icon: 'shopify' as const,  label: '7 Shopify stores',               sub: 'Live ops dogfood' },
+  { icon: 'phone' as const,    label: 'LiveKit + Sarvam',               sub: 'Sub-second voice AI' },
+  { icon: 'shield' as const,   label: 'BSL 1.1 source-available',       sub: 'Apache 2.0 in 4 yrs' },
+  { icon: 'spark' as const,    label: 'Toronto, Canada',                sub: 'Solo founder, no VC' },
+];
+---
+
+<section
+  id="trust"
+  class="border-y border-border/40 bg-surface/20 py-8 md:py-10"
+  aria-label="Trust signals"
+>
+  <div class="container-app">
+    <ul class="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6 reveal" role="list">
+      {items.map((item) => (
+        <li class="flex items-center gap-3">
+          <span class="inline-flex size-9 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20 shrink-0">
+            <Icon name={item.icon} size={16} />
+          </span>
+          <div>
+            <p class="text-fluid-sm font-medium">{item.label}</p>
+            <p class="text-fluid-xs text-subtle">{item.sub}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

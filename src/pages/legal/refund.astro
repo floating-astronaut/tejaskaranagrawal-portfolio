@@ -1,0 +1,133 @@
+---
+import Base from '~/layouts/Base.astro';
+import { site, legalEntity } from '~/lib/site';
+const updated = '2026-05-05';
+const entity = legalEntity;
+---
+
+<Base
+  title="Cancellation & Refund Policy"
+  description={`Cancellation and refund policy for ${entity.name} digital product purchases on ${site.domain}.`}
+  pageType="WebPage"
+  noindex={false}
+>
+  <section class="container-app py-20 max-w-prose-tight">
+    <p class="eyebrow">Legal · Global</p>
+    <h1 class="mt-4">Cancellation &amp; Refund Policy</h1>
+    <p class="mt-4 text-subtle text-fluid-sm">Last updated: {updated}</p>
+    <p class="mt-2 text-subtle text-fluid-sm">
+      Applicable to purchases made on the global variant of {site.domain} (USD pricing, Stripe checkout). For purchases on the India variant, see the <a href="/in/legal/refund" class="text-brand">India refund policy</a>.
+    </p>
+
+    <div class="prose mt-10 text-muted [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-fluid-xl [&_p]:my-3 [&_strong]:text-fg [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1.5 [&_a]:text-brand">
+
+      <h2>1. Nature of the products</h2>
+      <p>
+        All products sold by <strong>{entity.name}</strong> through
+        <code>{site.domain}</code> are <strong>digital products</strong>
+        — source-code repositories, configuration packages, and access
+        to a private community channel — delivered electronically
+        immediately on payment confirmation. They are not physical
+        goods (see our separate
+        <a href="/legal/shipping">Shipping &amp; Exchange Policy</a>).
+      </p>
+
+      <h2>2. Cancellation</h2>
+      <p>
+        Because delivery is automatic and immediate, an order
+        <strong>cannot be cancelled</strong> after the Stripe payment
+        is captured and the buyer has been granted access to the
+        purchased repository or community channel. If You initiated a
+        payment but it has not yet been captured, no further action is
+        needed — the authorisation will expire and no funds will be
+        debited.
+      </p>
+
+      <h2>3. Refund — free Vibe Coder Kit</h2>
+      <p>
+        The free Vibe Coder Kit involves no payment and therefore
+        carries no refund. You may unsubscribe from associated
+        communications at any time using the unsubscribe link in any
+        marketing email or by writing to
+        <a href={`mailto:${entity.email}`}> {entity.email}</a>.
+      </p>
+
+      <h2>4. Refund — individual paid agents (BSK-001 to BSK-006)</h2>
+      <ul>
+        <li>Eligible for a <strong>full refund within 14 days</strong> of purchase.</li>
+        <li>Reason is not required, though a one-line explanation helps us improve.</li>
+        <li>Request the refund by replying to Your Stripe receipt or by emailing <a href={`mailto:${entity.email}`}>{entity.email}</a> from the email address used at checkout.</li>
+        <li>After 14 days, no refunds are issued, in line with the digital-goods nature of the Service.</li>
+      </ul>
+
+      <h2>5. Refund — AI Digital Marketing Stack bundle (BSK-ALL)</h2>
+      <ul>
+        <li>Eligible for a <strong>full refund within 7 days</strong> of purchase. The shorter window reflects the substantially higher value at risk on bundle purchases where the entire six-agent source delivery is granted immediately.</li>
+        <li>Same request channel as individual agents (reply to Stripe receipt or email <a href={`mailto:${entity.email}`}>{entity.email}</a>).</li>
+        <li>After 7 days, the bundle is non-refundable.</li>
+      </ul>
+
+      <h2>6. How refunds are processed</h2>
+      <ul>
+        <li>Approved refunds are issued via Stripe back to <strong>the original payment instrument</strong> only — the credit or debit card used at checkout. We cannot redirect a refund to a different instrument.</li>
+        <li>Refund initiation typically takes <strong>1 business day</strong> from approval; settlement to Your card statement typically takes a further <strong>5 to 10 business days</strong> depending on the issuing bank's cycle.</li>
+        <li>You will receive a Stripe refund-confirmation email containing the refund reference. If the funds do not appear within 14 business days of that email, contact <a href={`mailto:${entity.email}`}>{entity.email}</a> and we will follow up with Stripe.</li>
+      </ul>
+
+      <h2>7. Effect of refund</h2>
+      <p>
+        On any refund being approved and initiated, the following
+        consequences take effect immediately:
+      </p>
+      <ul>
+        <li>Your access to the private GitHub repository for the refunded SKU is revoked.</li>
+        <li>Your role in the Glitch Grow Discord server (<code>@Agent Buyer</code> or <code>@AI Digital Marketing Stack Buyer</code>) is removed and access to the corresponding paid channels is closed.</li>
+        <li>Your entitlement to lifetime updates for the refunded SKU is terminated.</li>
+        <li>The Business Source License 1.1 ("BSL") under which the agent was delivered <strong>terminates</strong> with effect from the refund date. Any continued use, deployment, or onward delivery of the previously-licensed source after that date constitutes infringement.</li>
+      </ul>
+
+      <h2>8. Disputes &amp; chargebacks</h2>
+      <p>
+        Before initiating a card chargeback, please contact us at
+        <a href={`mailto:${entity.email}`}> {entity.email}</a> — we
+        will issue a refund directly per Sections 4 and 5 above
+        wherever Your request falls within the eligibility window.
+        If a chargeback is filed against an ineligible transaction,
+        we will contest it with Stripe using the records of access
+        delivery (repository invitation, Discord role assignment, IP
+        and timestamp logs).
+      </p>
+
+      <h2>9. Statutory rights</h2>
+      <p>
+        Where mandatory consumer-protection statute in Your
+        jurisdiction (for example, Ontario's Consumer Protection Act,
+        2002, the EU Consumer Rights Directive 2011/83/EU, or the UK
+        Consumer Rights Act 2015) grants You broader cancellation
+        rights than this Policy, those statutory rights are not
+        diminished by anything in this document. Where the digital
+        goods exception applies (e.g. EU CRD Art. 16(m) — supply of
+        digital content not on a tangible medium where performance
+        has begun with consent), the Policy windows above govern
+        instead.
+      </p>
+
+      <h2>10. Contact &amp; escalation</h2>
+      <p>
+        For any question regarding cancellation or refund:
+      </p>
+      <ul>
+        <li><strong>Email</strong>: <a href={`mailto:${entity.email}`}>{entity.email}</a></li>
+        <li><strong>Postal address</strong>: {entity.name}, attention {entity.owner}, {entity.address}</li>
+      </ul>
+
+      <h2>11. Governing law</h2>
+      <p>
+        This Policy is governed by the laws of {entity.jurisdiction}
+        and the federal laws of Canada applicable therein. Disputes
+        are subject to the dispute-resolution mechanism in our
+        <a href="/legal/terms"> Terms of Service</a>.
+      </p>
+    </div>
+  </section>
+</Base>

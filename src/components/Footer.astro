@@ -1,0 +1,168 @@
+---
+import { site } from '~/lib/site';
+import { getGeo, getLegalEntity, geoHomePath, geoLegalPath, otherGeo } from '~/lib/geo';
+import Icon from './Icon.astro';
+
+// Geo-aware footer.
+//   /          → Nuraveda (Canada) entity, Stripe rail, USD copy
+//   /in/*      → Bani Thani (India) entity, Razorpay rail, INR copy + GSTIN
+//
+// Compliance teams (Stripe, Razorpay) inspect their respective variant's
+// footer to verify the legal entity matches the merchant-of-record on file.
+// Each variant must surface entity name + address + (where applicable) tax ID.
+
+const year = new Date().getFullYear();
+const geo = getGeo(Astro.url.pathname);
+const entity = getLegalEntity(geo);
+const isIN = geo === 'IN';
+const otherGeoCode = otherGeo(geo);
+const otherGeoLabel = isIN ? '🌎 Switch to global (USD)' : '🇮🇳 Switch to India (INR)';
+---
+
+<footer class="border-t border-border/60 bg-bg">
+
+  {/* ── Discord community CTA strip ──────────────────────────────────────
+      Sits at the very top of the footer so every page on the site
+      (homepage, /in/, /kit, all legal pages) gets the same one-click
+      community-join surface without per-page wiring.
+
+      Brand colors are kept on theme rather than swapping to Discord
+      blurple — the section is "the Glitch community" first, "hosted
+      on Discord" second. */}
+  <div class="relative overflow-hidden border-b border-border/60">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/2 top-0 -translate-x-1/2 h-[20rem] w-[44rem] max-w-[100vw] rounded-full
+                  bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.16),transparent_60%)] blur-3xl"></div>
+    </div>
+
+    <div class="container-app py-10 md:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+      <div class="max-w-xl">
+        <p class="font-mono text-fluid-xs uppercase tracking-wider text-brand inline-flex items-center gap-2">
+          <span class="size-2 rounded-full bg-brand animate-pulse"></span>
+          Community
+        </p>
+        <h3 class="mt-3 text-fluid-2xl md:text-fluid-3xl font-bold tracking-tight">
+          Join the Glitch Grow <span class="gradient-text">Discord</span>.
+        </h3>
+        <p class="mt-3 text-fluid-sm text-muted">
+          Install help for the Vibe Coder Kit, deploy walkthroughs, and the
+          paid-tier channels you unlock when you buy any agent.
+          <span class="block mt-1">Free to join. Always will be.</span>
+        </p>
+      </div>
+
+      <a
+        href={site.discordInvite}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-primary text-fluid-base px-6 py-3.5 self-start md:self-auto whitespace-nowrap"
+        data-discord-cta="footer"
+      >
+        {/* Discord glyph — inline SVG so we don't add an asset for one icon */}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"/>
+        </svg>
+        Join the Discord
+        <Icon name="arrow-up-right" size={14} />
+      </a>
+    </div>
+  </div>
+
+  <div class="container-app py-10 md:py-12 grid gap-10 md:grid-cols-3 lg:grid-cols-5">
+    <div class="md:col-span-3 lg:col-span-2">
+      <div class="flex items-center gap-2.5 mb-4">
+        <img src="/assets/brand/mark-128.png" alt="" width="32" height="32" class="w-8 h-8 object-contain" loading="lazy" />
+        <span class="font-semibold">Glitch <span class="text-brand">Grow</span></span>
+        {isIN && (
+          <span class="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-border/60 text-fluid-xs text-subtle font-mono">
+            🇮🇳 India
+          </span>
+        )}
+      </div>
+      <p class="text-muted max-w-prose-tight text-fluid-sm">
+        {site.description}
+      </p>
+      <p class="text-subtle text-fluid-xs mt-4">
+        A <a href="https://glitchexecutor.com" class="underline decoration-border hover:decoration-brand">{site.parent}</a> product.
+      </p>
+
+      {/* Geo-toggle — lets users (and compliance teams) switch variants */}
+      <p class="mt-3">
+        <a
+          href={geoHomePath(otherGeoCode)}
+          class="text-fluid-xs text-subtle hover:text-brand inline-flex items-center gap-1"
+        >
+          {otherGeoLabel} <Icon name="arrow-up-right" size={12} />
+        </a>
+      </p>
+    </div>
+
+    <nav aria-label="Footer primary" class="text-fluid-sm">
+      <h3 class="eyebrow mb-4">Product</h3>
+      <ul class="space-y-2 text-muted">
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={`${geoHomePath(geo)}#agents`}>Agents</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={`${geoHomePath(geo)}#pricing`}>Pricing</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={`${geoHomePath(geo)}#who-its-for`}>Who it's for</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/compare">Compare agents</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={`${geoHomePath(geo)}#faq`}>FAQ</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={`${geoHomePath(geo)}#contact`}>Contact</a></li>
+        {!isIN && (
+          <>
+            <li><a class="flex items-center min-h-11 hover:text-fg" href="/budz">Glitch Budz</a></li>
+            <li><a class="flex items-center min-h-11 hover:text-fg" href="/case-studies">Case studies</a></li>
+          </>
+        )}
+      </ul>
+    </nav>
+
+    <nav aria-label="Footer resources" class="text-fluid-sm">
+      <h3 class="eyebrow mb-4">Resources</h3>
+      <ul class="space-y-2 text-muted">
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/tools">Free tools</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/blog">Blog</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/glossary">Glossary</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/alternatives">Alternatives</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/vs">Comparisons</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href="/for">For your role</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Footer legal" class="text-fluid-sm">
+      <h3 class="eyebrow mb-4">Legal · {isIN ? 'India' : 'Global'}</h3>
+      <ul class="space-y-2 text-muted">
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={geoLegalPath(geo, 'terms')}>Terms &amp; Conditions</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={geoLegalPath(geo, 'privacy')}>Privacy Policy</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={geoLegalPath(geo, 'refund')}>Cancellation &amp; Refund</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={geoLegalPath(geo, 'shipping')}>Shipping &amp; Exchange</a></li>
+        <li><a class="flex items-center min-h-11 hover:text-fg" href={geoLegalPath(geo, 'contact')}>Contact us</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  {/* Entity disclosure block — required by both Stripe + Razorpay compliance.
+      Different content per geo so reviewers see their expected entity. */}
+  <div class="container-app pb-8 text-fluid-xs text-subtle">
+    <div class="border-t border-border/40 pt-6 grid gap-1">
+      <p>
+        Operated by <strong class="text-fg/80">{entity.name}</strong>
+        {entity.owner && ` (${entity.type.toLowerCase()}, owned by ${entity.owner})`}
+        · {entity.address}.
+      </p>
+      <p>
+        Payments processed by <strong class="text-fg/80">{entity.paymentProcessor}</strong>
+        in {entity.currency}.
+        {entity.taxId && ` ${entity.taxIdLabel}: ${entity.taxId}.`}
+        {entity.email && (
+          <>
+            {' '}Contact <a class="hover:text-brand" href={`mailto:${entity.email}`}>{entity.email}</a>.
+          </>
+        )}
+      </p>
+    </div>
+  </div>
+
+  <div class="container-app flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-10 text-fluid-xs text-subtle">
+    <p>© {year} {entity.name}. All rights reserved.</p>
+    <p class="font-mono">Built on Astro · Deployed on Cloudflare</p>
+  </div>
+</footer>

@@ -1,0 +1,109 @@
+---
+import Base from '~/layouts/Base.astro';
+import { site, legalEntityIN } from '~/lib/site';
+const updated = '2026-05-05';
+const entity = legalEntityIN;
+---
+
+<Base
+  title="Shipping & Exchange Policy · India"
+  description={`Shipping and exchange policy for digital products sold by ${entity.name} on the India variant of ${site.domain}.`}
+  pageType="WebPage"
+  noindex={false}
+>
+  <section class="container-app py-20 max-w-prose-tight">
+    <p class="eyebrow">Legal · India</p>
+    <h1 class="mt-4">Shipping &amp; Exchange Policy</h1>
+    <p class="mt-4 text-subtle text-fluid-sm">Last updated: {updated}</p>
+    <p class="mt-2 text-subtle text-fluid-sm">
+      Applicable to purchases made on the <code class="font-mono text-xs px-1 py-0.5 rounded bg-surface-2">/in/</code> variant of {site.domain}.
+    </p>
+
+    <div class="prose mt-10 text-muted [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-fluid-xl [&_p]:my-3 [&_strong]:text-fg [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1.5 [&_a]:text-brand">
+
+      <p class="text-fluid-sm">
+        This Shipping &amp; Exchange Policy is a computer-generated
+        electronic record published in terms of Rule 3 of the
+        Information Technology (Intermediary Guidelines and Digital
+        Media Ethics Code) Rules, 2021 (as amended) read with the
+        Information Technology Act, 2000.
+      </p>
+
+      <h2>1. Digital products only — no physical shipping</h2>
+      <p>
+        All products sold by <strong>{entity.name}</strong> through
+        <code>{site.domain}/in/</code> are <strong>digital
+        products</strong>. They consist of:
+      </p>
+      <ul>
+        <li>Source-code repositories, made available by adding You as a collaborator on the relevant private GitHub repository,</li>
+        <li>Configuration packages and documentation included in those repositories,</li>
+        <li>Access (via role assignment) to the relevant private channels of the Glitch Grow Discord server, and</li>
+        <li>Lifetime entitlement to updates published by us to the same repositories.</li>
+      </ul>
+      <p>
+        No physical items are shipped at any point. There are
+        therefore no shipping charges, no courier or logistics
+        partner involvement, no packaging materials, and no postal
+        addresses required at checkout.
+      </p>
+
+      <h2>2. Delivery — what to expect after payment</h2>
+      <ul>
+        <li><strong>Trigger</strong>: delivery is initiated automatically as soon as Razorpay confirms payment capture. You do not need to email us or take any further action.</li>
+        <li><strong>Repository access</strong>: an invitation to collaborate on the private GitHub repository for the purchased SKU is sent to the GitHub username associated with the email You used at checkout, typically within <strong>5 minutes</strong>. If You haven't provided a GitHub username at checkout, we email You at the order email asking for one within 1 working day of payment.</li>
+        <li><strong>Discord access</strong>: if You have already joined our Discord server (<code>discord.gg/HBZFKMts</code>), the corresponding paid role is granted automatically. If You haven't joined yet, the welcome email contains the invite link; the paid role is granted within minutes of Your accepting it.</li>
+        <li><strong>Confirmation email</strong>: a Razorpay receipt arrives immediately, and a separate "delivery confirmation" email from us follows within 15 minutes summarising the access You have been granted.</li>
+      </ul>
+
+      <h2>3. Delivery delays</h2>
+      <p>
+        If You have completed payment but the GitHub invitation has
+        not arrived within <strong>2 working hours</strong>, please
+        contact us at <a href={`mailto:${entity.email}`}>{entity.email}</a>
+        with Your Razorpay payment ID. The most common cause is a
+        typo'd or unverified GitHub username at checkout, which we
+        resolve manually.
+      </p>
+      <p>
+        We are not liable for delays caused by GitHub or Discord
+        platform outages, but we will keep You informed and re-issue
+        invitations once the platform is healthy.
+      </p>
+
+      <h2>4. Exchange — between SKUs</h2>
+      <p>
+        Within <strong>14 days</strong> of purchase (7 days for the
+        AI Digital Marketing Stack bundle), You may request an exchange between
+        SKUs of equal or lesser monetary value, in lieu of a refund.
+        We treat exchanges as a refund of the original SKU plus a
+        new purchase of the replacement SKU; any difference in price
+        is settled accordingly.
+      </p>
+      <p>
+        Exchange requests are not guaranteed to be approved — they
+        are at our reasonable discretion and depend on whether the
+        replacement SKU is available. Where an exchange is approved,
+        access to the original SKU's repository and Discord role is
+        revoked simultaneously with the grant of access to the new
+        SKU.
+      </p>
+
+      <h2>5. Refunds</h2>
+      <p>
+        Refund eligibility, windows, and processing timelines are
+        covered in our separate
+        <a href="/in/legal/refund">Cancellation &amp; Refund Policy</a>.
+      </p>
+
+      <h2>6. Address &amp; contact</h2>
+      <p>
+        For any question relating to delivery or exchange:
+      </p>
+      <ul>
+        <li><strong>Email</strong>: <a href={`mailto:${entity.email}`}>{entity.email}</a></li>
+        <li><strong>Registered office</strong>: {entity.name}, {entity.address}</li>
+      </ul>
+    </div>
+  </section>
+</Base>

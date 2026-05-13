@@ -1,0 +1,137 @@
+---
+import Icon from '~/components/Icon.astro';
+import { getGeo, discordMonthlyLabel } from '~/lib/geo';
+
+// KitContents — repositioned to make agents the lead and the .claude/ kit
+// + templates the supporting "extension layer." Buyer scans top-down:
+// agents (the deployable thing) → MCPs (the tools they use) → kit
+// (.claude/ + templates that let you extend) → onboarding (Loom + Discord).
+const geo = getGeo(Astro.url.pathname);
+const discordPrice = discordMonthlyLabel(geo);
+
+type IconName = 'cpu' | 'layers' | 'phone' | 'shopify' | 'meta' | 'amazon' | 'database' | 'shield' | 'chart' | 'send' | 'spark' | 'cobra' | 'code' | 'check' | 'bolt' | 'target';
+
+interface KitItem {
+  badge: string;
+  icon: IconName;
+  title: string;
+  body: string;
+  bullets: string[];
+}
+
+const items: KitItem[] = [
+  {
+    badge: 'Lead value',
+    icon: 'target',
+    title: 'Six pre-built production agents',
+    body: 'The actual agents running 7 Shopify stores at Glitch Executor Labs — yours to deploy as-is or to clone, rebrand, and resell to clients.',
+    bullets: [
+      'AI Ads Agent — Meta, Google, TikTok, Amazon, LinkedIn',
+      'AI Sales Agent — Discord-approved outbound + Gmail send',
+      'AI Social Media Agent — 3 pipelines × 10 platforms × N brands',
+      'Voice AI Agent — LiveKit + Sarvam, sub-second latency, 10 Indian languages',
+      'Multi-tenant Shopify SaaS — auth-hub + 33 scopes + GDPR + live SEO agent',
+      'AI UGC Agent — 5 reference MCPs + scaffolds + deployment recipes',
+    ],
+  },
+  {
+    badge: 'Tool access',
+    icon: 'cpu',
+    title: 'Nine production MCPs, pre-wired',
+    body: "Tools Claude calls — not prompts. The agents already use these, and the kit lets you compose new agents on the same toolset.",
+    bullets: [
+      'Foundation: filesystem, github, postgres, brave-search, stripe, shopify',
+      'Ad ops: meta-ads, google-ads, tiktok-business, amazon-attribution, linkedin-ads',
+      'Reporting: supermetrics multi-source fan-out',
+      'Glitch internals: glitch-seo, glitch-ads — production-grade reference code',
+    ],
+  },
+  {
+    badge: 'Extension layer',
+    icon: 'code',
+    title: 'The Claude Code .claude/ directory',
+    body: 'The exact configuration Tejas uses to extend, customize, or build entirely new agents on top of this stack — drop into any project.',
+    bullets: [
+      'CLAUDE.md with the prompt patterns that ship 10× faster',
+      'settings.json — hooks, permissions, env vars',
+      'skills/ — every skill used to build the 6 agents',
+      'hooks/ — pre-commit and post-tool-call safety nets',
+      'memory/ — auto-memory system with example entries',
+    ],
+  },
+  {
+    badge: 'Agent scaffolding',
+    icon: 'layers',
+    title: 'Project templates that compile on day one',
+    body: 'Cloneable starter projects — each with the first three prompts that get you to a deployed v1 the same afternoon.',
+    bullets: [
+      'astro-site/ — landing pages with Stripe Payment Links',
+      'next-saas/ — full SaaS scaffold with auth + billing + Postgres',
+      'langgraph-agent/ — agent with HITL approvals via Telegram or Discord',
+      'express-api/ — REST + Postgres, deploys to GCE in 10 minutes',
+    ],
+  },
+  {
+    badge: 'Onboarding',
+    icon: 'spark',
+    title: 'npx onboarding tool + Looms',
+    body: 'One command turns an empty terminal into a wired-up Claude Code workspace. Loom videos walk through real builds end-to-end.',
+    bullets: [
+      '`npx glitch-kit setup` — drop in .claude/, install MCPs, verify Claude connection',
+      'Onboarding Loom (~20 min) — me, on camera, building one feature from zero',
+      'Five case study Looms — multi-store theme, voice agent, ads agent, social, sales',
+      'Real screen-record, real terminal, no edited-out failures',
+    ],
+  },
+  {
+    badge: 'Community',
+    icon: 'send',
+    title: 'Discord — buyers help buyers',
+    body: `Single #vibe-kit channel. Founding buyers get lifetime access; standard buyers get 30 days then ${discordPrice} if they want to stay.`,
+    bullets: [
+      'Founding-buyer badge in your profile',
+      'First-look at every kit update',
+      'Direct line for architecture questions',
+      'Founder drops in weekly with "what shipped this week"',
+    ],
+  },
+];
+---
+
+<section id="what-is-the-kit" class="py-8 md:py-10 lg:py-12">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="layers" size={14} /> Inside the kit · everything bundled</p>
+      <h2 class="mt-4 text-fluid-3xl md:text-fluid-4xl font-bold tracking-tight">
+        Six agents.<br/>
+        <span class="gradient-text">All the wiring around them.</span>
+      </h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        A real GitHub repo. Not a PDF, not a Notion vault, not a course. The agents are the value; the kit is everything you need to deploy, extend, and resell them.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-5 md:grid-cols-2" role="list">
+      {items.map((item) => (
+        <li class="card p-6 md:p-7 flex flex-col h-full">
+          <p class="font-mono text-fluid-xs uppercase tracking-wider text-brand">{item.badge}</p>
+          <div class="mt-3 flex items-center gap-3">
+            <span class="inline-flex size-10 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+              <Icon name={item.icon} size={20} />
+            </span>
+            <h3 class="text-fluid-xl">{item.title}</h3>
+          </div>
+          <p class="mt-4 text-fluid-sm text-muted">{item.body}</p>
+          <ul class="mt-4 space-y-2 text-fluid-sm" role="list">
+            {item.bullets.map((b) => (
+              <li class="flex items-start gap-2">
+                <span class="mt-[3px] text-brand"><Icon name="check" size={14} /></span>
+                <span class="text-fg/90" set:html={b} />
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

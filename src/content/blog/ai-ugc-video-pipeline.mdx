@@ -1,0 +1,133 @@
+---
+title: "AI UGC video pipeline — brief to 5 hook variants in one pass"
+summary: "How a single brief becomes 5–8 paid-ad-ready vertical UGC videos in under an hour: HeyGen for talking head, ElevenLabs for voice, b-roll generation, auto-crop to 9:16, captions, Meta/TikTok Ads draft. Replaces $7K+/mo specialist UGC retainers."
+cover: ./ai-ugc-video-pipeline-cover.png
+coverAlt: "A central talking-head video frame with five smaller variant frames fanning out"
+author: "arjun"
+tags: ["AI UGC", "Paid Ads Creative"]
+publishedAt: 2026-05-12
+updatedAt: 2026-05-12
+readingMinutes: 8
+featured: false
+---
+
+import StatCallout from '~/components/StatCallout.astro';
+
+A production UGC pipeline turns a one-paragraph brief into 5–8 paid-ad-ready vertical videos in under an hour: HeyGen renders a talking-head avatar, ElevenLabs voices the script in the brand's chosen language, b-roll is generated or pulled from a Drive folder, ffmpeg crops to 9:16 with burnt-in captions, and the finished hooks land as drafts in Meta Ads Manager and TikTok Ads Manager. The output replaces the $7K+/mo specialist UGC agency retainer most DTC brands pay for ad creative.
+
+<StatCallout
+  stat="One brief → 5–8 hook variants → paid-ads-draft in under an hour, at roughly $0.40 per finished variant in API costs."
+  context="HeyGen talking-head (~$0.20/variant) + ElevenLabs voice (~$0.05) + b-roll generation or curation (~$0.10) + ffmpeg processing (free) + captions auto-burn (free). Replaces $1,200–$1,800 per UGC variant from a specialist agency."
+  sourceUrl="/products/ugc-agent"
+  sourceLabel="AI UGC Agent"
+/>
+
+## What "UGC" actually means in 2026 paid ads
+
+UGC stopped meaning "user-generated" four years ago. Today it means "vertical 9:16 video with a person on camera talking directly to the viewer, native-feeling, not over-produced." Specialist UGC agencies charge $1,200–$1,800 per variant — talent fee, scriptwriting, filming, captions, ad-platform-ready exports. A DTC brand testing 30 variants/month spends $36K–$54K on creative alone.
+
+The economics flip when the talking-head, the voice, and the b-roll are all generated. HeyGen ships talking-head avatars trained on a 2-minute reference video; ElevenLabs ships voice cloning from a 30-second sample; b-roll either gets generated (Kling 2.0, Runway) or pulled from a Drive folder of brand assets. The whole pipeline is API calls.
+
+The output isn't "better than human UGC." It's "good enough for paid-ads variant testing, at 1/20th the cost, at 100× the iteration speed." Both matter.
+
+## The pipeline, end to end
+
+A single pipeline run takes a brief like *"Whey protein hook variants for fitness audience, India — angle: muscle recovery"* and produces:
+
+1. **Script generation.** GPT-5 or Claude 4.7 generates 5–8 hook variants conforming to the brand voice + the chosen angle. Each variant is ~15–25 seconds of spoken content, ~40–60 words.
+2. **Avatar render.** HeyGen API takes the script + a chosen talent avatar (the brand's own talent if they've trained one, or a stock catalog avatar). Returns a 9:16 MP4 with the talking head + lip-sync.
+3. **Voice swap.** Optional: replace HeyGen's TTS with an ElevenLabs voice for tighter brand-voice control or Indian-language coverage (Hindi, Tamil, Bengali via Sarvam fallback).
+4. **B-roll layer.** Pulls 3–6 short b-roll clips per variant: product shots, before/after, social proof, lifestyle imagery. Two sources: Kling 2.0 generation (for clips that don't exist), or a Drive folder the brand maintains.
+5. **Stitch + caption.** ffmpeg cuts the talking-head and b-roll into the final 15–25 second variant. Captions get burnt in with a brand-config font + color.
+6. **QC pass.** Gemini 2.5 Pro reviews each finished variant for spec compliance (correct aspect ratio, captions readable, no obvious artifacts).
+7. **Ads-platform draft.** Variants land as drafts in the brand's Meta Ads Manager and TikTok Ads Manager via their respective APIs, tagged with the brief ID for tracking.
+
+The whole pipeline runs in ~40–60 minutes on a single VM. Cost per variant in API fees: roughly $0.40.
+
+## Why specialist agencies aren't going away — yet
+
+The honest framing matters here. AI UGC isn't replacing specialist agencies for every use case.
+
+What AI UGC is good at:
+
+- **Variant testing at high volume.** When you need 30 hooks tested to find the 2 that beat baseline, AI gets you there cheaply.
+- **Multilingual scaling.** A US brand expanding to India needs the same hook in Hindi + Tamil + English; AI does that in one pass.
+- **Iteration speed.** A creative-fatigue trigger from the [AI Ads Agent](/products/ads-agent) can request a fresh variant; AI UGC delivers it in an hour, not a week.
+
+What AI UGC is NOT good at:
+
+- **Genuine personality-led campaigns.** When the brand's voice IS the person (think Rhode, Skims, Mid-Day Squares), AI-generated talking-head reads as off.
+- **High-budget hero spots.** When the production budget is $50K+ for a single anchor video that runs everywhere, AI quality isn't there yet.
+- **Authenticity-claim formats.** "Real customers, real reviews" testimonials lose their power when the customer is generated. AI UGC for that use case can backfire in legal review.
+
+The pattern that works: AI UGC for variant testing + multilingual scale, specialist agencies for the hero spots that the AI variants are testing into. Most brands eventually run both.
+
+## Production patterns that matter
+
+A few non-obvious things separate a working AI UGC pipeline from a demo:
+
+- **Brand-voice fine-tuning on the script step.** The default LLM output sounds generic. Five-shot in-context examples of the brand's existing winning hooks (from past Meta Ads ARC, from organic posts) make the scripts read like the brand.
+- **Avatar consistency.** If the brand uses Talent A across all variants, Talent A's avatar must be the same render across all variants. HeyGen's API returns a slightly different render per call unless you pin the avatar ID — the boilerplate handles the pinning.
+- **B-roll diversity.** All 8 variants using the same 3 b-roll clips read as a slideshow. The boilerplate enforces variety: each variant picks from a different subset of the brand's b-roll library.
+- **Caption styling consistency.** Captions are a hook in themselves — they're the part viewers see in the first 1.5 seconds before the audio matters. Brand-config locks the font, color, and animation style across all variants.
+
+The Glitch Grow [AI UGC Agent](/products/ugc-agent) boilerplate ships all four of these as defaults. Most teams building this from scratch ship two and miss the other two.
+
+## Where this fits in the catalog
+
+The UGC pipeline isn't an island; it's part of a creative-iteration loop with the ads agent.
+
+```
+AI Ads Agent → detects creative fatigue on adset X
+     ↓
+queues a UGC brief: "fresh variant for {creative_id}, target {audience}"
+     ↓
+AI UGC Agent → generates 5 hook variants in ~1 hour
+     ↓
+variants land as drafts in Meta Ads Manager
+     ↓
+operator approves the 2–3 variants worth testing
+     ↓
+AI Ads Agent launches them, monitors for 7-day CTR signal
+     ↓
+loop repeats when next creative fatigues
+```
+
+This is the workflow that justifies running both products. Standalone, the UGC agent is a $1,497/mo line for managed variant production. Combined with the Ads Agent, the unit economics tighten meaningfully — creative testing becomes a closed-loop signal-driven process instead of a separate vendor relationship.
+
+## Pricing models that work
+
+Two patterns most operators settle on:
+
+- **$1,497/mo managed UGC variant production per brand.** Covers 20–30 variants/month across whichever languages the brand needs. Operator handles brief intake, brand-voice tuning, QC. Best for brands with active paid-ads testing programs.
+- **À la carte $300–800 per variant pack.** A pack is 5 variants on a single angle (e.g., "muscle-recovery hooks, Hindi, 5 variants"). Best for one-off campaign launches or seasonal pushes.
+
+The managed retainer is the higher-LTV model. The à la carte is the better lead-in — once a brand sees the variant quality at $400/pack, the $1,497/mo retainer is an easy sell.
+
+## Frequently asked questions
+
+### Does AI UGC require disclosure?
+In most jurisdictions, not for paid ad creative that's clearly produced (not pretending to be a real customer). FTC guidelines focus on testimonials and endorsements; an obviously-AI talking head selling whey protein isn't a testimonial. Meta's own policy permits AI-generated ad creative as of 2026; disclosure inside the ad isn't required. Check local rules for your jurisdiction.
+
+### Can the same avatar voice multiple brands?
+Technically yes; legally complicated. If the avatar is trained on your own talent's reference video, you control the rights. If it's a stock catalog avatar, the stock provider's terms govern. Most stock avatars permit per-brand commercial use but prohibit creating the impression that the avatar is a real spokesperson — read the specific TOS.
+
+### How does this work with TikTok's authenticity policies?
+TikTok permits AI-generated ad creative but requires the "AI-generated content" toggle in Ads Manager when the creative is fully synthetic. The boilerplate sets the toggle automatically when shipping a variant to TikTok Ads Manager.
+
+### What's the failure mode that matters most?
+Off-brand voice. The script-generation step has to produce hooks that read like the brand's existing voice; if it doesn't, the variants get rejected by the marketing team and the loop stalls. Brand-voice fine-tuning is the single most important calibration step.
+
+### Can this replace a real UGC agency?
+For variant testing volume, yes. For the hero spots that define the brand, no — and any pitch that claims otherwise is selling the wrong thing. The AI variants test into what the agency-produced hero spot should be.
+
+## Further reading
+
+- [AI UGC Agent — product page](/products/ugc-agent)
+- [How agencies actually run a $1,497/mo managed AI ads service](/blog/managed-ai-ads-service-1497) — the ads side of the same creative loop
+- [Manychat alternative for multi-platform AI agencies](/alternatives/manychat) — the broader social side
+- [Glitch Grow Founder Stack — all 6 agents](/products/founder-stack)
+- [HeyGen API documentation](https://www.heygen.com/api) — primary source on avatar rendering
+- [ElevenLabs API documentation](https://elevenlabs.io/docs) — primary source on voice cloning
+
+The pitch: pay $149 once for the pipeline, run $0.40-per-variant API cost, charge clients $1,497/mo for managed UGC variant production. One agency-side operator can run 4–6 brands at that scale before hiring a second.

@@ -1,0 +1,71 @@
+---
+competitor: Zapier
+competitorUrl: https://zapier.com
+title: Zapier alternative for agencies running AI services
+summary: Zapier is a workflow connector. Glitch Grow ships full agent stacks — outbound, ads, voice, social — that you own outright and resell to clients at $1.5K–$3K/mo.
+tldr: Zapier charges $19.99–$103.50/mo per Workspace seat (2026 pricing) for a flow runner with no agent reasoning, no HITL queue, no memory store. Glitch Grow is a one-time $499 purchase for six AI agents you self-host and white-label. If your agency delivers managed services, Zapier is the wrong abstraction layer.
+audience: agencies, freelancers, indie devs running managed AI services
+competitorPain: Zapier prices per task and per seat across multiple workspaces, so cost scales with both client count and automation volume. Workflows are connector chains — they don't reason, can't queue for human approval at draft level, and don't accumulate memory of what worked. As soon as you need an agent loop with LLM calls, retries, and HITL, Zaps stop being the right shape.
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Pricing model
+    glitch: $499 once (AI Digital Marketing Stack), unlimited deployments
+    competitor: $19.99–$103.50/mo per Workspace seat; task-metered
+  - feature: Agent reasoning loop
+    glitch: LangGraph plan → analyze → execute → reflect with memory
+    competitor: Linear Zap chains; no plan/reflect step
+  - feature: Human-in-the-loop approvals
+    glitch: Discord/Telegram first-click-wins reconciler
+    competitor: Manual paths only; no native HITL queue
+  - feature: Memory of past decisions
+    glitch: Postgres + pgvector — every decision logged with rationale
+    competitor: Stateless — Zap history is logs, not memory
+  - feature: White-label / resale rights
+    glitch: BSL 1.1 — rebrand and deliver to clients
+    competitor: Zapier branding visible; Embed pricing extra
+  - feature: Self-host
+    glitch: Docker, Cloud Run, GCE, systemd — your infra
+    competitor: Zapier-hosted only
+  - feature: Voice / multilingual
+    glitch: LiveKit + Sarvam (10 Indian languages) included
+    competitor: Not in scope
+faqs:
+  - q: Is Zapier cheaper than Glitch Grow at small scale?
+    a: At one Zap and one client, yes — Zapier's free tier covers 100 tasks/month. Once you cross the Pro tier ($19.99/mo) and run agentic logic across multiple clients, the seat + task pricing surpasses a one-time $499 purchase within months.
+  - q: Can Zapier do what an AI agent does?
+    a: Zapier added AI Actions and Zapier Agents in 2024–2025, but they sit on top of the same connector + Zap model. You can call OpenAI from a Zap; you cannot easily run a multi-step plan-execute-reflect loop with persistent memory and HITL approvals at draft level.
+  - q: Do I have to rip out Zapier to use Glitch Grow?
+    a: No. Many buyers keep Zapier for simple cross-app glue (form → spreadsheet → Slack) and use Glitch Grow boilerplates for the agent-shaped workloads where Zaps stop being the right tool.
+  - q: Does Glitch Grow integrate with the same apps as Zapier?
+    a: "Out-of-the-box: Meta Ads, Google Ads, TikTok, LinkedIn, Amazon Attribution, Gmail, Discord, Telegram, Shopify, Postgres. The AI Ads Agent + AI SEO Agent both ship with patterns for adding new integrations."
+  - q: Can I resell what I build on Glitch Grow to clients?
+    a: Yes. BSL 1.1 explicitly permits client delivery and rebranding at $1,497–$2,997/mo per service line.
+citations:
+  - label: Zapier Pricing — official page
+    url: https://zapier.com/pricing
+  - label: Zapier Agents — product overview
+    url: https://zapier.com/agents
+  - label: Glitch Grow AI Digital Marketing Stack
+    url: https://grow.glitchexecutor.com/products/founder-stack
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+## Where Zapier still earns its place
+
+Zapier is excellent at low-volume cross-app glue: form submission → CRM row → Slack ping. If that's your workload, keep using it. The arbitrage breaks down once you're billing a client a managed-service retainer for an outcome — at that point you're paying Zapier per task to deliver something Zapier itself doesn't deliver, namely an agent that reasons, queues for approval, and learns.
+
+## Why agencies switch
+
+Three patterns repeat in conversations with buyers:
+
+1. **Per-client cost scaling.** Zapier seats and task counts grow with each client. Glitch Grow's $499 is fixed; the marginal cost is infrastructure ($40–$150/mo single-VM) and your time.
+2. **HITL is missing.** Outbound, ads changes, and ORM responses need a human in the loop on day one and lighter approval guardrails over time. Zapier has no approval queue primitive — buyers end up wiring their own through Slack channels and Google Sheets.
+3. **Resale isn't ergonomic.** Zapier's white-label story (Zapier Embed, paid add-on) is built for SaaS embedding, not for an agency rebranding a managed service to a client.
+
+## What you trade
+
+Glitch Grow is code, not a connector marketplace. You're responsible for deploys, secret management, and uptime — none of which Zapier asks of you. If you don't have someone comfortable with `docker compose up` and `.env` files, the AI Digital Marketing Stack is the wrong starting point. We'd rather you keep that $499.

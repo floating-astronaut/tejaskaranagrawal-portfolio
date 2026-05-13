@@ -1,0 +1,183 @@
+---
+import Icon from '~/components/Icon.astro';
+import { getGeo } from '~/lib/geo';
+
+// "Stop renting your stack" — interactive SaaS-vs-own comparison.
+//
+// On the LEFT, a list of competing agentic-workflow SaaS tools with their
+// real published monthly prices. A slider lets the buyer drag through 1 → 60
+// months, watching the rented-stack total tick up. On the RIGHT, the
+// Glitch Grow one-time price stays flat. The UI carries the pitch with no
+// long-form copy — buyers self-prove the math by moving the slider.
+//
+// Geo-aware: shows USD on / and INR on /in/. INR uses PPP-relative SaaS
+// prices because Indian D2C tooling generally pays the same USD list price
+// as the global market does — no separate India SaaS pricing exists for
+// these products.
+
+const geo = getGeo(Astro.url.pathname);
+const isIN = geo === 'IN';
+
+// Glitch Grow AI Digital Marketing Stack one-time price in current geo.
+const founderPriceLabel = isIN ? '₹9,999' : '$499';
+
+// Comparable competing SaaS tools. Prices are real published list prices
+// (verified Q2 2026); we round to be defensible. Per-month USD; INR
+// converted at ~83 INR/USD where the tool sells globally.
+const saasItems = isIN
+  ? [
+      { name: 'Zapier (Pro)',    monthly: 6059 }, // ~$73
+      { name: 'Make.com (Pro)',  monthly: 4897 }, // ~$59
+      { name: 'n8n Cloud',       monthly: 4150 }, // ~$50
+      { name: 'Relevance AI',    monthly: 16517 }, // ~$199
+      { name: 'Lindy (Pro)',     monthly: 8217 }, // ~$99
+    ]
+  : [
+      { name: 'Zapier (Pro)',    monthly: 73 },
+      { name: 'Make.com (Pro)',  monthly: 59 },
+      { name: 'n8n Cloud',       monthly: 50 },
+      { name: 'Relevance AI',    monthly: 199 },
+      { name: 'Lindy (Pro)',     monthly: 99 },
+    ];
+
+const saasMonthlyTotal = saasItems.reduce((s, x) => s + x.monthly, 0);
+const currency = isIN ? 'INR' : 'USD';
+const sym = isIN ? '₹' : '$';
+---
+
+<section id="why-own" class="py-8 md:py-10 lg:py-12 relative overflow-hidden">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute left-1/2 top-1/3 -translate-x-1/2 h-[28rem] w-[60rem] max-w-[100vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.10),transparent_60%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="bolt" size={14} /> The math</p>
+      <h2 class="mt-4 text-fluid-3xl md:text-fluid-4xl font-bold tracking-tight">
+        Stop <span class="line-through decoration-[#ff5f57] decoration-4">renting</span> your AI marketing stack.
+      </h2>
+      <p class="mt-5 text-fluid-base text-muted">
+        Five SaaS subscriptions (Zapier, AdEspresso, Smartlead, Vapi, AdCreative.ai) bill you forever. The AI Digital Marketing Stack does the same outcome work for $499 once — and Claude Code installs it for you. Drag the slider.
+      </p>
+    </div>
+
+    <div
+      class="mt-12 grid gap-6 md:grid-cols-2 reveal"
+      data-saas-compare
+      data-monthly-total={saasMonthlyTotal}
+      data-symbol={sym}
+      data-currency={currency}
+    >
+      {/* RENTING column */}
+      <article class="card p-7 md:p-8 border-[#ff5f57]/30 relative overflow-hidden">
+        <header class="flex items-center justify-between gap-3">
+          <div>
+            <div class="font-mono text-fluid-xs uppercase tracking-wider text-[#ff5f57]">Renting</div>
+            <h3 class="mt-1 text-fluid-xl font-semibold">SaaS subscription stack</h3>
+          </div>
+          <span class="font-mono text-fluid-xs text-subtle whitespace-nowrap">/ month</span>
+        </header>
+
+        <ul class="mt-6 space-y-2.5">
+          {saasItems.map((s) => (
+            <li class="flex items-center justify-between gap-3 text-fluid-sm">
+              <span class="text-muted">{s.name}</span>
+              <span class="font-mono text-fg/70">{sym}{s.monthly.toLocaleString()}</span>
+            </li>
+          ))}
+        </ul>
+
+        <hr class="my-5 border-border/60" />
+
+        <div class="flex items-center justify-between">
+          <span class="text-fluid-sm text-subtle">After</span>
+          <input
+            type="range"
+            min="1" max="60" value="12" step="1"
+            data-saas-months
+            aria-label="Months of subscription"
+            class="flex-1 mx-4 accent-[#ff5f57]"
+          />
+          <output data-saas-months-label class="font-mono text-fluid-sm text-fg/80 min-w-[4ch] text-right">12 mo</output>
+        </div>
+
+        <div class="mt-5 text-fluid-3xl md:text-fluid-4xl font-bold tracking-tight tabular-nums">
+          <span class="text-[#ff5f57]" data-saas-total>{sym}{(saasMonthlyTotal * 12).toLocaleString()}</span>
+        </div>
+        <p class="mt-2 text-fluid-xs text-subtle">…and the meter keeps running. Forever.</p>
+      </article>
+
+      {/* OWNING column */}
+      <article class="card p-7 md:p-8 border-brand/40 bg-brand/5 relative overflow-hidden">
+        <div aria-hidden="true" class="absolute -top-20 -right-20 size-56 rounded-full
+             bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.20),transparent_60%)] blur-2xl"></div>
+
+        <header class="relative">
+          <div class="font-mono text-fluid-xs uppercase tracking-wider text-brand">Owning</div>
+          <h3 class="mt-1 text-fluid-xl font-semibold">Glitch Grow AI Digital Marketing Stack</h3>
+        </header>
+
+        <ul class="relative mt-6 space-y-2.5 text-fluid-sm">
+          <li class="flex items-center justify-between gap-3">
+            <span class="text-muted">All 6 production agents</span>
+            <span class="text-brand"><Icon name="check" size={16} /></span>
+          </li>
+          <li class="flex items-center justify-between gap-3">
+            <span class="text-muted">Source on your GitHub, runs on your infra</span>
+            <span class="text-brand"><Icon name="check" size={16} /></span>
+          </li>
+          <li class="flex items-center justify-between gap-3">
+            <span class="text-muted">Rebrand &amp; resell to your clients</span>
+            <span class="text-brand"><Icon name="check" size={16} /></span>
+          </li>
+          <li class="flex items-center justify-between gap-3">
+            <span class="text-muted">Lifetime updates · every patch &amp; new agent</span>
+            <span class="text-brand"><Icon name="check" size={16} /></span>
+          </li>
+        </ul>
+
+        <hr class="relative my-5 border-brand/20" />
+
+        <div class="relative flex items-end justify-between">
+          <div>
+            <div class="text-fluid-3xl md:text-fluid-4xl font-bold tracking-tight text-brand tabular-nums">
+              {founderPriceLabel}
+            </div>
+            <div class="mt-1 font-mono text-fluid-xs uppercase tracking-wider text-subtle">
+              Once. Yours forever.
+            </div>
+          </div>
+          <a
+            href="#pricing"
+            class="btn btn-primary text-fluid-sm px-4 py-2 whitespace-nowrap"
+          >
+            See bundle
+            <Icon name="arrow-right" size={14} />
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Live-update the rented-stack total as the slider moves. Pure DOM —
+  // no framework, no fetch, no telemetry. ~30 LOC.
+  const root = document.querySelector<HTMLElement>('[data-saas-compare]');
+  if (root) {
+    const slider = root.querySelector<HTMLInputElement>('[data-saas-months]');
+    const totalEl = root.querySelector<HTMLElement>('[data-saas-total]');
+    const label = root.querySelector<HTMLElement>('[data-saas-months-label]');
+    const monthly = Number(root.dataset.monthlyTotal || 0);
+    const sym = root.dataset.symbol || '$';
+
+    const update = () => {
+      const n = Number(slider?.value || 1);
+      if (label) label.textContent = `${n} mo`;
+      if (totalEl) totalEl.textContent = `${sym}${(monthly * n).toLocaleString()}`;
+    };
+    slider?.addEventListener('input', update, { passive: true });
+    update();
+  }
+</script>

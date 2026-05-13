@@ -1,0 +1,67 @@
+---
+competitor: Make
+competitorUrl: https://www.make.com
+title: Make (Integromat) alternative for AI-agent workloads
+summary: Make is a visual scenario builder priced per operation. Glitch Grow ships full agent stacks you self-host once and resell forever — different abstraction, different unit economics for managed services.
+tldr: Make's Pro plan is $16/mo for 10K ops; Teams is $29/mo (2026 pricing). Operations bill linearly with agent activity, so a moderately busy agent burns the bundle quickly. Glitch Grow is $499 once for six AI agents with built-in agent reasoning, HITL queues, and memory. Make is great for connector-style scenarios; agent-shaped workloads grow expensive fast.
+audience: agencies and indie devs delivering managed AI services
+competitorPain: Make is a brilliant scenario builder, but operations metering punishes anything that loops, retries, or polls — exactly what agent workloads do. Add HTTP modules calling LLMs, vector DBs, multiple channels for HITL approval, and the operation count climbs faster than the per-client retainer that's supposed to fund it.
+relatedProducts:
+  - sales-agent
+  - ads-agent
+  - social-media-agent
+comparison:
+  - feature: Pricing model
+    glitch: $499 once
+    competitor: Per-operation metering on monthly tiers
+  - feature: Agent reasoning
+    glitch: LangGraph state machine, native
+    competitor: Modules call OpenAI; you wire the loop
+  - feature: HITL queue
+    glitch: Discord + Telegram first-click reconciler
+    competitor: Custom modules + waiting webhooks
+  - feature: Memory persistence
+    glitch: Postgres + pgvector indexed by decision
+    competitor: External datastore; you maintain it
+  - feature: Self-host
+    glitch: Docker, Cloud Run, GCE
+    competitor: Make-hosted only
+  - feature: Cost scaling
+    glitch: Flat — infra is the only variable
+    competitor: Operation count × client volume
+  - feature: White-label
+    glitch: BSL 1.1 — rebrand and deliver
+    competitor: Make branding visible
+faqs:
+  - q: How do operations work in Make?
+    a: Each module run inside a scenario is one operation. An agent that loops 5 times across 4 modules per cycle uses 20 operations. Multiply by daily runs and client count and the budget tier matters.
+  - q: Can Make run AI agents?
+    a: You can build LLM-driven scenarios with Make's OpenAI and HTTP modules. The orchestration is yours to design — there's no native plan-execute-reflect primitive or HITL queue.
+  - q: Should I migrate existing Make scenarios?
+    a: Not blindly. If a scenario is genuinely connector glue (form → CRM → Slack), keep it on Make. Migrate only the agent-shaped scenarios to Glitch Grow.
+  - q: Does Glitch Grow have a visual scenario builder?
+    a: No. The boilerplates are code. The trade-off is that you skip building the agent logic entirely — it's already there.
+  - q: What if I outgrow Make's enterprise tier?
+    a: Most buyers in that situation rebuild on n8n self-host or LangGraph. Glitch Grow ships the LangGraph layer pre-built so you can skip that rebuild.
+citations:
+  - label: Make Pricing
+    url: https://www.make.com/en/pricing
+  - label: Make Operations explainer
+    url: https://www.make.com/en/help/scenarios/operations
+publishedAt: 2026-05-06
+updatedAt: 2026-05-06
+---
+
+## When Make wins
+
+Visual debugging is genuinely useful when you're learning a new API or debugging a fragile scenario. Make's interface for inspecting bundle data step-by-step is better than tailing logs on a self-hosted service. If you're a non-developer freelancer running 1–2 client automations, Make is probably the right tool.
+
+## When the math flips
+
+The flip happens at three triggers:
+
+1. You start needing **agent reasoning loops** — plan, act, reflect — not just module chains.
+2. Your **HITL volume** grows past what manual Slack messages can manage.
+3. You're billing clients **monthly retainers** for the outcome and need fixed costs to protect margin.
+
+At that point a one-time $499 with self-hosted infra at $40–$150/mo is cheaper than scaling Make operations across multiple clients, and the agent capabilities ship with the kit instead of needing assembly.

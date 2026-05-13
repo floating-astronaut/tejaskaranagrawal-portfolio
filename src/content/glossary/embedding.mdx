@@ -1,0 +1,24 @@
+---
+term: embedding
+title: What is an embedding?
+definition: An embedding is a numerical vector representation of text (or other data) where semantically similar inputs produce vectors that are close together in vector space — used for similarity search, classification, and RAG retrieval.
+summary: "Embeddings turn text into fixed-size float arrays (typically 384–3,072 dimensions). The key property: cosine similarity between embedding vectors approximates semantic similarity between the original texts. Production uses include vector search for RAG, clustering documents, finding duplicates, and recommendation systems. Models include OpenAI text-embedding-3, Cohere Embed v3, and many open-source alternatives (BGE, E5, GTE)."
+related:
+  - rag
+  - vector-database
+  - token
+relatedProducts:
+  []
+citations:
+  - label: "OpenAI — embeddings guide"
+    url: https://platform.openai.com/docs/guides/embeddings
+publishedAt: 2026-05-07
+---
+
+## Choosing an embedding model
+
+Dimensionality, language coverage, and domain (general-purpose vs code vs scientific) all matter. For most RAG use cases, OpenAI text-embedding-3-small or BGE-large work well. Specialized domains (legal, medical, code) benefit from domain-tuned models.
+
+## Storing embeddings
+
+Vector databases (pgvector, Pinecone, Qdrant, Weaviate) index embeddings for fast nearest-neighbor search. For small corpora (under 100K vectors), a flat in-memory index is often enough.

@@ -1,0 +1,32 @@
+---
+term: white-label AI
+title: What is white-label AI?
+definition: White-label AI is an AI product or service that one company licenses or rebrands as its own, presenting it to end clients under its own brand rather than the original builder's.
+summary: White-label AI is the business model that powers most AI agencies right now. The agency takes a vendor's underlying capability (an LLM API, an agent stack, a voice platform) and wraps it in their own brand, pricing, and client relationship. The end client sees the agency. Source-available stacks like Glitch Grow, sold under licenses that explicitly permit rebranding (BSL 1.1), make this clean — no platform branding leaks through to the client.
+related:
+  - ai-agent
+  - agentic-workflow
+relatedProducts:
+  - ads-agent
+  - sales-agent
+  - cod-confirm
+citations:
+  - label: Business Source License 1.1
+    url: https://mariadb.com/bsl11/
+publishedAt: 2026-05-06
+---
+
+## Why licensing matters
+
+A white-label arrangement is only clean if the underlying license permits it. Many SaaS terms implicitly or explicitly forbid sublicensing, embedding without attribution, or reselling capacity to third parties. The agency model breaks against those terms quickly.
+
+BSL 1.1, used for the Glitch Grow boilerplates, explicitly permits rebranding and client delivery. The one constraint is that the buyer cannot repackage the kit itself as a competing kit. Selling a managed service built on the kit is exactly the intended use.
+
+## What "white-label" actually requires
+
+- The product can be branded as the agency, not the underlying vendor
+- Pricing is set by the agency, not the vendor
+- The client relationship is owned by the agency
+- Infrastructure can run on the agency's accounts, not the vendor's multi-tenant cloud
+
+Glitch Grow's deployment model — self-host on your client's infra, single brand-config JSON to swap logo/domain/colors — is built around those four requirements.

@@ -1,0 +1,52 @@
+---
+import Icon from '~/components/Icon.astro';
+import { Image } from 'astro:assets';
+import caseImage from '~/assets/brand/generated/case-spotlight.png';
+---
+
+<section id="case-spotlight" class="py-8 md:py-10 lg:py-12 bg-surface/40 border-y border-border/60">
+  <div class="container-app grid md:grid-cols-12 gap-10 items-center">
+    <div class="md:col-span-5 reveal">
+      <p class="eyebrow"><Icon name="chart" size={14} /> Case spotlight</p>
+      <h2 class="mt-4">1.17× → <span class="gradient-text">3.4×</span> ROAS in 21 days.</h2>
+      <p class="mt-5 text-muted text-fluid-lg">
+        A UAE-first DTC brand was burning budget on Meta campaigns routed to
+        <span class="font-mono text-fg">amazon.in</span> and losing 60% of
+        conversions to pixel drop-off. We rebuilt the attribution bridge with
+        server-side CAPI, fixed the geo routing, and retrained creative rotation.
+      </p>
+
+      <dl class="mt-8 grid grid-cols-3 gap-4">
+        <div class="card p-4">
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">ROAS</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-brand">3.4×</dd>
+        </div>
+        <div class="card p-4">
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">CAC</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-fg">−41%</dd>
+        </div>
+        <div class="card p-4">
+          <dt class="text-fluid-xs uppercase tracking-wider text-subtle">Ship time</dt>
+          <dd class="mt-1 font-mono text-fluid-2xl text-fg">21d</dd>
+        </div>
+      </dl>
+
+      <a href="/case-studies/hidden-attribution" class="btn btn-secondary mt-8">
+        Read the full case
+        <Icon name="arrow-up-right" size={16} />
+      </a>
+    </div>
+
+    <div class="md:col-span-7 reveal">
+      {/* Real attribution report screenshot goes here. Keep 16:10 for parity with Looker/Plausible exports. */}
+      <Image
+        src={caseImage}
+        alt="Attribution dashboard showing ROAS rising from 1.17x to 3.4x after CAPI bridge deployment"
+        widths={[640, 960, 1280]}
+        sizes="(min-width: 768px) 640px, 100vw"
+        loading="lazy"
+        class="rounded-xl w-full h-auto"
+      />
+    </div>
+  </div>
+</section>

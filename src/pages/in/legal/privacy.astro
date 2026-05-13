@@ -1,0 +1,282 @@
+---
+import Base from '~/layouts/Base.astro';
+import { site, legalEntityIN } from '~/lib/site';
+const updated = '2026-05-05';
+const entity = legalEntityIN;
+---
+
+<Base
+  title="Privacy Policy · India"
+  description={`How ${entity.name} collects, stores, and uses personal data of Indian users under the Digital Personal Data Protection Act, 2023.`}
+  pageType="WebPage"
+  noindex={false}
+>
+  <section class="container-app py-20 max-w-prose-tight">
+    <p class="eyebrow">Legal · India</p>
+    <h1 class="mt-4">Privacy Policy</h1>
+    <p class="mt-4 text-subtle text-fluid-sm">Last updated: {updated}</p>
+    <p class="mt-2 text-subtle text-fluid-sm">
+      Applicable to users of the <code class="font-mono text-xs px-1 py-0.5 rounded bg-surface-2">/in/</code> variant of {site.domain}. For the global variant, see the <a href="/legal/privacy" class="text-brand underline decoration-brand/40 hover:decoration-brand">global privacy policy</a>.
+    </p>
+
+    <div class="prose mt-10 text-muted [&_h2]:text-fg [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-fluid-xl [&_h3]:text-fg [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:text-fluid-base [&_p]:my-3 [&_strong]:text-fg [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1.5 [&_a]:text-brand">
+
+      <p class="text-fluid-sm">
+        This Privacy Policy is a computer-generated electronic record
+        published in terms of Rule 3 of the Information Technology
+        (Intermediary Guidelines and Digital Media Ethics Code) Rules,
+        2021 (as amended) read with the Information Technology Act, 2000
+        (as amended), and does not require any physical or digital
+        signatures.
+      </p>
+
+      <h2>Introduction</h2>
+      <p>
+        This Privacy Policy ("<strong>Policy</strong>") applies to Your
+        use of the <code>/in/</code> variant of <code>{site.domain}</code>,
+        operated by <strong>{entity.name}</strong>, a {entity.type.toLowerCase()}
+        owned by <strong>{entity.owner}</strong> at {entity.address}
+        (collectively, the "<strong>Website</strong>"). The terms
+        "<strong>we</strong>", "<strong>our</strong>" and
+        "<strong>us</strong>" refer to {entity.name}; the terms
+        "<strong>You</strong>", "<strong>Your</strong>" and
+        "<strong>User</strong>" refer to You as a user of the Website.
+      </p>
+      <p>
+        "<strong>Personal Information</strong>" or "<strong>Personal Data</strong>"
+        means information that personally identifies You or that is tied
+        to such information — for example Your name, email address,
+        phone number, transaction reference and any other data You
+        provide. The Policy describes our practices for collecting,
+        using, processing, storing and sharing Personal Information in
+        compliance with:
+      </p>
+      <ul>
+        <li>The <strong>Digital Personal Data Protection Act, 2023</strong> ("<strong>DPDPA</strong>") and any rules notified under it,</li>
+        <li>The <strong>Information Technology Act, 2000</strong> and the <strong>Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011</strong> ("<strong>SPDI Rules</strong>"), and</li>
+        <li>The Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021.</li>
+      </ul>
+      <p>
+        By visiting this Website, You agree and acknowledge to be bound
+        by this Policy and consent to the collection, use, processing
+        and sharing of Your Personal Information in the manner set out
+        below. If You do not agree with this Policy, do not use the
+        Website.
+      </p>
+      <p>
+        Our <a href="/in/legal/terms">Terms of Service</a> form an
+        integral part of Your use of this Website and should be read in
+        conjunction with this Policy.
+      </p>
+
+      <h2>1. Data Fiduciary &amp; Grievance Officer</h2>
+      <p>
+        Under the DPDPA, <strong>{entity.name}</strong> is the Data
+        Fiduciary in relation to Personal Data collected through the
+        India variant of {site.domain}. {entity.taxIdLabel}:
+        <strong> {entity.taxId}</strong>.
+      </p>
+      <ul>
+        <li><strong>Grievance Officer</strong>: {entity.owner} (proprietor)</li>
+        <li><strong>Email</strong>: <a href={`mailto:${entity.email}`}>{entity.email}</a></li>
+        <li><strong>Postal address</strong>: {entity.address}</li>
+      </ul>
+      <p>
+        We acknowledge data-related requests within 7 working days and
+        respond within 30 days, in accordance with DPDPA §13 and Rule
+        3(2) of the IT Rules, 2021.
+      </p>
+      <p>
+        Payment-instrument-related grievances may also be raised
+        directly with Razorpay's Data Protection Officer (Mr. Shashank
+        Karincheti) at
+        <a href="mailto:dpo@razorpay.com"> dpo@razorpay.com</a>
+        or through
+        <a href="https://razorpay.com/grievances/" target="_blank" rel="noopener"> razorpay.com/grievances</a>.
+      </p>
+
+      <h2>2. Information we collect and how we use it</h2>
+      <p>
+        We collect, receive and store Personal Information You provide
+        when You interact with the Website. You may opt to not provide
+        certain information, but that may restrict You from registering
+        with us or availing some of our features and services.
+      </p>
+      <p>
+        We use commercially reasonable efforts to ensure that the
+        collection of Personal Information is limited to that which is
+        necessary to fulfil the purposes set out below. If we use or
+        plan to use Your information in a manner different from the
+        purpose for which it was collected, we will seek Your fresh
+        consent prior to such use.
+      </p>
+      <ul>
+        <li><strong>Lead-capture form</strong> — name, email, phone number (with country code), and Your stated profession. Submitted voluntarily when You click "Get the free Vibe Coder Kit".</li>
+        <li><strong>Purchase data</strong> — the items You purchase, the timestamp, the GST invoice details (if applicable) and the transaction reference returned by Razorpay. We do <strong>not</strong> store Your card number, CVV, UPI VPA or net-banking credentials; these are handled solely by Razorpay as a payment aggregator licensed by the Reserve Bank of India and are tokenised under the RBI's card-tokenisation framework.</li>
+        <li><strong>Communications</strong> — the contents of emails You send to us and any community Discord messages You post in our server.</li>
+        <li><strong>Server &amp; analytics logs</strong> — IP address, user-agent, referrer, approximate (city-level) location, and timestamps. Used for security, abuse prevention and aggregated traffic analysis. Retained up to 30 days.</li>
+        <li><strong>Bot-protection signals</strong> — Cloudflare Turnstile challenge responses; we receive only a pass/fail signal.</li>
+      </ul>
+      <p>
+        We do <strong>not</strong> collect Sensitive Personal Data or
+        Information (as defined in Rule 3 of the SPDI Rules — financial
+        information beyond payment-aggregator-handled flows, biometric
+        data, health data, sexual orientation, caste, religious or
+        political opinions) through this Service.
+      </p>
+
+      <h2>3. Purposes of processing</h2>
+      <p>Personal Information is used only for the following purposes:</p>
+      <ul>
+        <li>Deliver the free Vibe Coder Kit and related onboarding emails (DPDPA §7(a) — consent).</li>
+        <li>Fulfil orders and provide post-sale support for paid agents (DPDPA §7(a) — consent / §7(b) — performance of contract).</li>
+        <li>Run profession-segmented nurture emails and product announcements (DPDPA §7(a) — consent; You may withdraw consent at any time, see §6).</li>
+        <li>Process payments, raise GST invoices, and reconcile settlements with Razorpay.</li>
+        <li>Detect fraud, prevent spam, secure systems and enforce our Terms (DPDPA §7(g) — legitimate purpose).</li>
+        <li>Comply with applicable law including tax record-keeping, RBI guidelines, and lawful requests from government, regulatory or law-enforcement agencies (DPDPA §7(c) — compliance with law).</li>
+      </ul>
+
+      <h2>4. Sharing of Personal Information</h2>
+      <p>
+        We do <strong>not</strong> sell Personal Information, do not
+        engage in cross-context behavioural advertising beyond Meta CAPI
+        server-side events on first-party identifiers, and do not share
+        Personal Information with data brokers.
+      </p>
+      <p>
+        We share Personal Information only with the following processors,
+        each acting on documented instructions and bound by a
+        data-processing arrangement:
+      </p>
+      <ul>
+        <li><strong>Razorpay Software Pvt Ltd</strong> (Bengaluru, India) — payment processing, KYC, settlement, fraud screening. Razorpay's own privacy practices are at <a href="https://razorpay.com/privacy/" target="_blank" rel="noopener">razorpay.com/privacy</a>.</li>
+        <li><strong>Resend, Inc.</strong> (Delaware, USA) — transactional and lifecycle email delivery.</li>
+        <li><strong>Cloudflare, Inc.</strong> (San Francisco, USA) — site hosting, edge security, analytics aggregation, Turnstile bot protection.</li>
+        <li><strong>Google LLC / Google Cloud</strong> — service-account-mediated writes to a Google Sheet used as a backup of the lead list.</li>
+        <li><strong>Meta Platforms, Inc.</strong> — server-side Conversions API events with hashed identifiers, for measurement of paid-acquisition campaigns.</li>
+        <li><strong>Discord, Inc.</strong> (San Francisco, USA) — community messaging, only if You accept the invite to join.</li>
+      </ul>
+      <p>
+        We may additionally disclose Personal Information in good faith
+        where such disclosure is reasonably necessary to:
+      </p>
+      <ul>
+        <li>investigate or take action regarding suspected illegal activities or violation of our Terms,</li>
+        <li>comply with legal process such as a subpoena, summons, court order or statutory notice (including under §94 of the Bharatiya Nagarik Suraksha Sanhita or §175 of the BNSS as applicable),</li>
+        <li>protect the rights, reputation, safety or property of {entity.name}, our users, affiliates or the public.</li>
+      </ul>
+      <p>
+        Where data is transferred outside India, we rely on the standard
+        contractual clauses or equivalent safeguards offered by the
+        processor, and in all cases the country of transfer is one not
+        currently restricted by the Central Government under DPDPA §16.
+      </p>
+
+      <h2>5. Retention</h2>
+      <ul>
+        <li>Lead-form submissions — retained while Your consent stands; deleted within 30 days of consent withdrawal.</li>
+        <li>Purchase records, GST invoices and tax records — retained for 8 years to satisfy Indian tax record-keeping requirements (Companies Act §128, Income Tax rules) and for 10 years where required to satisfy Razorpay merchant audit obligations.</li>
+        <li>Server access logs — 30 days.</li>
+        <li>Email engagement metadata in Resend — 90 days.</li>
+      </ul>
+
+      <h2>6. Your rights under DPDPA</h2>
+      <p>
+        As a Data Principal, You have the following rights, exercised by
+        emailing <a href={`mailto:${entity.email}`}>{entity.email}</a>:
+      </p>
+      <ul>
+        <li><strong>Right to access</strong> — a summary of the Personal Information we hold about You and the purposes of processing (DPDPA §11).</li>
+        <li><strong>Right to correction &amp; erasure</strong> — request that inaccurate Personal Information be corrected, or that Your data be erased once no longer required for the purpose collected (DPDPA §12).</li>
+        <li><strong>Right to grievance redressal</strong> — escalate any concern to our Grievance Officer (named in §1).</li>
+        <li><strong>Right to nominate</strong> — nominate any other person to exercise Your rights in the event of death or incapacity (DPDPA §14).</li>
+        <li><strong>Right to withdraw consent</strong> — at any time, by emailing the Grievance Officer or unsubscribing via the link in any marketing email (DPDPA §6(4)). Withdrawal will not affect the lawfulness of processing carried out before withdrawal.</li>
+      </ul>
+
+      <h2>7. Cookies &amp; trackers</h2>
+      <p>
+        We use a small number of first-party cookies to maintain
+        session state and to remember preferences such as
+        announcement-bar dismissal. Where enabled by configuration,
+        the following third-party trackers also load on the site:
+      </p>
+      <ul>
+        <li><strong>Google Tag Manager</strong> (<code>GTM-XXXXXXX</code>) — a tag-orchestration container shared across all Glitch sites. Itself stores no analytics data; it conditionally loads the trackers below per page rule.</li>
+        <li><strong>Google Analytics 4</strong> — first-party cookies <code>_ga</code> and <code>_ga_&lt;ID&gt;</code> for pseudonymous pageview / event measurement. Data is processed by Google LLC under its Google Ads Data Processing Terms.</li>
+        <li><strong>Meta Pixel</strong> + <strong>Meta Conversions API</strong> — browser-side pixel for retargeting and server-side event API for measurement of paid-acquisition campaigns. Identifiers transmitted to Meta are SHA-256 hashed where configured.</li>
+        <li><strong>TikTok Pixel</strong> — browser-side pixel for retargeting and conversion measurement on TikTok ad campaigns.</li>
+        <li><strong>Cloudflare</strong> — Turnstile bot challenge (no persistent identifier in our scope; Cloudflare's own challenge cookie may be set during a challenge).</li>
+      </ul>
+      <p>
+        You can disable cookies through Your browser settings or
+        opt out of advertising trackers via Your Meta / TikTok /
+        Google account preferences. Doing so will not break
+        functional use of the Website but may affect the relevance
+        of any ads You see elsewhere.
+      </p>
+
+      <h2>8. Security</h2>
+      <p>
+        We implement reasonable technical and organisational safeguards
+        commensurate with the information assets being protected and
+        the nature of our business, including TLS for all network
+        traffic, encrypted at-rest storage for lead and purchase
+        records, Cloudflare bot mitigation, and least-privilege access
+        controls. Despite this, because of the inherent vulnerabilities
+        of the internet, no system is perfectly secure and we cannot
+        warrant complete security of all information transmitted to
+        us. If You suspect a compromise, email us immediately. This
+        section reflects our compliance with Rule 8 of the SPDI Rules
+        and §43A of the IT Act, 2000.
+      </p>
+
+      <h2>9. Links to other websites</h2>
+      <p>
+        References on this Website to any names, marks, products or
+        services of third parties or hyperlinks to third-party websites
+        are provided solely for Your convenience and do not constitute
+        or imply endorsement by us. Except as set out in §4, we do not
+        share Your Personal Information with those third parties and
+        are not responsible for their privacy practices. We suggest You
+        read the privacy policies on all such third-party websites.
+      </p>
+
+      <h2>10. Children</h2>
+      <p>
+        The Service is not directed at, nor knowingly used by, persons
+        under 18. We do not knowingly process the Personal Information
+        of children. If You believe we have inadvertently collected
+        such data, contact us and we will delete it.
+      </p>
+
+      <h2>11. Changes to this Policy</h2>
+      <p>
+        We may update this Policy from time to time. The current
+        version will always be available at this URL with the
+        "Last updated" date. Material changes will be communicated by
+        email to active users before they take effect. Your continued
+        use of the Website after the effective date of any change
+        constitutes acceptance of the updated Policy.
+      </p>
+
+      <h2>12. Governing law &amp; supervisory authority</h2>
+      <p>
+        Your use of this Website will be governed by and construed in
+        accordance with the laws of {entity.jurisdiction}. Any legal
+        action or proceedings arising out of Your use shall be subject
+        to the dispute-resolution mechanism set out in Section 16 of
+        our <a href="/in/legal/terms">Terms of Service</a> (arbitration
+        seated at {entity.arbitrationSeat}, with the courts at Gwalior,
+        Madhya Pradesh having exclusive jurisdiction over matters not
+        subject to arbitration).
+      </p>
+      <p>
+        If Your grievance is not resolved by the Grievance Officer
+        named in §1, You may escalate to the Data Protection Board of
+        India established under the DPDPA, once operationalised, or
+        approach the appropriate consumer-protection forum in
+        {' '}{entity.jurisdiction}.
+      </p>
+    </div>
+  </section>
+</Base>

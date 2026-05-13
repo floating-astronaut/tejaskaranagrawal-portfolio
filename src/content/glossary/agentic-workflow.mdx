@@ -1,0 +1,24 @@
+---
+term: agentic workflow
+title: What is an agentic workflow?
+definition: An agentic workflow is an automation where an LLM-driven agent decides the next step at runtime, rather than following a hard-coded sequence — typically using a plan, act, observe, reflect loop.
+summary: Agentic workflows sit between traditional workflows (fully predetermined) and free-form LLM chats (no structure). The agent has a goal, a set of tools, and memory of past decisions; it picks actions to advance the goal and adapts when results don't match expectations. Production agentic workflows usually run inside a state machine (LangGraph, CrewAI, custom) and include human-in-the-loop checkpoints for actions that touch the real world.
+related:
+  - ai-agent
+  - hitl
+  - llm-orchestration
+relatedProducts:
+  - ads-agent
+  - sales-agent
+  - social-media-agent
+citations:
+  - label: LangGraph documentation
+    url: https://langchain-ai.github.io/langgraph/
+publishedAt: 2026-05-06
+---
+
+## Why "workflow" is the wrong word, sort of
+
+The term "agentic workflow" is a useful bridge for people coming from Zapier or n8n — it signals that there's still structure (not chaos) but the structure is dynamic. In practice, most production "agentic workflows" are state machines with conditional edges: the agent's reasoning picks which edge to traverse, but the graph itself constrains what's possible.
+
+That constraint is the safety mechanism. Pure unconstrained agents are unpredictable; pure hard-coded workflows can't handle reality. State machines with agent-driven edges are the working compromise.

@@ -1,0 +1,122 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import BreadcrumbSchema from '~/components/schema/BreadcrumbSchema.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load the canonical playbook markdown at build time. The file lives at
+// docs/ai-blog-playbook.md and is the single source of truth — this
+// page renders it; the SEO agent loads it at runtime via this URL.
+const playbookMd = fs.readFileSync(
+  path.join(process.cwd(), 'docs', 'ai-blog-playbook.md'),
+  'utf8',
+);
+
+// Naive markdown → HTML — kept inline to avoid pulling marked/remark
+// into the static-site bundle when we don't need them elsewhere.
+function md(s: string): string {
+  // Code fences first
+  s = s.replace(/```([a-z]*)\n([\s\S]*?)```/g, (_, _lang, code) =>
+    `<pre><code>${escape(code)}</code></pre>`);
+  // Inline code
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Headings
+  s = s.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  s = s.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  s = s.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  s = s.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  // Bold + italic
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
+  // Links
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  // Blockquotes
+  s = s.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+  // Hr
+  s = s.replace(/^---$/gm, '<hr/>');
+  // Lists — naïve, but works for our content
+  s = s.replace(/((?:^- .+\n?)+)/gm, (m) =>
+    `<ul>${m.split('\n').filter(Boolean).map((l) => `<li>${l.replace(/^- /, '')}</li>`).join('')}</ul>`);
+  s = s.replace(/((?:^\d+\. .+\n?)+)/gm, (m) =>
+    `<ol>${m.split('\n').filter(Boolean).map((l) => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('')}</ol>`);
+  // Tables — naive pipe parser
+  s = s.replace(/((?:^\|.+\|\n?)+)/gm, (m) => {
+    const rows = m.trim().split('\n').filter((r) => !/^\|[\s|:-]+\|$/.test(r));
+    if (rows.length < 2) return m;
+    const cells = (r: string) => r.split('|').slice(1, -1).map((c) => c.trim());
+    const head = cells(rows[0]);
+    const body = rows.slice(1).map(cells);
+    return `<table><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${body.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  });
+  // Paragraphs — wrap remaining bare-text lines
+  s = s.split('\n\n').map((block) => {
+    const trimmed = block.trim();
+    if (!trimmed) return '';
+    if (/^<(h\d|ul|ol|pre|blockquote|hr|table)/.test(trimmed)) return trimmed;
+    return `<p>${trimmed.replace(/\n/g, ' ')}</p>`;
+  }).join('\n');
+  return s;
+}
+
+function escape(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+const html = md(playbookMd);
+---
+
+<Base
+  title="AI-Optimized Blog Playbook"
+  description="The contract for writing blog posts that win citations from AI assistants — what shape they take, what schema they emit, what to never ship. Used by the Glitch Grow SEO Agent and any human operator drafting catalog content."
+  pageType="WebPage"
+>
+  <Fragment slot="head">
+    <BreadcrumbSchema items={[
+      { name: 'Home', url: '/' },
+      { name: 'Docs', url: '/docs' },
+      { name: 'AI Blog Playbook', url: '/docs/ai-blog-playbook' },
+    ]} />
+    <style is:inline>
+      .playbook-prose h1 { font-size: 2.25rem; margin-top: 2.5rem; margin-bottom: 1rem; }
+      .playbook-prose h2 { font-size: 1.625rem; margin-top: 2.25rem; margin-bottom: 0.875rem; border-top: 1px solid rgb(var(--color-border) / 0.4); padding-top: 1.5rem; }
+      .playbook-prose h3 { font-size: 1.125rem; margin-top: 1.75rem; margin-bottom: 0.625rem; }
+      .playbook-prose h4 { font-size: 1rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+      .playbook-prose p { margin: 0.875rem 0; color: rgb(var(--color-muted)); line-height: 1.7; }
+      .playbook-prose ul, .playbook-prose ol { margin: 0.875rem 0 0.875rem 1.5rem; color: rgb(var(--color-muted)); line-height: 1.7; }
+      .playbook-prose ul { list-style: disc; }
+      .playbook-prose ol { list-style: decimal; }
+      .playbook-prose li { margin: 0.25rem 0; }
+      .playbook-prose strong { color: rgb(var(--color-fg)); }
+      .playbook-prose code { font-family: var(--font-mono); font-size: 0.875em; color: rgb(var(--color-brand)); background: rgb(var(--color-bg-elev) / 0.6); padding: 0.1rem 0.35rem; border-radius: 0.25rem; }
+      .playbook-prose pre { margin: 1rem 0; padding: 1rem; background: rgb(var(--color-bg-elev) / 0.6); border-radius: 0.5rem; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; }
+      .playbook-prose pre code { background: none; padding: 0; color: rgb(var(--color-fg) / 0.9); }
+      .playbook-prose a { color: rgb(var(--color-brand)); text-decoration: underline; text-decoration-color: rgb(var(--color-brand) / 0.4); }
+      .playbook-prose blockquote { margin: 1rem 0; padding-left: 1rem; border-left: 2px solid rgb(var(--color-brand) / 0.5); color: rgb(var(--color-fg) / 0.85); font-style: italic; }
+      .playbook-prose table { margin: 1.25rem 0; width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+      .playbook-prose th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid rgb(var(--color-border) / 0.6); font-weight: 500; }
+      .playbook-prose td { padding: 0.5rem 0.75rem; border-bottom: 1px solid rgb(var(--color-border) / 0.3); vertical-align: top; color: rgb(var(--color-muted)); }
+      .playbook-prose hr { margin: 2rem 0; border: none; border-top: 1px solid rgb(var(--color-border) / 0.4); }
+    </style>
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <nav aria-label="Breadcrumb" class="text-fluid-xs text-subtle">
+      <a href="/" class="hover:text-fg">Home</a>
+      <span class="mx-1">/</span>
+      <span class="text-muted">AI Blog Playbook</span>
+    </nav>
+
+    <header class="mt-6 max-w-3xl">
+      <p class="eyebrow"><Icon name="spark" size={14} /> Docs</p>
+      <h1 class="mt-4">AI-Optimized Blog Playbook</h1>
+      <p class="mt-5 text-fluid-lg text-muted">
+        The contract for blog posts that win citations from AI assistants. Used by the Glitch Grow AI SEO Agent and any human operator drafting catalog content. Programmatic templates at <a href="/docs/blog-templates.json" class="text-brand underline">/docs/blog-templates.json</a>.
+      </p>
+    </header>
+
+    <div class="hairline my-10"></div>
+
+    <div class="playbook-prose max-w-3xl" set:html={html}></div>
+  </article>
+</Base>

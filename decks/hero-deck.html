@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Glitch Grow — Hero deck (Velo source)</title>
+<style>
+  /* 16:9 landscape, 1920x1080 nominal — Velo expects HD-ish slides.
+     Each <section> is a printed PDF page. */
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 1920px;
+    color: #e8edf3;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0a0d12;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slide {
+    width: 1920px;
+    height: 1080px;
+    padding: 110px 140px;
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  /* Brand glow plate behind every slide */
+  .slide::before {
+    content: '';
+    position: absolute;
+    width: 1100px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(0,255,157,0.18), transparent 60%);
+    filter: blur(80px);
+    top: -200px; right: -200px;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .slide::after {
+    content: '';
+    position: absolute;
+    width: 800px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, rgba(0,194,255,0.10), transparent 60%);
+    filter: blur(80px);
+    bottom: -150px; left: -150px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .slide > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #00ff9d;
+    margin-bottom: 36px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #00ff9d;
+    box-shadow: 0 0 14px #00ff9d;
+  }
+  h1 {
+    font-size: 130px;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+  h2 {
+    font-size: 92px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  h3 {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .accent { color: #00ff9d; }
+  .electric { color: #00c2ff; }
+  .muted { color: #97a3b3; }
+  p, li {
+    font-size: 36px;
+    line-height: 1.4;
+    color: #c5cdd6;
+    max-width: 1450px;
+  }
+  p.lead { font-size: 44px; max-width: 1500px; margin-top: 36px; }
+
+  .footer-brand {
+    position: absolute;
+    bottom: 60px;
+    left: 140px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    color: #4f5763;
+    letter-spacing: 0.05em;
+    z-index: 2;
+  }
+  .footer-page {
+    position: absolute;
+    bottom: 60px;
+    right: 140px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    color: #4f5763;
+    letter-spacing: 0.05em;
+    z-index: 2;
+  }
+
+  /* SaaS logos — slide 2 */
+  .saas-grid {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1450px;
+  }
+  .saas-pill {
+    border: 2px solid #2a3140;
+    border-radius: 18px;
+    padding: 28px 36px;
+    font-size: 36px;
+    font-weight: 600;
+    color: #5a6473;
+    text-decoration: line-through;
+    text-decoration-color: #ff5f57;
+    text-decoration-thickness: 4px;
+    text-align: center;
+    background: rgba(20,24,32,0.6);
+  }
+
+  /* Six-agent grid — slide 4 */
+  .agent-grid {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1500px;
+  }
+  .agent-card {
+    border: 1.5px solid #2a3140;
+    border-radius: 18px;
+    padding: 36px 32px;
+    background: rgba(15,19,27,0.7);
+    backdrop-filter: blur(8px);
+  }
+  .agent-card .num {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    color: #00ff9d;
+    margin-bottom: 18px;
+  }
+  .agent-card .name {
+    font-size: 38px;
+    font-weight: 700;
+    color: #e8edf3;
+    margin-bottom: 10px;
+  }
+  .agent-card .blurb {
+    font-size: 24px;
+    color: #97a3b3;
+    line-height: 1.35;
+  }
+
+  /* In-the-box list — slide 5 */
+  .checklist { margin-top: 50px; max-width: 1500px; }
+  .checklist li {
+    list-style: none;
+    padding: 22px 0;
+    border-bottom: 1px solid #1b2029;
+    display: flex; gap: 28px; align-items: flex-start;
+    font-size: 38px;
+  }
+  .checklist li::before {
+    content: '✓';
+    color: #00ff9d;
+    font-weight: 700;
+    flex-shrink: 0;
+    width: 44px;
+    font-size: 42px;
+  }
+  .checklist .lbl { font-weight: 700; color: #e8edf3; min-width: 380px; }
+  .checklist .desc { color: #97a3b3; }
+
+  /* Terminal mock — slide 6 */
+  .terminal {
+    margin-top: 60px;
+    max-width: 1500px;
+    border: 1.5px solid #2a3140;
+    border-radius: 16px;
+    background: rgba(8,10,14,0.95);
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,255,157,0.08);
+  }
+  .terminal-bar {
+    padding: 18px 24px;
+    background: rgba(20,24,32,0.7);
+    border-bottom: 1px solid #2a3140;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .terminal-bar .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+  .terminal-bar .path {
+    margin-left: 16px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    color: #5a6473;
+  }
+  .terminal-body {
+    padding: 36px 40px;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 28px;
+    line-height: 1.6;
+  }
+  .terminal-body .cmd { color: #00ff9d; }
+  .terminal-body .ok  { color: #00ff9d; font-weight: 600; }
+  .terminal-body .log { color: #97a3b3; }
+
+  /* Math row — slide 7 */
+  .math-row {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 36px;
+    align-items: center;
+    max-width: 1600px;
+  }
+  .math-cell {
+    border: 1.5px solid #2a3140;
+    border-radius: 18px;
+    padding: 40px 32px;
+    background: rgba(15,19,27,0.7);
+    text-align: center;
+  }
+  .math-cell .label {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 22px;
+    color: #5a6473;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 18px;
+  }
+  .math-cell .value {
+    font-size: 64px;
+    font-weight: 700;
+    color: #e8edf3;
+    letter-spacing: -0.02em;
+  }
+  .math-cell.result {
+    border-color: rgba(0,255,157,0.4);
+    background: rgba(0,255,157,0.06);
+  }
+  .math-cell.result .value { color: #00ff9d; }
+  .math-op {
+    font-size: 64px;
+    color: #5a6473;
+    text-align: center;
+  }
+
+  /* Pricing card — slide 9 */
+  .pricing-card {
+    margin-top: 60px;
+    max-width: 1100px;
+    border: 2px solid rgba(0,255,157,0.4);
+    border-radius: 24px;
+    padding: 60px 70px;
+    background: rgba(0,255,157,0.04);
+  }
+  .pricing-card .tier {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 26px;
+    color: #00ff9d;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 20px;
+  }
+  .pricing-card .price {
+    font-size: 130px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .pricing-card .price small { font-size: 56px; color: #97a3b3; font-weight: 600; margin-left: 14px; }
+  .pricing-card .alt { margin-top: 18px; font-size: 28px; color: #97a3b3; font-family: 'Geist Mono', ui-monospace, monospace; }
+  .pricing-card .includes { margin-top: 36px; }
+  .pricing-card .includes li {
+    font-size: 30px; padding: 12px 0; border: 0;
+    color: #c5cdd6; list-style: none;
+  }
+  .pricing-card .includes li::before {
+    content: '✓ ';
+    color: #00ff9d;
+    font-weight: 700;
+    margin-right: 14px;
+  }
+
+  /* CTA card — slide 10 */
+  .cta-url {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-size: 80px;
+    font-weight: 700;
+    color: #00ff9d;
+    margin-top: 60px;
+    letter-spacing: -0.01em;
+  }
+  .cta-sub {
+    margin-top: 32px;
+    font-size: 36px;
+    color: #97a3b3;
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── SLIDE 1 — TITLE ──────────────────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">Glitch Grow</div>
+  <h1>
+    Six production<br>
+    <span class="accent">AI agents.</span><br>
+    Yours forever.
+  </h1>
+  <p class="lead">
+    Buy once. Deploy in minutes. Resell to clients at $1,500–$3,000 a month.
+  </p>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">01 / 10</div>
+</section>
+
+<!-- ─── SLIDE 2 — THE PROBLEM (SaaS subscriptions) ───────────── -->
+<section class="slide">
+  <div class="eyebrow">The shift</div>
+  <h2>Stop <span style="color:#ff5f57; text-decoration: line-through; text-decoration-thickness: 6px;">renting</span> your stack.</h2>
+  <p class="lead">
+    Every "agentic workflow" SaaS charges $50–$300 a month, per seat, forever — to wrap an LLM call you could have written yourself.
+  </p>
+  <div class="saas-grid">
+    <div class="saas-pill">Zapier $73/mo</div>
+    <div class="saas-pill">Make.com $59/mo</div>
+    <div class="saas-pill">n8n Cloud $50/mo</div>
+    <div class="saas-pill">Relevance AI $199/mo</div>
+    <div class="saas-pill">Lindy $99/mo</div>
+    <div class="saas-pill">Vapi.ai $0.05/min</div>
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">02 / 10</div>
+</section>
+
+<!-- ─── SLIDE 3 — THE OWNERSHIP PITCH ────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">What changes</div>
+  <h2>Own the agent.<br><span class="accent">Own the margin.</span></h2>
+  <p class="lead">
+    Source code on your GitHub. Runs on your infra. Wears your brand.
+    No per-seat ceiling, no rate-limit ransom, no email saying
+    <em class="muted">"we're sunsetting this product."</em>
+  </p>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">03 / 10</div>
+</section>
+
+<!-- ─── SLIDE 4 — WHAT WE SHIP (six agents) ──────────────────── -->
+<section class="slide">
+  <div class="eyebrow">What we ship</div>
+  <h2>Six production-grade agents.</h2>
+  <div class="agent-grid">
+    <div class="agent-card">
+      <div class="num">BSK-001</div>
+      <div class="name">Ads Operator</div>
+      <div class="blurb">Meta + Google + TikTok — campaigns, creatives, daily reports.</div>
+    </div>
+    <div class="agent-card">
+      <div class="num">BSK-002</div>
+      <div class="name">Sales Agent</div>
+      <div class="blurb">DM → qualify → book. Telegram, Discord, WhatsApp, Slack.</div>
+    </div>
+    <div class="agent-card">
+      <div class="num">BSK-003</div>
+      <div class="name">Social Media</div>
+      <div class="blurb">10-platform autopost, ORM watch, thread/Reels writer.</div>
+    </div>
+    <div class="agent-card">
+      <div class="num">BSK-004</div>
+      <div class="name">Voice / COD</div>
+      <div class="blurb">LiveKit + Sarvam Bulbul. Indian languages, sub-second latency.</div>
+    </div>
+    <div class="agent-card">
+      <div class="num">BSK-005</div>
+      <div class="name">SEO Agent</div>
+      <div class="blurb">Topic clusters, on-page audits, brief writer.</div>
+    </div>
+    <div class="agent-card">
+      <div class="num">BSK-006</div>
+      <div class="name">MCP Pack</div>
+      <div class="blurb">9 MCPs Claude calls directly — Shopify, Meta, GA4, more.</div>
+    </div>
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">04 / 10</div>
+</section>
+
+<!-- ─── SLIDE 5 — WHAT'S IN THE BOX ──────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">What you get</div>
+  <h2>Everything. Source up.</h2>
+  <ul class="checklist">
+    <li><span class="lbl">Source code</span><span class="desc">Private GitHub collaborator. No trimmed-down "showcase repo."</span></li>
+    <li><span class="lbl">.claude/ config</span><span class="desc">Skills, agents, hooks, settings — exactly what we ship in production.</span></li>
+    <li><span class="lbl">9 MCP servers</span><span class="desc">Real API integrations Claude calls directly. Not prompt scaffolds.</span></li>
+    <li><span class="lbl">Deploy recipes</span><span class="desc">systemd + nginx + GCE cloud-init + Cloud Run YAML + Docker.</span></li>
+    <li><span class="lbl">Brand-config schemas</span><span class="desc">Switch a JSON file, ship the same agent under any client's brand.</span></li>
+  </ul>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">05 / 10</div>
+</section>
+
+<!-- ─── SLIDE 6 — DEPLOY IN MINUTES ──────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">Deploy in minutes</div>
+  <h2>Twenty minutes. <span class="accent">git clone</span> to live.</h2>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="path">~/your-agency · agent deployment</span>
+    </div>
+    <div class="terminal-body">
+      <div class="cmd">$ git clone &lt;agent-repo&gt;</div>
+      <div class="log">✓ ads-agent · sales-agent · social-agent</div>
+      <div class="cmd">$ npx glitch-kit deploy ads-agent</div>
+      <div class="log">⠹ provisioning gce + nginx + postgres</div>
+      <div class="log">⠴ wiring meta + google + tiktok mcps</div>
+      <div class="ok">✓ deployed → https://ads.your-agency.dev</div>
+      <div class="cmd">$ # bill your client $1,497/mo</div>
+    </div>
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">06 / 10</div>
+</section>
+
+<!-- ─── SLIDE 7 — RESELLER MATH ──────────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">The math</div>
+  <h2>Five clients. <span class="accent">$7,500 MRR.</span></h2>
+  <p class="lead">
+    One agent. One weekend of setup. Recurring monthly revenue from day one.
+  </p>
+  <div class="math-row">
+    <div class="math-cell">
+      <div class="label">Clients</div>
+      <div class="value">5</div>
+    </div>
+    <div class="math-op">×</div>
+    <div class="math-cell">
+      <div class="label">Per client / mo</div>
+      <div class="value">$1,500</div>
+    </div>
+    <div class="math-op">=</div>
+    <div class="math-cell result">
+      <div class="label">Your MRR</div>
+      <div class="value">$7,500</div>
+    </div>
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">07 / 10</div>
+</section>
+
+<!-- ─── SLIDE 8 — LIFETIME UPDATES ───────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">The hidden upside</div>
+  <h2>Buy once. <span class="accent">Updates forever.</span></h2>
+  <p class="lead">
+    Every patch, every new agent, every new MCP we ship — automatic, free, lifetime.
+  </p>
+  <p class="lead muted">
+    No SaaS bill that creeps up 20% each year. No "migrate to v2" upgrade fee.
+    No vendor that gets acquired and shuts off your account.
+  </p>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">08 / 10</div>
+</section>
+
+<!-- ─── SLIDE 9 — PRICING ────────────────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">Pricing</div>
+  <h2>Founder Stack — all six.</h2>
+  <div class="pricing-card">
+    <div class="tier">Founder Stack · BSK-ALL</div>
+    <div class="price">$499<small>one-time</small></div>
+    <div class="alt">or à la carte: $39 – $149 per agent</div>
+    <ul class="includes">
+      <li>All 6 production agents — source on your GitHub</li>
+      <li>9-MCP server pack + .claude/ skill library</li>
+      <li>Deploy recipes for VM, Cloud Run, Docker</li>
+      <li>Lifetime updates &amp; priority Discord</li>
+      <li>BSL 1.1 — rebrand and resell to clients</li>
+    </ul>
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">09 / 10</div>
+</section>
+
+<!-- ─── SLIDE 10 — CTA ───────────────────────────────────────── -->
+<section class="slide">
+  <div class="eyebrow">Get started</div>
+  <h2>Stop building infra. <span class="accent">Start shipping clients.</span></h2>
+  <div class="cta-url">grow.glitchexecutor.com</div>
+  <div class="cta-sub">
+    Grab the free Vibe Coder Kit · Buy any agent · Or take the whole stack.
+  </div>
+  <div class="footer-brand">grow.glitchexecutor.com</div>
+  <div class="footer-page">10 / 10</div>
+</section>
+
+</body>
+</html>

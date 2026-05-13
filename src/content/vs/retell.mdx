@@ -1,0 +1,53 @@
+---
+competitor: Retell
+competitorUrl: https://www.retellai.com
+title: Glitch Grow vs Retell — owned voice stack vs developer platform
+summary: Retell is developer-focused voice AI infrastructure with per-minute pricing. Glitch Grow's Voice AI Agent ships LiveKit + Sarvam + GPT-4o-mini + ElevenLabs as source for $149 once.
+tldr: Pick Retell for fast English-only voice agents at moderate volume. Pick Glitch Grow when you're running thousands of calls, need Indian-language coverage via Sarvam, and want the $0.02/min raw infra economics that platform pricing can't match.
+pickGlitchWhen:
+  - High call volume per client (1,000+ minutes/month)
+  - Indian-language workloads (Sarvam outperforms generic STT)
+  - Per-minute platform markup is eating margin
+  - You want to white-label voice per client on your infra
+pickCompetitorWhen:
+  - You're prototyping at low volume
+  - You don't want to manage LiveKit Cloud + SIP trunks yourself
+  - Time to first call matters more than cost-per-minute
+relatedProducts:
+  - cod-confirm
+comparison:
+  - feature: Cost per minute (raw)
+    glitch: ~$0.02/min infra
+    competitor: ~$0.07/min platform fee + model + telephony
+  - feature: Indian-language STT
+    glitch: Sarvam (10+ Indian languages)
+    competitor: Generic STT, configurable
+  - feature: SIP / telephony
+    glitch: LiveKit SIP — Twilio, Plivo, Exotel
+    competitor: Twilio + others
+  - feature: Self-host
+    glitch: Yes
+    competitor: Retell-hosted
+  - feature: Pricing
+    glitch: $149 once
+    competitor: Per-minute platform fee
+  - feature: License
+    glitch: BSL 1.1
+    competitor: SaaS subscription
+faqs:
+  - q: Easier to start with?
+    a: Retell, for English. Glitch Grow's first deploy is ~4 hours; subsequent client deploys take ~1 hour with the brand-config schema.
+  - q: When does the cost gap matter?
+    a: ~1,000 min/mo per client and up. At Indian COD-confirm volumes (thousands of short calls), it's the entire economic argument.
+  - q: What about Vapi or Bland?
+    a: Same shape. Vapi ~$0.05/min, Bland ~$0.10/min. Glitch Grow beats all three on raw infra.
+citations:
+  - label: Retell pricing
+    url: https://www.retellai.com/pricing
+  - label: LiveKit Agents
+    url: https://docs.livekit.io/agents/
+publishedAt: 2026-05-07
+updatedAt: 2026-05-07
+---
+
+Voice AI splits into managed platforms (Retell, Vapi, Bland) and source-available stacks. Pick by volume — platforms get you to first call faster, owned stacks get you to break-even unit economics at scale.

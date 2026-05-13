@@ -1,0 +1,30 @@
+---
+term: system prompt
+title: What is a system prompt?
+definition: A system prompt is the instruction message that establishes an LLM's role, tone, constraints, and tools — separate from the user's message and typically given higher priority by the model.
+summary: System prompts are where most agent behavior lives. A well-crafted system prompt defines the agent's persona, available tools, output format, escalation rules, and refusal conditions. Modern LLMs treat system messages as higher-priority than user messages, which is why prompt-injection defenses rely on the system/user message distinction. Production agents typically have system prompts in the 200–2,000 token range.
+related:
+  - ai-agent
+  - cot
+  - prompt-injection
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: "Anthropic — system prompts"
+    url: https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/system-prompts
+publishedAt: 2026-05-07
+---
+
+## Anatomy of a production system prompt
+
+1. Role / persona
+2. Available tools and when to use each
+3. Output format expectations (JSON shape, tone)
+4. Escalation rules (when to hand off to a human)
+5. Refusal conditions (what not to do)
+6. Examples of correct behavior (few-shot)
+
+## Why structure matters
+
+LLMs follow ordered, explicit instructions better than buried prose. A system prompt with numbered sections and examples consistently outperforms one with the same information written as a paragraph.

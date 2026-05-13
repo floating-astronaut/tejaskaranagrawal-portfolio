@@ -1,0 +1,29 @@
+---
+term: voice agent
+title: What is a voice agent?
+definition: A voice agent is an AI agent that interacts over a phone or voice channel — taking spoken input through speech-to-text, reasoning with an LLM, and responding through text-to-speech, typically with sub-second latency.
+summary: "Voice agents combine four components: a speech-to-text (STT) model that transcribes the caller, a large language model that reasons and decides what to say, a text-to-speech (TTS) model that voices the response, and a real-time transport layer (LiveKit, WebRTC, SIP) that handles the audio. Production voice agents add tool calls, conversation memory, DND lists, recording for compliance, and human handoff. Use cases span COD-confirm calls, AI receptionists, appointment confirmations, and outbound surveys."
+related:
+  - ai-agent
+  - hitl
+relatedProducts:
+  - cod-confirm
+citations:
+  - label: LiveKit Agents documentation
+    url: https://docs.livekit.io/agents/
+  - label: Sarvam AI — speech models
+    url: https://www.sarvam.ai/
+publishedAt: 2026-05-06
+---
+
+## Latency is the headline metric
+
+Humans expect sub-second turn-taking on a phone call. Anything above ~700ms feels broken. That constraint shapes every architectural choice — model selection (smaller, faster), STT streaming vs batch, TTS streaming, transport (WebRTC vs polled HTTP), and where the components run (same region, ideally same data center).
+
+## Indian-language voice
+
+The English voice-agent market is well-served. Indian-language voice (Hindi, Punjabi, Tamil, Telugu, Bengali, Marathi, Gujarati) is much thinner — most generic STT models degrade significantly on regional accents and code-switching. Sarvam was built specifically for Indian languages and is the default STT in Glitch Grow's Voice AI Agent boilerplate.
+
+## Cost structure
+
+Voice-agent cost decomposes into per-minute STT, per-token LLM, per-character TTS, plus telephony. A well-tuned stack hits ~$0.02/min raw infra cost. Managed platforms layer ~$0.05–$0.10/min in markup on top.

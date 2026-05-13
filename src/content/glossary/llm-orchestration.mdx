@@ -1,0 +1,23 @@
+---
+term: LLM orchestration
+title: What is LLM orchestration?
+definition: LLM orchestration is the coordination layer that sequences multiple LLM calls, tool invocations, retries, and conditional branches into a coherent agent or workflow — typically backed by a state machine or graph framework.
+summary: A single LLM call answers a question. An LLM orchestration framework runs many calls together — planning, executing tools, observing results, retrying on failure, branching based on output, persisting state to memory, and handing off to humans for approval. Popular frameworks include LangGraph (graph-based, explicit state), CrewAI (role-based agents), AutoGen (conversational), and custom state machines. Orchestration is what turns LLM capabilities into reliable agentic systems.
+related:
+  - ai-agent
+  - agentic-workflow
+  - mcp-server
+relatedProducts:
+  - ads-agent
+  - sales-agent
+citations:
+  - label: LangGraph
+    url: https://www.langchain.com/langgraph
+publishedAt: 2026-05-06
+---
+
+## Why frameworks matter
+
+You can build an agent with a `while` loop, an `if`/`else`, and a list of tool definitions. People do; it works at small scale. The reason production agents reach for orchestration frameworks is that the simple loop has no story for: persistent state across restarts, parallel branches that converge, retries with backoff, observability of each node's input/output, hot-swappable nodes for A/B testing, and human-in-the-loop interruption.
+
+Glitch Grow's Ads Operator, Sales Agent, and Social Media Agent all use LangGraph — a graph-based orchestration framework where nodes are functions and edges are conditional transitions. The framework handles the persistence, retries, and interrupts; you write the nodes.

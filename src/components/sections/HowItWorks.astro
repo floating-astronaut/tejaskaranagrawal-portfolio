@@ -1,0 +1,184 @@
+---
+import Icon from '~/components/Icon.astro';
+import HowToSchema from '~/components/schema/HowToSchema.astro';
+import { getGeo, resellSingleClient } from '~/lib/geo';
+import InlineCta from '~/components/InlineCta.astro';
+
+const geo = getGeo(Astro.url.pathname);
+const single = resellSingleClient(geo);
+
+interface Step {
+  n: '01' | '02' | '03' | '04';
+  title: string;
+  oneLine: string;
+  artifactTitle: string;
+  artifactKind: 'receipt' | 'deploy' | 'json' | 'invoice';
+  lines: string[];
+}
+
+const steps: Step[] = [
+  {
+    n: '01',
+    title: 'Pick an agent (or the Stack)',
+    oneLine: 'Six agents priced $99–$149. Or the full AI Digital Marketing Stack at $499 once. Pay via Stripe (USD) or Razorpay (INR).',
+    artifactTitle: 'checkout_receipt.json',
+    artifactKind: 'receipt',
+    lines: ['sku: BSK-ALL', 'repo_invite: sent', 'agents_md: included', 'delivery_window: immediate'],
+  },
+  {
+    n: '02',
+    title: 'Open in your AI coding agent',
+    oneLine: 'Claude Code, Codex, OpenClaw, Hermes, NemoClaw, Cursor — anything that reads AGENTS.md works. Paste one prompt from the welcome email.',
+    artifactTitle: 'ai_agent.session',
+    artifactKind: 'deploy',
+    lines: [
+      '> Read AGENTS.md and set this agent up for me.',
+      '✓ detected macOS · Node 20 ✓',
+      '? paste your Meta long-lived token',
+      '✓ verified · ad account live',
+    ],
+  },
+  {
+    n: '03',
+    title: 'Your AI agent installs it for you',
+    oneLine: 'It asks for keys one at a time, validates each, runs the smoke test. Total time, ~30 minutes. You never edit a config file.',
+    artifactTitle: 'install.log',
+    artifactKind: 'json',
+    lines: [
+      '✓ postgres + pgvector ready',
+      '✓ 5 platform MCPs wired',
+      '✓ HITL approvals → Discord',
+      '✓ smoke: cli plan --dry-run OK',
+    ],
+  },
+  {
+    n: '04',
+    title: `Run it for clients · ${single}`,
+    oneLine: 'Once installed, talk to Claude Code in plain English. Plan campaigns, draft outreach, audit sites — agent does the work, you bill the retainer.',
+    artifactTitle: 'invoice_001.pdf',
+    artifactKind: 'invoice',
+    lines: [
+      'Setup: paid',
+      'Managed retainer: monthly',
+      'Brand-config: per-client',
+      'Margin: 90%+ after infra',
+    ],
+  },
+];
+---
+
+<HowToSchema
+  name="How to install and resell a Glitch Grow AI agent"
+  description="From buying the agent to billing your first client — Claude Code installs it for you in four steps."
+  totalTime="PT2H"
+  steps={steps.map((s) => ({
+    name: s.title,
+    text: `${s.oneLine} ${s.lines.join('. ')}.`,
+  }))}
+/>
+
+<section id="how-it-works" class="py-10 md:py-12 lg:py-16 relative">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute right-0 top-1/4 h-[24rem] w-[40rem] max-w-[100vw] rounded-full
+                bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.10),transparent_60%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="max-w-3xl reveal">
+      <p class="eyebrow"><Icon name="cobra" size={14} /> How it works</p>
+      <h2 class="display-heading mt-4">
+        From checkout to client invoice,<br/>
+        <span class="gradient-text">no terminal required.</span>
+      </h2>
+      <p class="section-lead mt-5">
+        Pick an agent, open it in any AI coding agent (Claude Code, Codex, OpenClaw, Hermes, NemoClaw, Cursor — your call), paste one prompt. The AI reads AGENTS.md and installs it for you — asks for keys, validates each, runs the smoke test. Around 30 minutes for the first client. Client #2 onward is muscle memory.
+      </p>
+    </div>
+
+    <div class="hidden md:grid stepper mt-10 grid-cols-12 gap-6 reveal">
+      {steps.map((s, i) => (
+        <input
+          class={`step-input--${s.n}`}
+          type="radio"
+          id={`step-${s.n}`}
+          name="how-step"
+          checked={i === 0}
+        />
+      ))}
+
+      <ol class="md:col-span-5 lg:col-span-4 space-y-2.5" role="list">
+        {steps.map((s) => (
+          <li>
+            <label
+              for={`step-${s.n}`}
+              data-step-label={s.n}
+              class="step-card"
+            >
+              <span class="step-num">{s.n}</span>
+              <span>
+                <strong>{s.title}</strong>
+                <small>{s.oneLine}</small>
+              </span>
+            </label>
+          </li>
+        ))}
+      </ol>
+
+      <div class="md:col-span-7 lg:col-span-8">
+        {steps.map((s) => (
+          <div data-step-panel={s.n} class="proof-card p-6 lg:p-8 h-full">
+            <div class={`artifact-card artifact-${s.artifactKind}`}>
+              <div class="artifact-topbar">
+                <span>Step {s.n}</span>
+                <span>{s.artifactTitle}</span>
+              </div>
+              <div class="technical-code mt-4">
+                {s.lines.map((line) => <p>{line}</p>)}
+              </div>
+            </div>
+            <h3 class="mt-6 text-fluid-2xl font-semibold leading-tight">{s.title}</h3>
+            <p class="mt-3 text-fluid-base text-muted leading-snug">{s.oneLine}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <ol class="md:hidden mt-8 space-y-3 reveal" role="list">
+      {steps.map((s, i) => (
+        <li>
+          <details open={i === 0} class="proof-card group p-0 overflow-hidden">
+            <summary class="cursor-pointer list-none flex items-start gap-3 p-4">
+              <span class="step-num group-open:text-brand transition-colors">{s.n}</span>
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-fluid-base leading-tight">{s.title}</p>
+                <p class="mt-1 text-fluid-xs text-subtle leading-snug">{s.oneLine}</p>
+              </div>
+              <span aria-hidden="true" class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle transition-transform group-open:rotate-90">
+                <Icon name="arrow-right" size={11} />
+              </span>
+            </summary>
+            <div class="px-4 pb-4">
+              <div class={`artifact-card artifact-${s.artifactKind}`}>
+                <div class="artifact-topbar">
+                  <span>Artifact</span>
+                  <span>{s.artifactTitle}</span>
+                </div>
+                <div class="technical-code mt-3">
+                  {s.lines.map((line) => <p>{line}</p>)}
+                </div>
+              </div>
+            </div>
+          </details>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="container-app">
+    <InlineCta
+      source="howitworks"
+      variant="kit"
+      headline="Step zero is the kit. It's free."
+      sub="Sets up your AI coding agent with the MCPs and skills the four steps above depend on."
+    />
+  </div>
+</section>

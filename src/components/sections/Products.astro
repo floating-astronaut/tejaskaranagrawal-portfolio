@@ -1,0 +1,96 @@
+---
+import Icon from '~/components/Icon.astro';
+import { products } from '~/lib/products';
+import { bundles, bundleAlaCarteTotal, bundleDiscountPct } from '~/lib/bundles';
+
+const statusLabel: Record<typeof products[number]['status'], string> = {
+  shipped: 'Shipped',
+  'in-pilot': 'In pilot',
+  'coming-soon': 'Coming soon',
+};
+
+const founderStack = bundles[0];
+const founderStackDiscount = bundleDiscountPct(founderStack);
+const founderStackAlaCarte = bundleAlaCarteTotal(founderStack);
+---
+
+<section id="products" class="py-8 md:py-10 lg:py-12">
+  <div class="container-app">
+    <div class="max-w-2xl reveal">
+      <p class="eyebrow"><Icon name="layers" size={14} /> The catalog</p>
+      <h2 class="mt-4">Six AI agents. One marketing stack.</h2>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Each agent is a self-contained, source-available repo running in
+        production at Glitch Executor Labs — and an MCP that plugs into
+        Claude Code. Buy one to ship a focused service, or buy the bundle
+        to ship a full AI digital marketing stack. You self-host, you own
+        every byte, you run whatever business you want on top.
+      </p>
+    </div>
+
+    <ul class="mt-14 grid gap-5 md:grid-cols-2" role="list">
+      {products.map((p) => (
+        <li class="card p-6 md:p-8 flex flex-col h-full transition-transform hover:-translate-y-0.5">
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span class="inline-flex size-10 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/20">
+                <Icon name={p.icon} size={20} />
+              </span>
+              <div>
+                <p class="font-mono text-fluid-xs text-subtle uppercase tracking-wider">{p.sku}</p>
+                <h3 class="text-fluid-xl">{p.name}</h3>
+              </div>
+            </div>
+            <span class={`text-fluid-xs px-2 py-0.5 rounded-md border ${
+              p.status === 'shipped'
+                ? 'border-brand/40 text-brand'
+                : p.status === 'in-pilot'
+                  ? 'border-electric/40 text-electric'
+                  : 'border-border text-subtle'
+            }`}>
+              {statusLabel[p.status]}
+            </span>
+          </div>
+          <p class="mt-4 text-muted text-fluid-sm flex-1" set:html={p.tagline} />
+          <div class="mt-6 flex items-center justify-between gap-4">
+            <div>
+              <p class="font-mono text-fluid-3xl text-fg leading-none">${p.priceUsd}</p>
+              <p class="mt-1 text-fluid-xs text-subtle">One-time · Lifetime updates</p>
+            </div>
+            <div class="flex flex-col gap-1.5 items-end">
+              <a href={p.buyUrl} class="btn btn-primary">
+                Buy {p.sku} <Icon name="arrow-right" size={14} />
+              </a>
+              <a href={`/products/${p.slug}`} class="text-fluid-xs text-subtle hover:text-brand inline-flex items-center gap-1">
+                Read the spec <Icon name="arrow-up-right" size={12} />
+              </a>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    {/* AI Digital Marketing Stack bundle CTA — anchor the value, drive bundle conversion */}
+    <a
+      href={founderStack.buyUrl}
+      class="mt-10 card p-6 md:p-8 flex flex-wrap gap-6 items-center justify-between hover:-translate-y-0.5 transition-transform border-brand/40 hover:border-brand"
+    >
+      <div class="flex items-start gap-4">
+        <span class="inline-flex size-12 items-center justify-center rounded-md bg-brand/10 text-brand border border-brand/30">
+          <Icon name="bolt" size={22} />
+        </span>
+        <div class="max-w-prose">
+          <p class="font-mono text-fluid-xs text-brand uppercase tracking-wider">{founderStack.sku} · AI Digital Marketing Stack</p>
+          <p class="mt-1 text-fluid-xl font-semibold">All 6 agents + 1:1 call + Discord lifetime</p>
+          <p class="mt-2 text-muted text-fluid-sm">{founderStack.tagline}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="font-mono text-fluid-3xl text-brand leading-none">${founderStack.priceUsd}</p>
+        <p class="mt-1 text-fluid-xs text-subtle">
+          <span class="line-through">${founderStackAlaCarte}</span> · save {founderStackDiscount}%
+        </p>
+      </div>
+    </a>
+  </div>
+</section>

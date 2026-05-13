@@ -1,0 +1,113 @@
+---
+import Icon from '~/components/Icon.astro';
+import InlineCta from '~/components/InlineCta.astro';
+
+const lanes = [
+  {
+    title: 'Starter install',
+    price: '$497-$997',
+    scope: 'One agent, brand config, basic deploy, handoff Loom.',
+    margin: 'Good first sale',
+  },
+  {
+    title: 'Managed retainer',
+    price: '$750-$2.5k/mo',
+    scope: 'Monitoring, prompt tuning, workflow edits, monthly report.',
+    margin: 'Best recurring path',
+  },
+  {
+    title: 'Team rollout',
+    price: '$3k-$8k',
+    scope: 'Multiple agents, client workspace, approvals, support channel.',
+    margin: 'Best agency package',
+  },
+];
+
+const handoff = [
+  'Client brief',
+  'Agent fork',
+  'Config pass',
+  'Deploy',
+  'Invoice',
+  'Support loop',
+];
+---
+
+<section id="resale-ops" class="py-8 md:py-10 lg:py-12 relative overflow-hidden">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="absolute right-[-12rem] top-1/2 h-[24rem] w-[44rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand-blue)/0.10),transparent_62%)] blur-3xl"></div>
+  </div>
+
+  <div class="container-app">
+    <div class="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+      <div class="proof-card reveal p-6 md:p-7">
+        <p class="metadata text-brand"><Icon name="chart" size={14} /> resale operating model</p>
+        <h2 class="display-heading mt-4 text-fluid-3xl md:text-fluid-4xl">
+          Price the agent as an installed system, not a file download.
+        </h2>
+        <p class="section-lead mt-4">
+          The bundle gives you reusable repos and deployment assets. Your premium offer is the implementation, the workflow fit, and the support loop around it.
+        </p>
+
+        <div class="artifact-card mt-6 overflow-hidden">
+          <div class="artifact-topbar">
+            <span></span><span></span><span></span>
+            <p>client-handoff.pipeline</p>
+          </div>
+          <div class="artifact-stage">
+            <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {handoff.map((item, index) => (
+                <div class="rounded-lg border border-border/60 bg-bg/45 p-3">
+                  <p class="technical-code text-[0.68rem] text-subtle">0{index + 1}</p>
+                  <p class="mt-1 text-sm font-semibold text-fg">{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-4 reveal">
+        {lanes.map((lane) => (
+          <article class="offer-card p-5 md:p-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <p class="metadata text-subtle">service lane</p>
+                <h3 class="card-title mt-2 text-xl text-fg">{lane.title}</h3>
+                <p class="mt-2 text-sm text-muted">{lane.scope}</p>
+              </div>
+              <div class="sm:text-right">
+                <p class="technical-code text-2xl text-brand">{lane.price}</p>
+                <p class="mt-1 text-xs text-subtle">{lane.margin}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+
+        <div class="artifact-card p-5">
+          <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p class="metadata text-brand-blue">quality guardrail</p>
+              <p class="mt-2 text-sm text-fg/85">
+                Start with one workflow, one measurable outcome, and one support channel. Add agents only after the first deployment is stable.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2 md:justify-end">
+              <span class="status-pill ok">small scope</span>
+              <span class="status-pill blue">clear SLA</span>
+              <span class="status-pill">monthly proof</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-app">
+    <InlineCta
+      source="resellermath"
+      variant="both"
+      headline="The math works. Start with the free kit."
+      sub="Then bundle six agents for $499 and start delivering at $1,497/mo per client."
+    />
+  </div>
+</section>

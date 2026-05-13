@@ -1,0 +1,260 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import WebApplicationSchema from '~/components/schema/WebApplicationSchema.astro';
+import FAQSchema from '~/components/schema/FAQSchema.astro';
+import BreadcrumbSchema from '~/components/schema/BreadcrumbSchema.astro';
+import EmbedSnippet from '~/components/EmbedSnippet.astro';
+
+const tools = [
+  { id: 'zapier',     label: 'Zapier',           defaultMonthly: 240 },
+  { id: 'make',       label: 'Make (Integromat)', defaultMonthly: 99 },
+  { id: 'n8n',        label: 'n8n Cloud',        defaultMonthly: 50 },
+  { id: 'vapi',       label: 'Vapi / Bland / Retell (voice)', defaultMonthly: 300 },
+  { id: 'smartlead',  label: 'Smartlead / Instantly', defaultMonthly: 97 },
+  { id: 'social',     label: 'Buffer / Hootsuite', defaultMonthly: 99 },
+  { id: 'lindy',      label: 'Lindy / Relevance / Stack AI', defaultMonthly: 100 },
+  { id: 'other',      label: 'Other recurring AI/automation', defaultMonthly: 0 },
+];
+
+const faqs = [
+  {
+    q: 'How is the 3-year TCO calculated?',
+    a: 'Total cost of ownership is your monthly recurring spend × 36 months (assuming flat pricing — typically prices increase). Glitch Grow side adds the one-time $499 plus your self-host infrastructure (default $80/mo single-VM × 36 months).',
+  },
+  {
+    q: 'What infra costs should I assume?',
+    a: 'A single VM running all six agents typically costs $40–$150/month depending on cloud provider and call/email volume. The calculator defaults to $80/mo. Adjust for your situation.',
+  },
+  {
+    q: 'Is this a real comparison?',
+    a: 'It compares fixed costs only. Glitch Grow has setup time (first deploy ~2 hours, subsequent deploys ~20 minutes), and self-hosting requires someone comfortable with Docker/Cloud Run. The SaaS side has no setup but ongoing per-task or per-seat scaling.',
+  },
+  {
+    q: 'Can I share the result?',
+    a: 'Yes — once you adjust the inputs, the URL updates with your numbers. Copy and paste it; whoever opens the link sees the same calculation.',
+  },
+];
+---
+
+<Base
+  title="SaaS-vs-Own Calculator — see your 3-year automation TCO"
+  description="Free calculator: enter your current Zapier, Make, n8n, Vapi, and other AI/automation spend. See 3-year TCO vs a one-time $499 AI Digital Marketing Stack. Shareable result URL."
+  pageType="WebPage"
+>
+  <Fragment slot="head">
+    <WebApplicationSchema
+      name="SaaS-vs-Own Calculator"
+      description="Compare 3-year total cost of ownership for SaaS automation tools vs a one-time Glitch Grow AI Digital Marketing Stack purchase."
+      url="/tools/saas-vs-own-calculator"
+      featureList={[
+        'Inputs for 8 common AI/automation tools',
+        '3-year total cost of ownership comparison',
+        'Adjustable infra cost assumption',
+        'Shareable result URL',
+      ]}
+    />
+    <FAQSchema faqs={faqs} />
+    <BreadcrumbSchema items={[
+      { name: 'Home', url: '/' },
+      { name: 'Tools', url: '/tools' },
+      { name: 'SaaS-vs-Own Calculator', url: '/tools/saas-vs-own-calculator' },
+    ]} />
+  </Fragment>
+
+  <article class="container-app pt-14 pb-24 md:pt-20">
+    <nav aria-label="Breadcrumb" class="text-fluid-xs text-subtle">
+      <a href="/tools" class="hover:text-fg">Tools</a>
+      <span class="mx-1">/</span>
+      <span class="text-muted">SaaS-vs-Own Calculator</span>
+    </nav>
+
+    <header class="mt-6 max-w-3xl">
+      <p class="eyebrow"><Icon name="chart" size={14} /> Calculator</p>
+      <h1 class="mt-4">SaaS-vs-Own — 3-year TCO calculator.</h1>
+      <p class="mt-5 text-fluid-lg text-muted">
+        Plug in your current AI/automation subscriptions. See the 3-year total versus a one-time $499 AI Digital Marketing Stack purchase plus your own infra.
+      </p>
+    </header>
+
+    <section class="mt-10 grid gap-8 lg:grid-cols-12">
+      {/* INPUT panel */}
+      <div class="lg:col-span-7">
+        <div class="card p-6 md:p-8">
+          <h2 class="text-fluid-xl">Your current monthly spend</h2>
+          <p class="mt-2 text-fluid-sm text-subtle">Enter $0 for tools you don't use.</p>
+
+          <ul class="mt-6 space-y-3" role="list" id="tool-inputs">
+            {tools.map((t) => (
+              <li class="flex items-center justify-between gap-4">
+                <label for={`tool-${t.id}`} class="text-fluid-sm text-fg/90 flex-1">{t.label}</label>
+                <div class="flex items-center gap-1">
+                  <span class="text-subtle text-fluid-sm">$</span>
+                  <input
+                    type="number"
+                    id={`tool-${t.id}`}
+                    name={t.id}
+                    min="0"
+                    step="1"
+                    value={t.defaultMonthly}
+                    class="w-24 px-2 py-1.5 rounded-md bg-bg-elev border border-border/60 text-fluid-sm text-fg focus:outline-none focus:ring-2 focus:ring-brand/40"
+                    data-calc-input
+                  />
+                  <span class="text-subtle text-fluid-xs">/mo</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div class="mt-6 pt-6 border-t border-border/40">
+            <label for="infra-cost" class="text-fluid-sm text-fg/90 flex-1">Glitch Grow self-host infra</label>
+            <p class="mt-1 text-fluid-xs text-subtle">Single-VM running all six agents typically lands $40–$150/mo.</p>
+            <div class="mt-2 flex items-center gap-1">
+              <span class="text-subtle text-fluid-sm">$</span>
+              <input type="number" id="infra-cost" min="0" step="5" value="80"
+                class="w-24 px-2 py-1.5 rounded-md bg-bg-elev border border-border/60 text-fluid-sm text-fg focus:outline-none focus:ring-2 focus:ring-brand/40"
+                data-calc-input />
+              <span class="text-subtle text-fluid-xs">/mo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RESULT panel */}
+      <div class="lg:col-span-5">
+        <div class="card p-6 md:p-8 border-brand/30 lg:sticky lg:top-[calc(var(--header-stack-h,7rem)+1rem)]">
+          <p class="label-ui text-brand">3-year total cost</p>
+
+          <div class="mt-5">
+            <p class="text-fluid-xs text-subtle uppercase tracking-wider">Stay on SaaS</p>
+            <p class="mt-1 num-mono text-fluid-3xl text-fg leading-none">$<span id="result-saas">0</span></p>
+            <p class="mt-1 text-fluid-xs text-subtle">$<span id="result-saas-monthly">0</span>/mo × 36 months</p>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-fluid-xs text-subtle uppercase tracking-wider">Glitch Grow + your infra</p>
+            <p class="mt-1 num-mono text-fluid-3xl text-brand leading-none">$<span id="result-glitch">0</span></p>
+            <p class="mt-1 text-fluid-xs text-subtle">$499 once + $<span id="result-infra-monthly">80</span>/mo × 36 months</p>
+          </div>
+
+          <div class="hairline my-6"></div>
+
+          <div>
+            <p class="text-fluid-xs text-subtle uppercase tracking-wider">3-year savings</p>
+            <p class="mt-1 num-mono text-fluid-3xl text-electric leading-none">$<span id="result-savings">0</span></p>
+            <p class="mt-1 text-fluid-xs text-subtle"><span id="result-pct">0</span>% lower than SaaS</p>
+          </div>
+
+          <a href="/products/founder-stack" class="mt-6 btn btn-primary w-full justify-center">
+            Get the AI Digital Marketing Stack <Icon name="arrow-right" size={16} />
+          </a>
+          <button type="button" id="share-btn" class="btn-link w-full justify-center mt-2 text-fluid-sm">
+            <span id="share-label">Copy shareable link</span> <Icon name="arrow-up-right" size={14} />
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <EmbedSnippet
+      toolPath="/tools/saas-vs-own-calculator"
+      toolLabel="SaaS-vs-Own 3-yr TCO calculator"
+    />
+
+    <section class="mt-16 max-w-3xl">
+      <h2 class="text-fluid-2xl">Frequently asked questions</h2>
+      <ul class="mt-5 divide-y divide-border/60 border-y border-border/60" role="list">
+        {faqs.map((f) => (
+          <li>
+            <details class="group">
+              <summary class="flex items-start justify-between gap-4 py-5 cursor-pointer list-none">
+                <span class="text-fluid-base font-medium pr-2">{f.q}</span>
+                <span aria-hidden="true" class="shrink-0 mt-1 size-6 inline-flex items-center justify-center rounded-full border border-border text-subtle transition-transform group-open:rotate-45 group-open:text-brand">
+                  <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </span>
+              </summary>
+              <p class="pb-5 pr-8 text-fluid-sm text-muted leading-relaxed">{f.a}</p>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </article>
+
+  <script is:inline>
+    (() => {
+      const inputs = Array.from(document.querySelectorAll('[data-calc-input]'));
+      const elSaas = document.getElementById('result-saas');
+      const elSaasMonthly = document.getElementById('result-saas-monthly');
+      const elGlitch = document.getElementById('result-glitch');
+      const elInfraMonthly = document.getElementById('result-infra-monthly');
+      const elSavings = document.getElementById('result-savings');
+      const elPct = document.getElementById('result-pct');
+      const fmt = (n) => Math.round(n).toLocaleString('en-US');
+
+      function readInputs() {
+        const params = new URLSearchParams();
+        const vals = {};
+        for (const i of inputs) {
+          const id = i.id.replace(/^tool-/, '');
+          const v = Math.max(0, Number(i.value) || 0);
+          vals[id] = v;
+          if (v) params.set(id, String(v));
+        }
+        return { vals, params };
+      }
+
+      function applyParams() {
+        const u = new URL(window.location.href);
+        for (const i of inputs) {
+          const id = i.id.replace(/^tool-/, '');
+          const p = u.searchParams.get(id);
+          if (p !== null) i.value = String(Math.max(0, Number(p) || 0));
+        }
+      }
+
+      function recalc() {
+        const { vals, params } = readInputs();
+        const infra = vals['infra-cost'] || 0;
+        let saasMonthly = 0;
+        for (const k in vals) {
+          if (k === 'infra-cost') continue;
+          saasMonthly += vals[k];
+        }
+        const saas3y = saasMonthly * 36;
+        const glitch3y = 499 + infra * 36;
+        const savings = Math.max(0, saas3y - glitch3y);
+        const pct = saas3y > 0 ? Math.round((savings / saas3y) * 100) : 0;
+
+        elSaas.textContent = fmt(saas3y);
+        elSaasMonthly.textContent = fmt(saasMonthly);
+        elGlitch.textContent = fmt(glitch3y);
+        elInfraMonthly.textContent = fmt(infra);
+        elSavings.textContent = fmt(savings);
+        elPct.textContent = String(pct);
+
+        // Update URL without reload (shareable state).
+        const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+        window.history.replaceState(null, '', newUrl);
+      }
+
+      applyParams();
+      recalc();
+      for (const i of inputs) i.addEventListener('input', recalc);
+
+      const shareBtn = document.getElementById('share-btn');
+      const shareLabel = document.getElementById('share-label');
+      if (shareBtn) {
+        shareBtn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(window.location.href);
+            shareLabel.textContent = 'Copied!';
+            setTimeout(() => { shareLabel.textContent = 'Copy shareable link'; }, 1600);
+          } catch {
+            shareLabel.textContent = 'Copy failed';
+            setTimeout(() => { shareLabel.textContent = 'Copy shareable link'; }, 1600);
+          }
+        });
+      }
+    })();
+  </script>
+</Base>

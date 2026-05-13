@@ -1,0 +1,74 @@
+---
+import Icon from '~/components/Icon.astro';
+import { site } from '~/lib/site';
+
+interface Props {
+  /** Path of the tool to embed, e.g. "/tools/saas-vs-own-calculator". */
+  toolPath: string;
+  /** Display label for the tool. */
+  toolLabel: string;
+  /** Iframe height in px. Default 720. */
+  height?: number;
+}
+
+const { toolPath, toolLabel, height = 720 } = Astro.props;
+
+const embedUrl = new URL(toolPath + '?embed=1', site.url).toString();
+const iframeSnippet = `<iframe src="${embedUrl}" width="100%" height="${height}" style="border:0;border-radius:12px;max-width:760px;" loading="lazy" title="${toolLabel} — by Glitch Grow"></iframe>\n<p><small>Free tool by <a href="${site.url}">Glitch Grow</a> — buy-once AI agent stacks for agencies.</small></p>`;
+---
+
+<section class="mt-14 max-w-3xl" data-hide-in-embed>
+  <h2 class="text-fluid-2xl">Embed on your site</h2>
+  <p class="mt-3 text-muted text-fluid-sm leading-relaxed">
+    Free to embed on agency comparison pages, blog posts, and SaaS evaluation guides. Just copy the snippet — there's no API key, no rate limit, and the calculator stays current as we update model pricing.
+  </p>
+  <div class="mt-4 card p-0 overflow-hidden">
+    <div class="flex items-center justify-between gap-3 px-4 py-2 border-b border-border/40 text-fluid-xs text-subtle">
+      <span class="font-mono">HTML embed</span>
+      <button
+        type="button"
+        id="copy-embed-snippet"
+        class="text-brand hover:underline text-fluid-xs"
+      >
+        <span id="copy-embed-label">Copy</span>
+      </button>
+    </div>
+    <pre id="embed-snippet-text" class="p-4 text-fluid-xs text-fg/85 overflow-x-auto whitespace-pre leading-relaxed"><code>{iframeSnippet}</code></pre>
+  </div>
+  <p class="mt-3 text-fluid-xs text-subtle">
+    By embedding you agree to keep the credit link visible. We use it as a backlink signal — it's the deal that lets us keep the calculator free.
+  </p>
+</section>
+
+<aside class="embed-credit fixed bottom-0 inset-x-0 border-t border-border/40 bg-bg/95 backdrop-blur-sm">
+  <div class="container-app py-2 flex items-center justify-between gap-3 text-fluid-xs">
+    <span class="text-subtle">{toolLabel}</span>
+    <a
+      href={new URL(toolPath, site.url).toString()}
+      target="_blank"
+      rel="noopener"
+      class="text-brand hover:underline inline-flex items-center gap-1"
+    >
+      Powered by Glitch Grow <Icon name="arrow-up-right" size={11} />
+    </a>
+  </div>
+</aside>
+
+<script is:inline>
+  (() => {
+    const btn = document.getElementById('copy-embed-snippet');
+    const lbl = document.getElementById('copy-embed-label');
+    const pre = document.getElementById('embed-snippet-text');
+    if (!btn || !lbl || !pre) return;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent || '');
+        lbl.textContent = 'Copied!';
+        setTimeout(() => { lbl.textContent = 'Copy'; }, 1600);
+      } catch {
+        lbl.textContent = 'Failed';
+        setTimeout(() => { lbl.textContent = 'Copy'; }, 1600);
+      }
+    });
+  })();
+</script>

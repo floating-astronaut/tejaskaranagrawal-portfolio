@@ -1,0 +1,25 @@
+---
+term: tool use
+title: What is tool use in LLMs?
+definition: Tool use (also called function calling) is the LLM capability of emitting structured requests to call external functions — the host application runs the function and returns the result for the model to continue reasoning.
+summary: Tool use is the primitive that turns LLMs from text generators into agents. The host gives the model a list of function schemas; the model decides when one is needed and emits a JSON call; the host executes and returns the result. Underlying mechanism behind MCP servers, agentic workflows, and most production agent capabilities. Reliability patterns include schema validation, retry on parse errors, and HITL gates on side-effecting calls.
+related:
+  - ai-agent
+  - function-calling
+  - mcp-server
+relatedProducts:
+  - ugc-agent
+  - ads-agent
+citations:
+  - label: "Anthropic — tool use"
+    url: https://docs.anthropic.com/en/docs/build-with-claude/tool-use
+publishedAt: 2026-05-07
+---
+
+## Tool use vs MCP
+
+Tool use is the LLM-side primitive (model can request a call). MCP is the protocol layer (standard for exposing and discovering tools across clients). They compose — most production agents use tool use for in-process tools and MCP for cross-process integrations.
+
+## Reliability
+
+LLM-emitted JSON isn't always valid. Production agents validate against the schema, retry with feedback on parse failures, log every call for replay, and gate side-effecting calls behind HITL approval.
