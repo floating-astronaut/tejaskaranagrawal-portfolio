@@ -1,209 +1,42 @@
 ---
 import { nav, site } from '~/lib/site';
-import { getGeo, geoHomePath, otherGeo } from '~/lib/geo';
-import Icon from './Icon.astro';
-
-const { pathname } = Astro.url;
-const geo = getGeo(pathname);
-const isIN = geo === 'IN';
-// Make hash-only nav links resolve to the current variant's home so that
-// e.g. clicking "Pricing" from /in/ stays on /in/#pricing instead of /#pricing.
-const homePath = geoHomePath(geo);
-const otherCode = otherGeo(geo);
-const otherHref = geoHomePath(otherCode);
-const otherLabel = isIN ? '🌎 USD' : '🇮🇳 INR';
 ---
-
 <a href="#main" class="skip-link">Skip to content</a>
-
-<header
-  id="site-nav"
-  class="border-b border-border/60 bg-bg/70 backdrop-blur-xl"
-  style={`transition: background var(--dur) var(--ease-out-expo);`}
->
+<header id="site-nav" class="border-b border-border/60 bg-bg/70 backdrop-blur-xl">
   <div class="container-app flex h-[var(--nav-h)] items-center justify-between">
-    <a
-      href={homePath}
-      class="flex items-center gap-2.5 font-semibold min-h-11"
-      aria-label={`${site.name} home`}
-    >
-      <img
-        src="/assets/brand/mark-128.png"
-        alt=""
-        width="36"
-        height="36"
-        class="w-9 h-9 object-contain"
-        loading="eager"
-        decoding="async"
-      />
-      <span class="text-fluid-base">
-        Glitch <span class="text-brand">Grow</span>
-      </span>
-      {isIN && (
-        <span class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-border/60 text-fluid-xs text-subtle font-mono ml-1">🇮🇳 IN</span>
-      )}
+    <a href="/" class="flex min-h-11 items-center gap-3 font-semibold" aria-label={`${site.name} home`}>
+      <img src="/assets/brand/mark-128.png" alt="" width="36" height="36" class="h-9 w-9 object-contain" loading="eager" decoding="async" />
+      <span class="text-fluid-base">Tejas <span class="text-brand">Karan</span> Agrawal</span>
     </a>
-
-    <nav aria-label="Primary" class="hidden md:flex items-center gap-7 text-fluid-sm text-muted">
-      {nav.map((item) => {
-        // Hash-only items (#agents, #pricing, …) resolve to the current variant's home.
-        // Path items keep their absolute path (e.g. /case-studies).
-        const isHashOnly = item.href.startsWith('/#');
-        // slice(1) drops the leading '/', keeps the '#agents' part so we
-        // build `/#agents` (global) or `/in/#agents` (India). Earlier
-        // slice(2) lost the '#' and produced a 404'ing `/agents` URL.
-        const href = isHashOnly ? `${homePath}${item.href.slice(1)}` : item.href;
-        const bare = item.href.split('#')[0] || '/';
-        const active = bare !== '/' && pathname.startsWith(bare);
-        return (
-          <a
-            href={href}
-            class="relative hover:text-brand transition-colors"
-            aria-current={active ? 'page' : undefined}
-          >
-            {item.label}
-          </a>
-        );
-      })}
+    <nav aria-label="Primary" class="hidden items-center gap-7 text-fluid-sm text-muted md:flex">
+      {nav.map((item) => <a href={item.href} class="hover:text-brand transition-colors">{item.label}</a>)}
     </nav>
-
-    <div class="hidden md:flex items-center gap-3">
-      {/* Geo toggle — small pill, switches between / and /in */}
-      <a
-        href={otherHref}
-        class="text-fluid-xs text-subtle hover:text-brand inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border/60 hover:border-brand/40 font-mono"
-        title={`Switch to ${isIN ? 'global' : 'India'} variant`}
-      >
-        {otherLabel}
-      </a>
-      <a
-        href={`${homePath}#kit-cta`}
-        data-cta="kit"
-        class="btn btn-ghost text-fluid-sm"
-      >
-        Get the free kit
-        <Icon name="arrow-up-right" size={16} />
-      </a>
-    </div>
-
-    {/* Mobile hamburger — visible only below md breakpoint */}
-    <button
-      id="mobile-nav-toggle"
-      type="button"
-      class="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -mr-1 rounded-md text-fg hover:text-brand focus-visible:ring-2 focus-visible:ring-brand"
-      aria-label="Open navigation menu"
-      aria-expanded="false"
-      aria-controls="mobile-nav-drawer"
-    >
-      <svg
-        width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-        aria-hidden="true"
-      >
-        <path data-ham-lines d="M4 7h16M4 12h16M4 17h16" />
-        <path data-ham-x class="hidden" d="M6 6l12 12M6 18L18 6" />
-      </svg>
+    <a href="#contact" class="btn btn-ghost hidden md:inline-flex">Start a conversation</a>
+    <button id="mobile-nav-toggle" type="button" class="md:hidden inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-fg hover:text-brand" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path data-ham-lines d="M4 7h16M4 12h16M4 17h16" /><path data-ham-x class="hidden" d="M6 6l12 12M6 18L18 6" /></svg>
     </button>
   </div>
 </header>
-
-{/* Mobile drawer — sibling of <header>, positioned below it */}
-<div
-  id="mobile-nav-drawer"
-  class="md:hidden fixed inset-x-0 bottom-0 z-40 hidden flex-col overscroll-contain"
-  style={`top: var(--header-stack-h, var(--nav-h)); background: rgb(var(--color-bg) / 0.98); backdrop-filter: blur(20px);`}
-  aria-hidden="true"
->
-  <nav aria-label="Mobile primary" class="container-app pt-4 flex flex-col divide-y divide-border/50">
-    {nav.map((item) => {
-      // Same logic as the desktop branch above. `slice(1)` keeps the '#'
-      // so `/#pricing` becomes `${homePath}#pricing` (i.e. `/in/#pricing`
-      // on the India variant). The previous `slice(2)` dropped the '#'
-      // and produced `/in/pricing` which 404s and bounced users to /.
-      const isHashOnly = item.href.startsWith('/#');
-      const href = isHashOnly ? `${homePath}${item.href.slice(1)}` : item.href;
-      const bare = item.href.split('#')[0] || '/';
-      const active = bare !== '/' && pathname.startsWith(bare);
-      return (
-        <a
-          href={href}
-          class="flex items-center justify-between min-h-[56px] text-fluid-xl font-medium hover:text-brand transition-colors"
-          aria-current={active ? 'page' : undefined}
-          data-mobile-nav-link
-        >
-          <span>{item.label}</span>
-          <Icon name="arrow-up-right" size={18} class="text-subtle" />
-        </a>
-      );
-    })}
-    {/* Geo toggle in mobile menu — keep visible so users can switch on phones */}
-    <a
-      href={otherHref}
-      class="flex items-center justify-between min-h-[56px] text-fluid-base font-medium text-subtle hover:text-brand transition-colors"
-      data-mobile-nav-link
-    >
-      <span>Switch to {isIN ? 'Global (USD)' : 'India (INR)'}</span>
-      <span class="font-mono">{otherLabel}</span>
-    </a>
+<div id="mobile-nav-drawer" class="fixed inset-x-0 bottom-0 z-40 hidden flex-col bg-bg/98 backdrop-blur-xl md:hidden" style="top: var(--nav-h);" aria-hidden="true">
+  <nav aria-label="Mobile primary" class="container-app flex flex-col divide-y divide-border/50 pt-4">
+    {nav.map((item) => <a href={item.href} class="flex min-h-[56px] items-center justify-between text-fluid-xl font-medium hover:text-brand" data-mobile-nav-link>{item.label}<span class="text-brand">-&gt;</span></a>)}
   </nav>
-  <div class="container-app mt-6 pb-8">
-    <a
-      href={`${homePath}#kit-cta`}
-      data-cta="kit"
-      class="btn btn-primary w-full justify-center"
-      data-mobile-nav-link
-    >
-      Get the free kit
-      <Icon name="arrow-up-right" size={16} />
-    </a>
-  </div>
+  <div class="container-app mt-6 pb-8"><a href="#contact" class="btn btn-primary w-full justify-center" data-mobile-nav-link>Start a conversation</a></div>
 </div>
-
 <script>
   const toggle = document.getElementById('mobile-nav-toggle');
   const drawer = document.getElementById('mobile-nav-drawer');
-
-  function setDrawer(open: boolean): void {
+  function setDrawer(open: boolean) {
     if (!toggle || !drawer) return;
     toggle.setAttribute('aria-expanded', String(open));
     drawer.setAttribute('aria-hidden', String(!open));
     drawer.classList.toggle('hidden', !open);
     drawer.classList.toggle('flex', open);
     document.body.classList.toggle('overflow-hidden', open);
-    const lines = toggle.querySelector('[data-ham-lines]');
-    const x     = toggle.querySelector('[data-ham-x]');
-    if (lines && x) {
-      lines.classList.toggle('hidden', open);
-      x.classList.toggle('hidden', !open);
-    }
+    toggle.querySelector('[data-ham-lines]')?.classList.toggle('hidden', open);
+    toggle.querySelector('[data-ham-x]')?.classList.toggle('hidden', !open);
   }
-
-  if (toggle && drawer) {
-    toggle.addEventListener('click', () => {
-      const open = toggle.getAttribute('aria-expanded') === 'true';
-      setDrawer(!open);
-    });
-    drawer.querySelectorAll('[data-mobile-nav-link]').forEach((link) => {
-      link.addEventListener('click', () => setDrawer(false));
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') setDrawer(false);
-    });
-    // Close on viewport crossing md breakpoint — Astro's View Transitions
-    // can leave drawer state stale otherwise.
-    const mq = window.matchMedia('(min-width: 768px)');
-    mq.addEventListener('change', (e) => {
-      if (e.matches) setDrawer(false);
-    });
-  }
-
-  // Elevate nav shadow once scrolled past hero.
-  const nav = document.getElementById('site-nav');
-  if (nav) {
-    const onScroll = () => {
-      nav.classList.toggle('shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]', window.scrollY > 32);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-  }
+  toggle?.addEventListener('click', () => setDrawer(toggle.getAttribute('aria-expanded') !== 'true'));
+  drawer?.querySelectorAll('[data-mobile-nav-link]').forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setDrawer(false); });
 </script>

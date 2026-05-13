@@ -20,3 +20,4 @@ playwright/.cache/
 
 # Lighthouse CI
 .lighthouseci/
+output/

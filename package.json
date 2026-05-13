@@ -1,5 +1,5 @@
 {
-  "name": "glitch-grow-site",
+  "name": "tejaskaranagrawal-portfolio",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -58,5 +58,6 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "description": "Static personal portfolio for Tejas Karan Agrawal"
 }

@@ -1,63 +1,43 @@
 ---
 import Base from '~/layouts/Base.astro';
-import Hero from '~/components/sections/Hero.astro';
-import SaasVsOwnership from '~/components/sections/SaasVsOwnership.astro';
-import TwoPaths from '~/components/sections/TwoPaths.astro';
-import HowItWorks from '~/components/sections/HowItWorks.astro';
-import AgentsCatalog from '~/components/sections/AgentsCatalog.astro';
-import ResellerMath from '~/components/sections/ResellerMath.astro';
-import Testimonials from '~/components/sections/Testimonials.astro';
-import KitPricing from '~/components/sections/KitPricing.astro';
-import FAQ from '~/components/sections/FAQ.astro';
-import CallToAction from '~/components/sections/CallToAction.astro';
-import KitCtaStrip from '~/components/sections/KitCtaStrip.astro';
+
+const systems = [
+  { name: 'Glitch Grow', type: 'AI growth stack', detail: 'Ads, sales, SEO, UGC, voice, and social agents packaged for real operators.', proof: 'Agent architecture, MCP servers, product site, launch assets', href: 'https://grow.glitchexecutor.com' },
+  { name: 'Glitch Edge', type: 'Betting automation platform', detail: 'Static site, React app, FastAPI backend, Cloudbet and Polymarket flows, bankroll safety.', proof: 'Astro site, app UI, API, worker review, safety gates', href: 'https://edge.glitchexecutor.com' },
+  { name: 'Glitch Trade', type: 'Trading intelligence', detail: 'Signal systems, backtest presentation, portfolio-style proof pages, Cloudflare deploys.', proof: 'Research pages, analytics visuals, infrastructure', href: 'https://trade.glitchexecutor.com' },
+  { name: 'COD Confirm', type: 'Commerce ops agent', detail: 'Order confirmation workflow for COD stores with scheduler, attempts, and issue triage.', proof: 'Server review, schema checks, operational findings', href: '#work' },
+];
+
+const stack = ['Cloudflare tunnels and DNS', 'Shopify theme and storefront work', 'Meta, TikTok, Google ads automation', 'FastAPI, Python workers, Postgres', 'Astro, React, Node, nginx', 'Remotion and AI UGC video pipelines', 'GitHub and Codeberg operations', 'Linux server maintenance and hardening'];
+const notes = ['Server-first product building beats dashboard theater.', 'Proof is better than a pitch: show live systems, logs, builds, and assets.', 'AI agents are useful when they are wired into boring business plumbing.'];
 ---
-
-<!--
-  Sequence reads as a story, with kit-conversion CTAs threaded between
-  every major payoff so scroll-bouncers always have a button in view:
-
-   Hero
-   SaasVsOwnership   — the shift
-   TwoPaths          — persona match
-   ┃ KitCtaStrip · outline
-   HowItWorks
-   AgentsCatalog     — product
-   ┃ KitCtaStrip · solid
-   ResellerMath      — money
-   Testimonials      — social proof
-   ┃ KitCtaStrip · outline
-   KitPricing        — the close
-   FAQ
-   CallToAction
--->
-<Base pageType="WebPage" ogSlug="home">
-  <Hero />
-  <SaasVsOwnership />
-  <TwoPaths />
-  <KitCtaStrip
-    id="kit-strip-1"
-    variant="outline"
-    headline="Match found. Grab the kit before you keep reading."
-    subhead="The free Vibe Coder Kit installs into Claude Code, Codex, Cursor, OpenClaw — any AI coding agent — in under a minute. Required before you deploy any of our paid agents."
-  />
-  <HowItWorks />
-  <AgentsCatalog />
-  <KitCtaStrip
-    id="kit-strip-2"
-    variant="solid"
-    headline="Six agents. One stack. Free kit gets you ready in 60 seconds."
-    subhead="The kit pre-wires every MCP and skill the paid agents expect. Skip it and your install is twice as long."
-  />
-  <ResellerMath />
-  <Testimonials />
-  <KitCtaStrip
-    id="kit-strip-3"
-    variant="outline"
-    headline="Convinced? Start with the free kit."
-    subhead="Yours to keep. No card. No subscription. Required for the $499 Stack."
-  />
-  <KitPricing />
-  <FAQ />
-  <CallToAction />
+<Base pageType="AboutPage">
+  <section class="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-20">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/2 top-[-18rem] h-[48rem] w-[78rem] max-w-[115vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.22),transparent_62%)] blur-3xl"></div>
+      <div class="absolute right-[-10rem] top-40 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.18),transparent_62%)] blur-3xl"></div>
+    </div>
+    <div class="container-app grid gap-10 lg:grid-cols-12 lg:items-center">
+      <div class="lg:col-span-7 reveal">
+        <h1 class="text-fluid-5xl font-bold leading-[0.92] tracking-tighter md:text-fluid-6xl">Tejas Karan<br /><span class="gradient-text">Agrawal</span></h1>
+        <p class="mt-7 max-w-[58ch] text-fluid-lg text-muted">I build AI agents, commerce systems, and server-first growth infrastructure. The work sits between code, ads, operations, Cloudflare, Shopify, and the unglamorous parts that make software actually run.</p>
+        <div class="mt-9 flex flex-wrap items-center gap-4"><a href="#work" class="btn btn-primary px-6 py-3.5 text-fluid-base">See the work</a><a href="#contact" class="btn btn-ghost text-fluid-base">Start a conversation</a></div>
+        <p class="mt-4 text-fluid-xs text-subtle">Toronto based · building Glitch Executor Labs · shipping mostly on Linux servers.</p>
+      </div>
+      <div class="lg:col-span-5 reveal lg:self-center">
+        <div class="relative">
+          <div aria-hidden="true" class="absolute -inset-4 rounded-2xl bg-[radial-gradient(circle_at_30%_20%,rgb(var(--color-brand)/0.25),transparent_60%)] blur-2xl"></div>
+          <div class="card relative overflow-hidden p-3">
+            <img class="aspect-video w-full rounded-lg object-cover" src="/hero/agent-loop.jpg" alt="A live Glitch Grow agent workflow running in a browser window" width="1280" height="720" loading="eager" decoding="async" />
+            <div class="grid gap-2 p-4 font-mono text-fluid-xs text-muted"><div class="flex items-center justify-between border-b border-border/60 pb-3"><span>operator-console</span><span class="text-brand">live systems</span></div><span>&gt; inspect server, ship app, verify route</span><span class="text-brand">ok: build passed · nginx ready · cloudflare proxied</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="work" class="border-y border-border/60 bg-surface/35 py-6"><div class="container-app grid gap-4 md:grid-cols-4">{systems.map((system) => <a href={system.href} class="group min-h-[132px] border-l border-border/60 py-2 pl-4 transition-colors hover:border-brand"><p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle">{system.type}</p><h2 class="mt-3 text-fluid-xl font-semibold tracking-tight group-hover:text-brand">{system.name}</h2><p class="mt-2 text-fluid-sm text-muted">{system.proof}</p></a>)}</div></section>
+  <section id="systems" class="py-16 md:py-24"><div class="container-app"><div class="max-w-3xl"><h2>Selected systems, not resume bullets.</h2><p class="mt-4 text-fluid-lg text-muted">The portfolio is built around shipped work: agent products, storefront migrations, Cloudflare cutovers, server hardening, ads automation, UGC rendering, and bug reviews on real services.</p></div><div class="mt-10 grid gap-4">{systems.map((system, idx) => <a href={system.href} class="card grid gap-5 p-5 transition-transform hover:-translate-y-0.5 md:grid-cols-[0.16fr_0.34fr_1fr_0.22fr] md:items-center md:p-6"><div class="font-mono text-fluid-sm text-brand">0{idx + 1}</div><div><h3 class="text-fluid-2xl">{system.name}</h3><p class="mt-1 text-fluid-sm text-subtle">{system.type}</p></div><p class="text-fluid-base text-muted">{system.detail}</p><p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle md:text-right">Open proof</p></a>)}</div></div></section>
+  <section id="stack" class="relative border-y border-border/60 bg-surface/35 py-16 md:py-24"><div class="container-app grid gap-10 lg:grid-cols-12"><div class="lg:col-span-5"><h2>Operating stack.</h2><p class="mt-4 text-fluid-lg text-muted">The pattern is simple: choose boring infrastructure, wire it into revenue workflows, then make agents operate inside those rails.</p></div><div class="grid gap-3 sm:grid-cols-2 lg:col-span-7">{stack.map((item) => <div class="card min-h-[88px] p-4"><p class="text-fluid-base text-fg">{item}</p></div>)}</div></div></section>
+  <section id="writing" class="py-16 md:py-24"><div class="container-app grid gap-10 lg:grid-cols-12"><div class="lg:col-span-5"><h2>Notes from the floor.</h2><p class="mt-4 text-fluid-lg text-muted">Short operator notes I keep coming back to while building agents and infrastructure.</p></div><div class="grid gap-4 lg:col-span-7">{notes.map((note) => <article class="border-b border-border/60 pb-5"><h3 class="text-fluid-xl">{note}</h3><p class="mt-2 text-fluid-sm text-subtle">More writing will live here after the homepage is deployed.</p></article>)}</div></div></section>
+  <section id="contact" class="pb-16 md:pb-24"><div class="container-app"><div class="card relative overflow-hidden p-6 md:p-10"><div aria-hidden="true" class="absolute right-[-8rem] top-[-8rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.20),transparent_62%)] blur-3xl"></div><div class="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center"><div><h2>Have a system that needs to exist?</h2><p class="mt-4 max-w-2xl text-fluid-lg text-muted">Send the messy version: repo, domain, offer, server, funnel, or broken workflow. I care more about the operational shape than a polished brief.</p></div><a href="mailto:support@glitchexecutor.com?subject=Portfolio%20inquiry%20for%20Tejas" class="btn btn-primary justify-center px-6 py-3.5">Email Tejas</a></div></div></div></section>
 </Base>
