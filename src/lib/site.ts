@@ -5,21 +5,22 @@ export const site = {
   parent: 'Glitch Executor Labs',
   domain: 'tejaskaranagrawal.com',
   url: 'https://tejaskaranagrawal.com',
-  contactEmail: 'support@glitchexecutor.com',
+  contactEmail: 'tejaskagrawalgwl@gmail.com',
   discordInvite: 'https://discord.gg/HBZFKMts',
-  tagline: 'AI agents, commerce systems, and server-first growth infrastructure.',
+  tagline: 'DTC growth operator, performance marketer, and AI systems builder.',
   description:
-    'Personal portfolio of Tejas Karan Agrawal: AI agents, Shopify commerce systems, ads automation, Cloudflare infrastructure, server operations, and proof-of-work projects from Glitch Executor Labs.',
+    'Portfolio of Tejas Karan Agrawal: DTC growth, performance marketing, Shopify commerce, AI agents, SEO, content strategy, automation, education, and selected proof-of-work projects.',
   ogImage: '/assets/brand/og-image.png',
   twitter: '@glitchexecutor',
+  linkedin: 'https://www.linkedin.com/in/tejas-karan-agrawal',
   locale: 'en-US',
 } as const;
 
 export const nav = [
-  { href: '/#work', label: 'Work' },
+  { href: '/#proof', label: 'Proof' },
+  { href: '/#experience', label: 'Experience' },
+  { href: '/#education', label: 'Education' },
   { href: '/#systems', label: 'Systems' },
-  { href: '/#stack', label: 'Stack' },
-  { href: '/#writing', label: 'Writing' },
   { href: '/#contact', label: 'Contact' },
 ] as const;
 

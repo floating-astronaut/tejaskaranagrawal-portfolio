@@ -1,43 +1,280 @@
 ---
 import Base from '~/layouts/Base.astro';
+import { site } from '~/lib/site';
 
-const systems = [
-  { name: 'Glitch Grow', type: 'AI growth stack', detail: 'Ads, sales, SEO, UGC, voice, and social agents packaged for real operators.', proof: 'Agent architecture, MCP servers, product site, launch assets', href: 'https://grow.glitchexecutor.com' },
-  { name: 'Glitch Edge', type: 'Betting automation platform', detail: 'Static site, React app, FastAPI backend, Cloudbet and Polymarket flows, bankroll safety.', proof: 'Astro site, app UI, API, worker review, safety gates', href: 'https://edge.glitchexecutor.com' },
-  { name: 'Glitch Trade', type: 'Trading intelligence', detail: 'Signal systems, backtest presentation, portfolio-style proof pages, Cloudflare deploys.', proof: 'Research pages, analytics visuals, infrastructure', href: 'https://trade.glitchexecutor.com' },
-  { name: 'COD Confirm', type: 'Commerce ops agent', detail: 'Order confirmation workflow for COD stores with scheduler, attempts, and issue triage.', proof: 'Server review, schema checks, operational findings', href: '#work' },
+const proof = [
+  { value: '$100K+', label: 'DTC revenue generated across four dropshipping stores in one year.' },
+  { value: '20%', label: 'Net profit margin reached while running lean, self-operated e-commerce systems.' },
+  { value: '4', label: 'Stores launched, operated, marketed, and automated from manual beginnings.' },
+  { value: '2', label: 'Postgraduate programs in digital/content marketing and digital media.' },
 ];
 
-const stack = ['Cloudflare tunnels and DNS', 'Shopify theme and storefront work', 'Meta, TikTok, Google ads automation', 'FastAPI, Python workers, Postgres', 'Astro, React, Node, nginx', 'Remotion and AI UGC video pipelines', 'GitHub and Codeberg operations', 'Linux server maintenance and hardening'];
-const notes = ['Server-first product building beats dashboard theater.', 'Proof is better than a pitch: show live systems, logs, builds, and assets.', 'AI agents are useful when they are wired into boring business plumbing.'];
+const experience = [
+  {
+    role: 'Dropshipping / Ecom Specialist',
+    org: 'Urban Classics Store',
+    period: 'June 2023 - Present',
+    place: 'India / Remote',
+    summary: 'Built and scaled DTC stores end to end: product, funnels, ads, operations, supplier coordination, customer service, and retention.',
+    bullets: [
+      'Launched and scaled four dropshipping stores past $100,000 in revenue with 20% net profit margin in one year.',
+      'Moved operations from manual execution into automated workflows so multiple stores could scale without adding heavy process drag.',
+      'Built complete TOF, MOF, BOF, and post-purchase funnels, including WhatsApp API retention loops.',
+    ],
+  },
+  {
+    role: 'Performance Marketing Specialist',
+    org: 'Quickads',
+    period: 'October 2025 - March 2026',
+    place: 'Texas, United States',
+    summary: 'Performance marketing role focused on campaign execution, creative testing, and growth systems for digital acquisition.',
+    bullets: ['Applied paid growth, creative iteration, and performance analysis across campaign workflows.'],
+  },
+  {
+    role: 'Digital Marketing Specialist',
+    org: 'IndoFolk Wellness',
+    period: 'January 2025 - June 2025',
+    place: 'India',
+    summary: 'Supported USA and Canada Shopify launches with paid social strategy, creative coordination, and campaign reporting.',
+    bullets: [
+      'Helped launch Shopify stores for North American markets.',
+      'Developed TikTok marketing strategies and worked with designers on performance-oriented ad creative.',
+      'Translated campaign data into actionable changes for better engagement and conversion rates.',
+    ],
+  },
+  {
+    role: 'Content Specialist',
+    org: 'CableCommunity',
+    period: 'August 2021 - February 2022',
+    place: 'Delhi',
+    summary: 'Owned content, SEO, and social distribution for renewable energy and electric vehicle topics.',
+    bullets: [
+      'Built a daily blog content strategy to increase traffic and engagement.',
+      'Published technical articles and keyword-rich snippets to strengthen topical authority.',
+      'Executed on-page and off-page SEO while managing social channels that routed readers back to the site.',
+    ],
+  },
+  {
+    role: 'Founder',
+    org: 'Rcube Biotech & Energy LLP',
+    period: 'November 2020 - August 2021',
+    place: 'Gwalior, Madhya Pradesh',
+    summary: 'Founded an innovation-led venture around Smart Bio-Toilet Bed and Smart Bio-Toilet Chair products for disabled and paralyzed people.',
+    bullets: ['Took a first-of-its-kind product concept in India from idea into a positioned product with a clear user need and quality-led differentiation.'],
+  },
+  {
+    role: 'Digital Marketing Executive',
+    org: 'Digistreet Infocom Private Limited',
+    period: 'January 2019 - June 2020',
+    place: 'Greater Noida',
+    summary: 'Ran social, PPC, SEO, and team execution for a startup focused heavily on real estate lead generation.',
+    bullets: [
+      'Managed social media and pay-per-click campaigns for lead generation.',
+      'Handled SEO and organic traffic activity for the company website.',
+      'Managed a four-person team as the company\'s first hire.',
+    ],
+  },
+  {
+    role: 'SIES Executive',
+    org: 'ASC Group',
+    period: 'March 2018 - April 2018',
+    place: 'Noida Area, India',
+    summary: 'Client servicing and documentation work for DGFT submissions in the SIES department.',
+    bullets: ['Prepared client documents and supported DGFT submission workflows.'],
+  },
+];
+
+const education = [
+  { school: 'York University', credential: 'Postgraduate - Digital and Content Marketing', period: 'September 2025 - May 2026' },
+  { school: 'George Brown College', credential: 'Postgraduate - Marketing Management, Digital Media', period: 'May 2024 - April 2025' },
+  { school: 'Mahatma Gandhi Chitrakoot Gramodaya Vishwavidyalaya', credential: 'Bachelor of Commerce - Marketing', period: '2015 - 2018' },
+  { school: 'Gwalior Glory High School', credential: 'Commerce and Maths', period: '2013 - 2015' },
+  { school: 'The Scindia School', credential: 'High School', period: '2010 - 2013' },
+];
+
+const skills = [
+  'DTC growth',
+  'Performance marketing',
+  'Content strategy',
+  'Shopify',
+  'Meta ads',
+  'TikTok marketing',
+  'SEO',
+  'WhatsApp API funnels',
+  'AI agents',
+  'Cloudflare',
+  'FastAPI',
+  'Astro / React',
+  'Linux servers',
+  'Data-led creative testing',
+];
+
+const certifications = ['HubSpot Marketing Hub Software', 'CannSell Standard Certification', 'Instagram Unchained - Latest Instagram Marketing Hacks', 'Digital Marketing'];
+const languages = ['English - full professional', 'Hindi - native or bilingual'];
+
+const systems = [
+  { name: 'Glitch Grow', type: 'AI growth stack', detail: 'Ads, sales, SEO, UGC, voice, and social agents packaged for operators who need revenue workflows, not dashboards.', proof: 'Agent architecture, MCP servers, product site, launch assets', href: 'https://grow.glitchexecutor.com' },
+  { name: 'Glitch Edge', type: 'Betting automation platform', detail: 'Static site, React app, FastAPI backend, Cloudbet and Polymarket flows, bankroll safety, and worker review.', proof: 'Astro site, app UI, API, worker review, safety gates', href: 'https://edge.glitchexecutor.com' },
+  { name: 'Glitch Trade', type: 'Trading intelligence', detail: 'Signal systems, backtest presentation, portfolio proof pages, analytics visuals, and Cloudflare deployment work.', proof: 'Research pages, analytics visuals, infrastructure', href: 'https://trade.glitchexecutor.com' },
+  { name: 'COD Confirm', type: 'Commerce ops agent', detail: 'Order confirmation workflow for COD stores with scheduler logic, attempt states, and operational issue triage.', proof: 'Server review, schema checks, operational findings', href: '#systems' },
+];
 ---
-<Base pageType="AboutPage">
-  <section class="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-20">
+<Base
+  pageType="AboutPage"
+  title="DTC Growth Portfolio"
+  description="A complete portfolio for Tejas Karan Agrawal covering DTC growth, performance marketing, Shopify, content, education, AI systems, and selected proof-of-work projects."
+>
+  <section class="relative overflow-hidden pt-8 pb-14 md:pt-12 md:pb-20">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
-      <div class="absolute left-1/2 top-[-18rem] h-[48rem] w-[78rem] max-w-[115vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.22),transparent_62%)] blur-3xl"></div>
-      <div class="absolute right-[-10rem] top-40 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.18),transparent_62%)] blur-3xl"></div>
+      <div class="absolute left-1/2 top-[-18rem] h-[48rem] w-[78rem] max-w-[115vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.18),transparent_62%)] blur-3xl"></div>
+      <div class="absolute right-[-10rem] top-40 h-[32rem] w-[32rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.14),transparent_62%)] blur-3xl"></div>
     </div>
     <div class="container-app grid gap-10 lg:grid-cols-12 lg:items-center">
       <div class="lg:col-span-7 reveal">
-        <h1 class="text-fluid-5xl font-bold leading-[0.92] tracking-tighter md:text-fluid-6xl">Tejas Karan<br /><span class="gradient-text">Agrawal</span></h1>
-        <p class="mt-7 max-w-[58ch] text-fluid-lg text-muted">I build AI agents, commerce systems, and server-first growth infrastructure. The work sits between code, ads, operations, Cloudflare, Shopify, and the unglamorous parts that make software actually run.</p>
-        <div class="mt-9 flex flex-wrap items-center gap-4"><a href="#work" class="btn btn-primary px-6 py-3.5 text-fluid-base">See the work</a><a href="#contact" class="btn btn-ghost text-fluid-base">Start a conversation</a></div>
-        <p class="mt-4 text-fluid-xs text-subtle">Toronto based · building Glitch Executor Labs · shipping mostly on Linux servers.</p>
+        <p class="font-mono text-fluid-xs uppercase tracking-wider text-brand">Toronto - DTC growth - AI systems</p>
+        <h1 class="mt-4 text-fluid-5xl font-bold leading-[0.92] tracking-tighter md:text-fluid-6xl">Tejas Karan<br /><span class="gradient-text">Agrawal</span></h1>
+        <p class="mt-7 max-w-[60ch] text-fluid-lg text-muted">I am a digital growth operator with a performance marketing base, DTC store-building experience, and a current focus on AI systems that connect ads, content, commerce, and operations.</p>
+        <p class="mt-4 max-w-[60ch] text-fluid-base text-muted">This site is my portfolio version of a resume: education, roles, proof, and the systems I am building under Glitch Executor Labs.</p>
+        <div class="mt-9 flex flex-wrap items-center gap-4">
+          <a href="#experience" class="btn btn-primary px-6 py-3.5 text-fluid-base">View experience</a>
+          <a href={site.linkedin} target="_blank" rel="noreferrer" class="btn btn-ghost text-fluid-base">LinkedIn</a>
+        </div>
+        <p class="mt-4 text-fluid-xs text-subtle">Toronto, Ontario - English and Hindi - DTC, content, paid growth, Shopify, AI automation.</p>
       </div>
       <div class="lg:col-span-5 reveal lg:self-center">
-        <div class="relative">
-          <div aria-hidden="true" class="absolute -inset-4 rounded-2xl bg-[radial-gradient(circle_at_30%_20%,rgb(var(--color-brand)/0.25),transparent_60%)] blur-2xl"></div>
-          <div class="card relative overflow-hidden p-3">
-            <img class="aspect-video w-full rounded-lg object-cover" src="/hero/agent-loop.jpg" alt="A live Glitch Grow agent workflow running in a browser window" width="1280" height="720" loading="eager" decoding="async" />
-            <div class="grid gap-2 p-4 font-mono text-fluid-xs text-muted"><div class="flex items-center justify-between border-b border-border/60 pb-3"><span>operator-console</span><span class="text-brand">live systems</span></div><span>&gt; inspect server, ship app, verify route</span><span class="text-brand">ok: build passed · nginx ready · cloudflare proxied</span></div>
+        <div class="card relative overflow-hidden p-3">
+          <img class="aspect-video w-full rounded-lg object-cover" src="/hero/agent-loop.jpg" alt="A live growth automation workflow running in a browser window" width="1280" height="720" loading="eager" decoding="async" />
+          <div class="grid gap-3 p-4">
+            <div class="flex items-center justify-between border-b border-border/60 pb-3 font-mono text-fluid-xs text-muted"><span>portfolio-snapshot</span><span class="text-brand">resume plus proof</span></div>
+            <div class="grid gap-2 text-fluid-sm text-muted">
+              <span>DTC revenue, paid acquisition, Shopify launches, SEO, content systems.</span>
+              <span class="text-brand">Now building AI growth infrastructure on real servers.</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <section id="work" class="border-y border-border/60 bg-surface/35 py-6"><div class="container-app grid gap-4 md:grid-cols-4">{systems.map((system) => <a href={system.href} class="group min-h-[132px] border-l border-border/60 py-2 pl-4 transition-colors hover:border-brand"><p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle">{system.type}</p><h2 class="mt-3 text-fluid-xl font-semibold tracking-tight group-hover:text-brand">{system.name}</h2><p class="mt-2 text-fluid-sm text-muted">{system.proof}</p></a>)}</div></section>
-  <section id="systems" class="py-16 md:py-24"><div class="container-app"><div class="max-w-3xl"><h2>Selected systems, not resume bullets.</h2><p class="mt-4 text-fluid-lg text-muted">The portfolio is built around shipped work: agent products, storefront migrations, Cloudflare cutovers, server hardening, ads automation, UGC rendering, and bug reviews on real services.</p></div><div class="mt-10 grid gap-4">{systems.map((system, idx) => <a href={system.href} class="card grid gap-5 p-5 transition-transform hover:-translate-y-0.5 md:grid-cols-[0.16fr_0.34fr_1fr_0.22fr] md:items-center md:p-6"><div class="font-mono text-fluid-sm text-brand">0{idx + 1}</div><div><h3 class="text-fluid-2xl">{system.name}</h3><p class="mt-1 text-fluid-sm text-subtle">{system.type}</p></div><p class="text-fluid-base text-muted">{system.detail}</p><p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle md:text-right">Open proof</p></a>)}</div></div></section>
-  <section id="stack" class="relative border-y border-border/60 bg-surface/35 py-16 md:py-24"><div class="container-app grid gap-10 lg:grid-cols-12"><div class="lg:col-span-5"><h2>Operating stack.</h2><p class="mt-4 text-fluid-lg text-muted">The pattern is simple: choose boring infrastructure, wire it into revenue workflows, then make agents operate inside those rails.</p></div><div class="grid gap-3 sm:grid-cols-2 lg:col-span-7">{stack.map((item) => <div class="card min-h-[88px] p-4"><p class="text-fluid-base text-fg">{item}</p></div>)}</div></div></section>
-  <section id="writing" class="py-16 md:py-24"><div class="container-app grid gap-10 lg:grid-cols-12"><div class="lg:col-span-5"><h2>Notes from the floor.</h2><p class="mt-4 text-fluid-lg text-muted">Short operator notes I keep coming back to while building agents and infrastructure.</p></div><div class="grid gap-4 lg:col-span-7">{notes.map((note) => <article class="border-b border-border/60 pb-5"><h3 class="text-fluid-xl">{note}</h3><p class="mt-2 text-fluid-sm text-subtle">More writing will live here after the homepage is deployed.</p></article>)}</div></div></section>
-  <section id="contact" class="pb-16 md:pb-24"><div class="container-app"><div class="card relative overflow-hidden p-6 md:p-10"><div aria-hidden="true" class="absolute right-[-8rem] top-[-8rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.20),transparent_62%)] blur-3xl"></div><div class="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center"><div><h2>Have a system that needs to exist?</h2><p class="mt-4 max-w-2xl text-fluid-lg text-muted">Send the messy version: repo, domain, offer, server, funnel, or broken workflow. I care more about the operational shape than a polished brief.</p></div><a href="mailto:support@glitchexecutor.com?subject=Portfolio%20inquiry%20for%20Tejas" class="btn btn-primary justify-center px-6 py-3.5">Email Tejas</a></div></div></div></section>
+
+  <section id="proof" class="border-y border-border/60 bg-surface/35 py-6">
+    <div class="container-app grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {proof.map((item) => (
+        <div class="min-h-[126px] border-l border-border/60 py-2 pl-4">
+          <p class="text-fluid-4xl font-bold tracking-tight text-brand">{item.value}</p>
+          <p class="mt-2 text-fluid-sm text-muted">{item.label}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section id="positioning" class="py-16 md:py-24">
+    <div class="container-app grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h2>What I bring.</h2>
+        <p class="mt-4 text-fluid-lg text-muted">My background is not only coding or only marketing. It is the overlap: finding an offer, building the funnel, running acquisition, reading the data, and improving the system until it can scale.</p>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3 lg:col-span-7">
+        <article class="card p-5"><h3 class="text-fluid-xl">Growth execution</h3><p class="mt-3 text-fluid-sm text-muted">Paid social, TikTok strategy, Meta workflows, conversion analysis, creative feedback, and full-funnel e-commerce thinking.</p></article>
+        <article class="card p-5"><h3 class="text-fluid-xl">Commerce operations</h3><p class="mt-3 text-fluid-sm text-muted">Shopify launches, dropshipping operations, logistics, suppliers, customer service, and post-purchase retention loops.</p></article>
+        <article class="card p-5"><h3 class="text-fluid-xl">AI infrastructure</h3><p class="mt-3 text-fluid-sm text-muted">Server-first agent work, Cloudflare deployment, backend APIs, automation, and practical systems that support revenue workflows.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience" class="border-y border-border/60 bg-surface/35 py-16 md:py-24">
+    <div class="container-app">
+      <div class="max-w-3xl">
+        <h2>Experience.</h2>
+        <p class="mt-4 text-fluid-lg text-muted">A career path through commerce, growth, content, performance marketing, startup execution, and now AI-enabled operating systems.</p>
+      </div>
+      <div class="mt-10 grid gap-4">
+        {experience.map((item, idx) => (
+          <article class="card grid gap-5 p-5 md:grid-cols-[0.12fr_0.28fr_1fr] md:p-6">
+            <div class="font-mono text-fluid-sm text-brand">{String(idx + 1).padStart(2, '0')}</div>
+            <div>
+              <h3 class="text-fluid-2xl">{item.role}</h3>
+              <p class="mt-1 text-fluid-base text-fg">{item.org}</p>
+              <p class="mt-2 font-mono text-fluid-xs uppercase tracking-wider text-subtle">{item.period}</p>
+              <p class="mt-1 text-fluid-sm text-subtle">{item.place}</p>
+            </div>
+            <div>
+              <p class="text-fluid-base text-muted">{item.summary}</p>
+              <ul class="mt-4 grid gap-2 text-fluid-sm text-muted">
+                {item.bullets.map((bullet) => <li class="border-l border-brand/40 pl-3">{bullet}</li>)}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="py-16 md:py-24">
+    <div class="container-app grid gap-10 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h2>Education and credentials.</h2>
+        <p class="mt-4 text-fluid-lg text-muted">Formal marketing education in Canada layered on top of practical e-commerce and digital marketing execution.</p>
+      </div>
+      <div class="grid gap-8 lg:col-span-7">
+        <div class="grid gap-3">
+          {education.map((item) => (
+            <article class="card grid gap-3 p-5 sm:grid-cols-[1fr_auto] sm:items-start">
+              <div><h3 class="text-fluid-xl">{item.school}</h3><p class="mt-2 text-fluid-sm text-muted">{item.credential}</p></div>
+              <p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle sm:text-right">{item.period}</p>
+            </article>
+          ))}
+        </div>
+        <div class="grid gap-4 md:grid-cols-2">
+          <article class="card p-5"><h3 class="text-fluid-xl">Certifications</h3><div class="mt-4 flex flex-wrap gap-2">{certifications.map((item) => <span class="rounded-full border border-border bg-surface-2 px-3 py-1 text-fluid-xs text-muted">{item}</span>)}</div></article>
+          <article class="card p-5"><h3 class="text-fluid-xl">Languages</h3><div class="mt-4 flex flex-wrap gap-2">{languages.map((item) => <span class="rounded-full border border-border bg-surface-2 px-3 py-1 text-fluid-xs text-muted">{item}</span>)}</div></article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" class="border-y border-border/60 bg-surface/35 py-16 md:py-20">
+    <div class="container-app grid gap-8 lg:grid-cols-12 lg:items-start">
+      <div class="lg:col-span-4"><h2>Skills.</h2><p class="mt-4 text-fluid-lg text-muted">The practical stack I use to connect marketing execution with technical systems.</p></div>
+      <div class="flex flex-wrap gap-3 lg:col-span-8">
+        {skills.map((skill) => <span class="rounded-full border border-border bg-bg/60 px-4 py-2 text-fluid-sm text-muted">{skill}</span>)}
+      </div>
+    </div>
+  </section>
+
+  <section id="systems" class="py-16 md:py-24">
+    <div class="container-app">
+      <div class="max-w-3xl">
+        <h2>Selected systems.</h2>
+        <p class="mt-4 text-fluid-lg text-muted">Glitch Executor work stays here as proof, but it is now one part of the portfolio: the current chapter where growth, automation, and infrastructure come together.</p>
+      </div>
+      <div class="mt-10 grid gap-4">
+        {systems.map((system, idx) => (
+          <a href={system.href} class="card grid gap-5 p-5 transition-transform hover:-translate-y-0.5 md:grid-cols-[0.12fr_0.28fr_1fr_0.18fr] md:items-center md:p-6">
+            <div class="font-mono text-fluid-sm text-brand">0{idx + 1}</div>
+            <div><h3 class="text-fluid-2xl">{system.name}</h3><p class="mt-1 text-fluid-sm text-subtle">{system.type}</p></div>
+            <p class="text-fluid-base text-muted">{system.detail}</p>
+            <p class="font-mono text-fluid-xs uppercase tracking-wider text-subtle md:text-right">{system.proof}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="pb-16 md:pb-24">
+    <div class="container-app">
+      <div class="card relative overflow-hidden p-6 md:p-10">
+        <div aria-hidden="true" class="absolute right-[-8rem] top-[-8rem] h-[24rem] w-[24rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.16),transparent_62%)] blur-3xl"></div>
+        <div class="relative grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+          <div>
+            <h2>Use this like my resume.</h2>
+            <p class="mt-4 max-w-2xl text-fluid-lg text-muted">For growth roles, collaborations, portfolio review, or operator conversations, this page is the fastest way to understand my background and current work.</p>
+          </div>
+          <div class="flex flex-col gap-3 sm:flex-row md:flex-col">
+            <a href={`mailto:${site.contactEmail}?subject=Portfolio%20inquiry%20for%20Tejas`} class="btn btn-primary justify-center px-6 py-3.5">Email Tejas</a>
+            <a href={site.linkedin} target="_blank" rel="noreferrer" class="btn btn-ghost justify-center px-6 py-3.5">LinkedIn</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </Base>
