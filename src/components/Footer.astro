@@ -1,5 +1,6 @@
 ---
 import { nav, site } from '~/lib/site';
+import SocialIcons from '~/components/SocialIcons.astro';
 const year = new Date().getFullYear();
 ---
 <footer class="border-t border-border/60 bg-bg">
@@ -11,6 +12,7 @@ const year = new Date().getFullYear();
       </div>
       <p class="max-w-prose-tight text-fluid-sm text-muted">{site.description}</p>
       <p class="mt-4 text-fluid-xs text-subtle">A founder-operator portfolio built from real shipped systems.</p>
+      <div class="mt-5"><SocialIcons label="Footer social profiles" /></div>
     </div>
     <nav aria-label="Footer primary" class="text-fluid-sm">
       <h3 class="eyebrow mb-4">Navigate</h3>

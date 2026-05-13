@@ -1,5 +1,6 @@
 ---
 import { nav, site } from '~/lib/site';
+import SocialIcons from '~/components/SocialIcons.astro';
 ---
 <a href="#main" class="skip-link">Skip to content</a>
 <header id="site-nav" class="border-b border-border/60 bg-bg/70 backdrop-blur-xl">
@@ -11,7 +12,10 @@ import { nav, site } from '~/lib/site';
     <nav aria-label="Primary" class="hidden items-center gap-7 text-fluid-sm text-muted md:flex">
       {nav.map((item) => <a href={item.href} class="hover:text-brand transition-colors">{item.label}</a>)}
     </nav>
-    <a href="#contact" class="btn btn-ghost hidden md:inline-flex">Start a conversation</a>
+    <div class="hidden items-center gap-3 lg:flex">
+      <SocialIcons size="sm" label="Header social profiles" />
+      <a href="#contact" class="btn btn-ghost">Start a conversation</a>
+    </div>
     <button id="mobile-nav-toggle" type="button" class="md:hidden inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-fg hover:text-brand" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path data-ham-lines d="M4 7h16M4 12h16M4 17h16" /><path data-ham-x class="hidden" d="M6 6l12 12M6 18L18 6" /></svg>
     </button>
@@ -21,7 +25,10 @@ import { nav, site } from '~/lib/site';
   <nav aria-label="Mobile primary" class="container-app flex flex-col divide-y divide-border/50 pt-4">
     {nav.map((item) => <a href={item.href} class="flex min-h-[56px] items-center justify-between text-fluid-xl font-medium hover:text-brand" data-mobile-nav-link>{item.label}<span class="text-brand">-&gt;</span></a>)}
   </nav>
-  <div class="container-app mt-6 pb-8"><a href="#contact" class="btn btn-primary w-full justify-center" data-mobile-nav-link>Start a conversation</a></div>
+  <div class="container-app mt-6 grid gap-5 pb-8">
+    <SocialIcons label="Mobile social profiles" />
+    <a href="#contact" class="btn btn-primary w-full justify-center" data-mobile-nav-link>Start a conversation</a>
+  </div>
 </div>
 <script>
   const toggle = document.getElementById('mobile-nav-toggle');

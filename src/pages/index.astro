@@ -112,16 +112,6 @@ const skills = [
 const certifications = ['HubSpot Marketing Hub Software', 'CannSell Standard Certification', 'Instagram Unchained - Latest Instagram Marketing Hacks', 'Digital Marketing'];
 const languages = ['English - full professional', 'Hindi - native or bilingual'];
 
-const socialLinks = [
-  { name: 'Facebook', handle: 'afloatingastronaut', href: 'https://www.facebook.com/afloatingastronaut', icon: '/icons/social/facebook.svg' },
-  { name: 'Instagram', handle: 'a.floating.astronaut', href: 'https://www.instagram.com/a.floating.astronaut/', icon: '/icons/social/instagram.svg' },
-  { name: 'TikTok', handle: '@a.floating.astronaut', href: 'https://www.tiktok.com/@a.floating.astronaut', icon: '/icons/social/tiktok.svg' },
-  { name: 'LinkedIn', handle: 'tejas-karan-agrawal', href: 'https://www.linkedin.com/in/tejas-karan-agrawal/', icon: '/icons/social/linkedin.svg' },
-  { name: 'Reddit', handle: 'Awkward-Prize-66', href: 'https://www.reddit.com/user/Awkward-Prize-66/', icon: '/icons/social/reddit.svg' },
-  { name: 'Snapchat', handle: 'monster_staw', href: 'https://www.snapchat.com/add/monster_staw', icon: '/icons/social/snapchat.svg' },
-  { name: 'WhatsApp', handle: '+91 90399 99585', href: 'https://wa.me/919039999585', icon: '/icons/social/whatsapp.svg' },
-];
-
 const systems = [
   { name: 'Glitch Grow', type: 'AI growth stack', detail: 'Ads, sales, SEO, UGC, voice, and social agents packaged for operators who need revenue workflows, not dashboards.', proof: 'Agent architecture, MCP servers, product site, launch assets', href: 'https://grow.glitchexecutor.com' },
   { name: 'Glitch Edge', type: 'Betting automation platform', detail: 'Static site, React app, FastAPI backend, Cloudbet and Polymarket flows, bankroll safety, and worker review.', proof: 'Astro site, app UI, API, worker review, safety gates', href: 'https://edge.glitchexecutor.com' },
@@ -174,28 +164,6 @@ const systems = [
           <p class="mt-2 text-fluid-sm text-muted">{item.label}</p>
         </div>
       ))}
-    </div>
-  </section>
-
-  <section id="social" class="border-b border-border/60 bg-bg py-10 md:py-12">
-    <div class="container-app grid gap-6 lg:grid-cols-[0.32fr_1fr]">
-      <div>
-        <p class="font-mono text-fluid-xs uppercase tracking-wider text-brand">Social proof and daily work</p>
-        <h2 class="mt-3 text-fluid-3xl">Find me across channels.</h2>
-      </div>
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {socialLinks.map((item) => (
-          <a href={item.href} target="_blank" rel="noreferrer" class="group flex min-h-[88px] items-center gap-4 rounded-lg border border-border bg-surface/65 px-4 py-3 transition-colors hover:border-brand hover:bg-surface-2" aria-label={`${item.name}: ${item.handle}`}>
-            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border bg-bg/80 text-fg transition-colors group-hover:border-brand">
-              <img src={item.icon} alt="" width="22" height="22" loading="lazy" decoding="async" class="h-5 w-5 invert" />
-            </span>
-            <span class="min-w-0">
-              <span class="block text-fluid-base font-semibold leading-tight text-fg group-hover:text-brand">{item.name}</span>
-              <span class="mt-1 block break-all font-mono text-fluid-xs text-subtle">{item.handle}</span>
-            </span>
-          </a>
-        ))}
-      </div>
     </div>
   </section>
 

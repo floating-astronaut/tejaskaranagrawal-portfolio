@@ -28,6 +28,16 @@ export const legalNav = [
   { href: '/#contact', label: 'Contact' },
 ] as const;
 
+export const socialLinks = [
+  { name: 'Facebook', handle: 'afloatingastronaut', href: 'https://www.facebook.com/afloatingastronaut', icon: '/icons/social/facebook.svg' },
+  { name: 'Instagram', handle: 'a.floating.astronaut', href: 'https://www.instagram.com/a.floating.astronaut/', icon: '/icons/social/instagram.svg' },
+  { name: 'TikTok', handle: '@a.floating.astronaut', href: 'https://www.tiktok.com/@a.floating.astronaut', icon: '/icons/social/tiktok.svg' },
+  { name: 'LinkedIn', handle: 'tejas-karan-agrawal', href: 'https://www.linkedin.com/in/tejas-karan-agrawal/', icon: '/icons/social/linkedin.svg' },
+  { name: 'Reddit', handle: 'Awkward-Prize-66', href: 'https://www.reddit.com/user/Awkward-Prize-66/', icon: '/icons/social/reddit.svg' },
+  { name: 'Snapchat', handle: 'monster_staw', href: 'https://www.snapchat.com/add/monster_staw', icon: '/icons/social/snapchat.svg' },
+  { name: 'WhatsApp', handle: '+91 90399 99585', href: 'https://wa.me/919039999585', icon: '/icons/social/whatsapp.svg' },
+] as const;
+
 export const aiClients = {
   list: ['Codex', 'Claude Code', 'Cursor', 'OpenClaw'] as const,
   chips: 'Codex · Claude Code · Cursor · OpenClaw',
