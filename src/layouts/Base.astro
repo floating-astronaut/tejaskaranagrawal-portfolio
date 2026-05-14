@@ -82,6 +82,18 @@ const pageLd = { '@context': 'https://schema.org', '@type': pageType, name: full
     <slot name="head" />
   </head>
   <body class="bg-bg text-fg">
+    {/* GTM noscript fallback — mirrors the head bootstrap in Analytics.astro.
+        Container ID kept in sync with PUBLIC_GTM_CONTAINER_ID (defaults to
+        GTM-MPJTQK3K, the site-specific "Tejas Protfolio" container). */}
+    {(import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? 'GTM-MPJTQK3K') && (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? 'GTM-MPJTQK3K'}`}
+          height="0" width="0"
+          style="display:none;visibility:hidden"
+        ></iframe>
+      </noscript>
+    )}
     <div id="header-stack" class="fixed top-0 inset-x-0 z-50"><Nav /></div>
     <main id="main" tabindex="-1" class="pt-[var(--nav-h)]"><slot /></main>
     <Footer />
