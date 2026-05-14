@@ -3,7 +3,8 @@
 // so a site can run GTM + GA4 + Meta + TikTok side-by-side or any subset.
 //
 // Cloudflare Pages → Project → Settings → Environment variables:
-//   PUBLIC_GTM_CONTAINER_ID    GTM-XXXXXXX        — same across all Glitch sites
+//   PUBLIC_GTM_CONTAINER_ID    GTM-MPJTQK3K        — site-specific "Tejas Protfolio" container
+//                                                    (NOT the shared glitchexecutor container GTM-TMXWNNLJ)
 //   PUBLIC_GA_MEASUREMENT_ID   G-XXXXXXXXXX        — per site (one stream / site)
 //   PUBLIC_META_PIXEL_ID       16-digit ID         — per site
 //   PUBLIC_TIKTOK_PIXEL_ID     CXXXXXXXXXXXXX      — per site
@@ -24,11 +25,11 @@ const domain   = import.meta.env.PUBLIC_ANALYTICS_DOMAIN ?? '';
 const umamiId  = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID ?? '';
 const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/script.js';
 
-const gtmId         = import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? '';
+const gtmId         = import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? 'GTM-MPJTQK3K';
 // Site-specific GA4 stream for tejaskaranagrawal.com. Mirrors the
-// "GA4 · Portfolio" tag inside GTM container GTM-TMXWNNLJ so direct
-// gtag and GTM both flow into the same property (525334404 — "Glitch
-// Website"). Previously defaulted to G-BSCM9RJE2B which belongs to a
+// site-specific GTM container GTM-MPJTQK3K ("Tejas Protfolio") and
+// also fires the inline gtag fallback to property 525334404 — "Glitch
+// Website". Previously defaulted to G-BSCM9RJE2B which belongs to a
 // different stream and silently broke attribution.
 const gaId          = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-4FTFP3NEQV';
 const metaPixelId   = import.meta.env.PUBLIC_META_PIXEL_ID ?? '1432185795378354';

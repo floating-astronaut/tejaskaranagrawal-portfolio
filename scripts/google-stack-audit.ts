@@ -34,7 +34,7 @@ const HOMEPAGE = `https://${DOMAIN}/`;
 // GTM-TMXWNNLJ tag "GA4 · Portfolio"). Analytics.astro previously
 // defaulted to G-BSCM9RJE2B which belongs to a different stream.
 const GA_MEASUREMENT_ID = 'G-4FTFP3NEQV';
-const GTM_CONTAINER_PUBLIC_ID = 'GTM-TMXWNNLJ';
+const GTM_CONTAINER_PUBLIC_ID = 'GTM-MPJTQK3K';
 
 const SCOPES = [
   'https://www.googleapis.com/auth/webmasters.readonly',

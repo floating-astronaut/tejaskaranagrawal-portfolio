@@ -72,7 +72,7 @@ put_secret CLOUDFLARE_ACCOUNT_ID "$CF_ACCOUNT_ID"
 # ── 5. write public build-time variables ──────────────────────────────
 echo
 echo "→ variables"
-put_variable PUBLIC_GTM_CONTAINER_ID    'GTM-TMXWNNLJ'
+put_variable PUBLIC_GTM_CONTAINER_ID    'GTM-MPJTQK3K'
 put_variable PUBLIC_GA_MEASUREMENT_ID   'G-TK7ZYVLJRQ'
 put_variable PUBLIC_META_PIXEL_ID       '1273074111260527'
 put_variable PUBLIC_TIKTOK_PIXEL_ID     'D7SUUBRC77UEKU3Q0FSG'
