@@ -22,8 +22,8 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
-const SITE = 'sc-domain:grow.glitchexecutor.com';
-const SITEMAP_URL = 'https://grow.glitchexecutor.com/sitemap-index.xml';
+const SITE = 'sc-domain:tejaskaranagrawal.com';
+const SITEMAP_URL = 'https://tejaskaranagrawal.com/sitemap-index.xml';
 // Default SA key path. The key was relocated when the SEO agent repo
 // was split into -pkg (saleable) + -private (brand-side). Falls back to
 // the legacy location if the new one isn't present.
@@ -37,27 +37,7 @@ const SCOPE = SUBMIT
   : 'https://www.googleapis.com/auth/webmasters.readonly';
 
 const STRATEGIC_URLS = [
-  'https://grow.glitchexecutor.com/',
-  'https://grow.glitchexecutor.com/products/founder-stack',
-  'https://grow.glitchexecutor.com/products',
-  'https://grow.glitchexecutor.com/alternatives',
-  'https://grow.glitchexecutor.com/alternatives/zapier',
-  'https://grow.glitchexecutor.com/alternatives/n8n',
-  'https://grow.glitchexecutor.com/vs',
-  'https://grow.glitchexecutor.com/vs/n8n',
-  'https://grow.glitchexecutor.com/glossary',
-  'https://grow.glitchexecutor.com/glossary/mcp-server',
-  'https://grow.glitchexecutor.com/tools',
-  'https://grow.glitchexecutor.com/tools/saas-vs-own-calculator',
-  'https://grow.glitchexecutor.com/compare',
-  'https://grow.glitchexecutor.com/for',
-  'https://grow.glitchexecutor.com/for/agency-owners',
-  'https://grow.glitchexecutor.com/blog',
-  'https://grow.glitchexecutor.com/blog/buy-once-ai-agent-stack',
-  'https://grow.glitchexecutor.com/blog/managed-ai-ads-service-1497',
-  'https://grow.glitchexecutor.com/blog/hitl-outbound-loop',
-  'https://grow.glitchexecutor.com/blog/shopify-saas-33-scopes-gdpr',
-  'https://grow.glitchexecutor.com/blog/ai-ugc-video-pipeline',
+  'https://tejaskaranagrawal.com/',
 ];
 
 function b64url(buf: Buffer | string): string {
