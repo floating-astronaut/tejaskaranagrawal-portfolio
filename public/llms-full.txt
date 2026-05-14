@@ -62,18 +62,9 @@ Real-estate lead-gen focus. Managed social + PPC for lead gen; SEO/organic traff
 | Content systems | Deep | 7 | Daily-cadence at CableCommunity |
 | Team management | Working | 3 | 4-person team at Digistreet |
 
-## Writing portfolio (operator essays)
+## Writing portfolio
 
-The blog at /blog is first-person operator content — these are not theoretical pieces, each maps to actual systems built or campaigns run:
-
-- **Buy-once AI agent stack** — math on owning vs subscribing to Zapier/Make/n8n/Vapi for an agency
-- **AI UGC video pipeline** — how to generate performance UGC at scale without sacrificing brand
-- **Managed AI ads service at $1,497/mo** — productized service economics for AI-augmented ad ops
-- **Voice AI for India COD confirmation** — voice-agent stack tuned for Indian-language outbound, $0.02/min raw cost
-- **HITL outbound loop** — human-in-the-loop approval workflows for outbound sales
-- **Production MCP server patterns** — building MCP servers that survive multi-client load
-- **Shopify SaaS with 33 scopes + GDPR** — Shopify app review compliance
-- **Client-side pixel loss** — iOS 17+ attribution decay and how to compensate
+Tejas's long-form writing currently lives on the parent properties (grow.glitchexecutor.com/blog and edge.glitchexecutor.com/blog) rather than on this personal portfolio. Subjects covered: AI agent stack economics, AI UGC pipelines, managed AI ads service economics, voice AI for India COD confirmation, HITL outbound workflows, production MCP server patterns, Shopify app review (33 scopes / GDPR), iOS 17+ pixel attribution loss, quant-betting (Kelly fraction, CLV).
 
 ## Contact + verification
 

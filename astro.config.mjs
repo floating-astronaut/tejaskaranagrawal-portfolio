@@ -5,8 +5,10 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
 
-// Public site URL — overridden by CF Pages env in CI.
-const SITE = process.env.PUBLIC_SITE_URL || 'https://grow.glitchexecutor.com';
+// Public site URL — overridden by CF Pages env in CI. Default must match
+// the production domain so the sitemap and canonical URLs are correct
+// even when PUBLIC_SITE_URL isn't injected at build time.
+const SITE = process.env.PUBLIC_SITE_URL || 'https://tejaskaranagrawal.com';
 
 // Static output. Runtime endpoints we need (contact form) are served by
 // Cloudflare Pages Functions directly out of `/functions/`, not via an Astro
