@@ -25,7 +25,12 @@ const umamiId  = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID ?? '';
 const umamiSrc = import.meta.env.PUBLIC_UMAMI_SRC ?? 'https://cloud.umami.is/script.js';
 
 const gtmId         = import.meta.env.PUBLIC_GTM_CONTAINER_ID ?? '';
-const gaId          = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-BSCM9RJE2B';
+// Site-specific GA4 stream for tejaskaranagrawal.com. Mirrors the
+// "GA4 · Portfolio" tag inside GTM container GTM-TMXWNNLJ so direct
+// gtag and GTM both flow into the same property (525334404 — "Glitch
+// Website"). Previously defaulted to G-BSCM9RJE2B which belongs to a
+// different stream and silently broke attribution.
+const gaId          = import.meta.env.PUBLIC_GA_MEASUREMENT_ID ?? 'G-4FTFP3NEQV';
 const metaPixelId   = import.meta.env.PUBLIC_META_PIXEL_ID ?? '1432185795378354';
 const tiktokPixelId = import.meta.env.PUBLIC_TIKTOK_PIXEL_ID ?? '';
 ---

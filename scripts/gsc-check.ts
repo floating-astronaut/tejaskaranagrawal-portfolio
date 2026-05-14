@@ -22,7 +22,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 
-const SITE = 'sc-domain:tejaskaranagrawal.com';
+const SITE = 'https://tejaskaranagrawal.com/';
 const SITEMAP_URL = 'https://tejaskaranagrawal.com/sitemap-index.xml';
 // Default SA key path. The key was relocated when the SEO agent repo
 // was split into -pkg (saleable) + -private (brand-side). Falls back to

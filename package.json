@@ -18,6 +18,7 @@
     "links:audit": "node --experimental-strip-types scripts/link-audit.ts",
     "gsc:check": "node --experimental-strip-types scripts/gsc-check.ts",
     "gsc:submit": "node --experimental-strip-types scripts/gsc-check.ts --submit",
+    "google:audit": "node --experimental-strip-types scripts/google-stack-audit.ts",
     "backlinks:watch": "node --experimental-strip-types scripts/backlink-watch.ts",
     "team:fetch": "node --experimental-strip-types scripts/fetch-team-photos.ts",
     "og:generate": "node --experimental-strip-types scripts/generate-og-images.ts",
