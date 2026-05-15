@@ -1,0 +1,433 @@
+---
+import Base from '~/layouts/Base.astro';
+import { site } from '~/lib/site';
+
+const SKOOL_URL = 'https://www.skool.com/solo-operator/about';
+const FOUNDING_PRICE = '$97';
+const FULL_PRICE = '$197';
+const FOUNDING_SEATS = 30;
+
+const portfolio = [
+  {
+    name: 'Glitch Grow',
+    href: 'https://grow.glitchexecutor.com',
+    line: 'Six AI marketing agents — ads, social, sales, voice, SEO, UGC',
+    role: 'Built the agent stack from scratch over six months. Multi-tenant MCP, brain memory, Postgres-backed state.',
+  },
+  {
+    name: 'Indian D2C operations',
+    href: null,
+    line: 'Ayurpet wellness, Urban Classics, Mokshya — Shopify, Meta ads, COD workflows',
+    role: 'Active client work running ads, creative, COD-confirm, and retention for real brands.',
+  },
+  {
+    name: 'Glitch Trade',
+    href: 'https://trade.glitchexecutor.com',
+    line: 'ML-driven trading signals — 8-model ensemble, cTrader data pipeline',
+    role: 'Built the data collection + scoring system. Not financial advice; the system trades, I do not.',
+  },
+  {
+    name: 'Multi-Store Theme Manager',
+    href: 'https://shopify.glitchexecutor.com',
+    line: 'Internal Shopify app — manage 4+ stores from one console',
+    role: 'Ships as a private app to my own brand portfolio. Side-effect of running multiple stores.',
+  },
+  {
+    name: 'Performance marketing — past',
+    href: null,
+    line: 'Quickads (Texas), Udemy, Night Habit, IndoFolk Wellness',
+    role: 'Worked inside larger creative-and-targeting workflows. Saw what scales and what does not.',
+  },
+];
+
+const inside = [
+  {
+    h: 'Weekly ops teardowns',
+    p: 'Every week I share what I actually shipped — the agent change, the campaign that worked, the wallet that hit, the offer that died. Real numbers, real screen recordings.',
+  },
+  {
+    h: 'Working agents, not theory',
+    p: 'Members get the Glitch Grow agent stack as community deliverables — ads agent, social agent, sales agent, SEO agent, voice agent, UGC agent. Real code. Run it yourself.',
+  },
+  {
+    h: 'Brain MCP access',
+    p: 'Read access to the central memory my agents share — what creative is winning, what offers are paying, what hooks the field is testing. The same dashboard I check first thing every morning.',
+  },
+  {
+    h: 'Monthly live Q&A',
+    p: 'One call per month, recorded, transcripted, indexed. Ask anything: stack, hiring, ad creative, infra, what to ignore. No coaches, no funnel guys — just the work.',
+  },
+  {
+    h: 'Discord room',
+    p: 'Async help between calls. Members workshop creatives, share what is converting in their geo, post wins and burns. I am in there daily.',
+  },
+  {
+    h: 'Stack updates as they ship',
+    p: 'When I ship a new agent or upgrade an existing one, members get it the same day. Lifetime access while the community exists.',
+  },
+];
+
+const principles = [
+  {
+    n: '01',
+    h: 'Agents, not employees.',
+    p: 'Every repeatable workflow becomes a small agent that runs on cron, reports to a Postgres table, and reads from a shared brain. The team headcount stays at one. The output grows.',
+  },
+  {
+    n: '02',
+    h: 'Decide once, automate forever.',
+    p: 'Anything I have decided three times manually becomes a rule the agent enforces. The decision lives in the codebase, not my head.',
+  },
+  {
+    n: '03',
+    h: 'Boring infra, sharp output.',
+    p: 'Postgres, Astro, FastAPI, nginx, systemd. No exotic stack chasing. The boring layer lets the agents do the interesting work.',
+  },
+  {
+    n: '04',
+    h: 'Volume over polish.',
+    p: 'A median operator runs 5 creatives over 2 weeks. I run 50 over 48 hours and let the data pick winners. Speed of iteration is the moat.',
+  },
+  {
+    n: '05',
+    h: 'Diversified income, single operator.',
+    p: 'Marketing agents, D2C operations, trading systems, digital products — different cash cycles, one person running all of it. Some of it is public. Some funds the rest quietly.',
+  },
+];
+
+const forWho = [
+  'You are already running something — agency, freelance, D2C, content — and you have hit the ceiling of your own hours.',
+  'You can read code or pair with an AI agent that does. You do not need to be a senior engineer.',
+  'You want operational leverage, not another course on mindset or content.',
+  'You ship more than you talk about shipping.',
+];
+
+const notFor = [
+  'You are looking for a quick get-rich-online recipe. This is operations work, not a hack.',
+  'You will not touch a terminal or an AI coding agent. The stack is friendly but real.',
+  'You want to be told exactly what business to start. The community shows how I operate; you bring your business.',
+  'You do not have at least 5 hours a week to actually build.',
+];
+
+const faqs = [
+  {
+    q: 'Is this another AI guru course?',
+    a: 'No. There is no faceless content blueprint, no Instagram theme page method, no $10k/mo in 30 days promise. The community is a window into how one person operates a portfolio of AI-automated businesses. You see the actual code, ops, dashboards, mistakes. You learn by watching the work, not by watching a slide deck.',
+  },
+  {
+    q: 'How is this different from Glitch Grow?',
+    a: 'Glitch Grow is the agent stack — six AI marketing agents you can buy and own. Solo Operator is the community where I show how I use them, plus the rest of my stack (D2C ops, trading systems, infra patterns). Members get the Glitch Grow agents included while their membership is active. Glitch Grow alone is the tool; Solo Operator is the manual plus the room.',
+  },
+  {
+    q: 'Why $97 now?',
+    a: `Founding member pricing for the first ${FOUNDING_SEATS} members. The community is brand-new in May 2026. I want operators who join before the room is full and shape the early direction. After ${FOUNDING_SEATS} seats, price moves to ${FULL_PRICE}/month permanently. Founding members are grandfathered at $97/month for as long as they stay.`,
+  },
+  {
+    q: 'Can I cancel anytime?',
+    a: 'Yes. Skool handles the subscription; cancel in two clicks from your account. No retention call, no save-offer email. Refunds within the first 14 days, no questions.',
+  },
+  {
+    q: 'What is the time commitment?',
+    a: 'Five to ten hours a week if you want to ship alongside what the community is doing. One hour a week if you just want the teardowns. The recordings + transcripts mean you can catch up async. Live calls are once a month.',
+  },
+  {
+    q: 'Do you teach trading or betting?',
+    a: 'No. The trading work I do is ML-driven and runs autonomously; I do not pick stocks for a community. Anything finance-adjacent in the community is about the system architecture (data, signals, automation), not "buy this asset." If you came for picks, this is the wrong room.',
+  },
+  {
+    q: 'How big is the community now?',
+    a: 'Brand new in May 2026. You are early. That is the whole point of founding pricing — small room, direct access to me, you help shape the structure. As the room grows, the founding rate stays for you.',
+  },
+  {
+    q: 'Where is your proof?',
+    a: 'On this site. The portfolio above is real — every project links to a live surface. Glitch Grow ships actual code under a BSL license. The performance marketing roles are on my LinkedIn. The 2Cr+ in dropshipping was real revenue across real stores. The community shows how the systems run; the portfolio shows that they exist.',
+  },
+];
+---
+
+<Base
+  title="Solo Operator — run your business with AI agents instead of a team"
+  description="A community for solopreneurs who want AI-first operational leverage. Inside: working agents, weekly ops teardowns, brain MCP access, and monthly live calls. Founding-member pricing at $97/month."
+  pageType="WebPage"
+>
+  {/* ─── Hero ───────────────────────────────────────────────────────── */}
+  <section class="relative overflow-hidden pt-10 pb-16 md:pt-16 md:pb-24">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="absolute left-1/2 top-[-20rem] h-[52rem] w-[80rem] max-w-[120vw] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-brand)/0.18),transparent_62%)] blur-3xl"></div>
+      <div class="absolute right-[-12rem] top-32 h-[34rem] w-[34rem] rounded-full bg-[radial-gradient(circle_at_center,rgb(var(--color-electric)/0.14),transparent_62%)] blur-3xl"></div>
+    </div>
+
+    <div class="container-app">
+      <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-[rgb(var(--color-brand))]">
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-[rgb(var(--color-brand))]"></span>
+        Solo Operator · Skool community · founding cohort open
+      </div>
+
+      <h1 class="mt-4 max-w-4xl text-fluid-5xl font-semibold tracking-tight">
+        I run my businesses with AI agents instead of a team.
+        <span class="text-[rgb(var(--color-brand))]">Solo Operator is where I show you how.</span>
+      </h1>
+
+      <div class="mt-6 max-w-3xl space-y-4 text-fluid-lg text-muted">
+        <p>
+          I am one person. From one laptop in Toronto I run Glitch Grow (six AI marketing agents), three Indian D2C brands, an ML-driven trading system, and a handful of automation infrastructure projects. Different cash cycles, one operator, AI agents instead of employees.
+        </p>
+        <p>
+          Some of the portfolio is public. Some of it funds the rest quietly. Either way the underlying pattern is the same: every workflow that used to need a person now runs as a small agent reporting to a shared memory. The team headcount stays at one. The output keeps growing.
+        </p>
+        <p>
+          Solo Operator is a Skool community for operators who want to build the same way — not by hiring, not by chasing the next mindset course, but by replacing the work itself with agents you own.
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href={SKOOL_URL} target="_blank" rel="noreferrer" class="btn btn-primary justify-center px-6 py-3.5">
+          Join Solo Operator — {FOUNDING_PRICE}/mo founding
+        </a>
+        <a href="#inside" class="btn btn-ghost justify-center px-6 py-3.5">See what is inside</a>
+      </div>
+
+      <p class="mt-4 text-sm text-subtle">
+        Founding pricing for the first {FOUNDING_SEATS} members. After that, {FULL_PRICE}/month permanently. Founders are grandfathered.
+      </p>
+    </div>
+  </section>
+
+  {/* ─── Portfolio bar ──────────────────────────────────────────────── */}
+  <section class="border-y border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/40 py-14">
+    <div class="container-app">
+      <h2 class="text-fluid-2xl font-semibold">The portfolio</h2>
+      <p class="mt-2 max-w-2xl text-muted">
+        What I actually operate. Every project is live; links go to real surfaces. The community is the manual for how the systems behind them work.
+      </p>
+      <div class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {portfolio.map((p) => (
+          <article class="group relative rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-2))] p-5 transition hover:border-[rgb(var(--color-brand))]/50">
+            <div class="flex items-baseline justify-between gap-3">
+              <h3 class="text-lg font-semibold">{p.name}</h3>
+              {p.href && (
+                <a href={p.href} target="_blank" rel="noreferrer" class="text-xs uppercase tracking-wider text-[rgb(var(--color-brand))]">Visit →</a>
+              )}
+            </div>
+            <p class="mt-2 text-sm text-muted">{p.line}</p>
+            <p class="mt-3 text-sm text-subtle">{p.role}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Receipts ───────────────────────────────────────────────────── */}
+  <section class="py-16">
+    <div class="container-app grid gap-8 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-5">
+        <h2 class="text-fluid-3xl font-semibold">Receipts, not promises.</h2>
+        <p class="mt-3 text-muted">
+          The numbers below are real and verifiable. Past performance is not future performance, but it is at least proof that the operator has done the thing.
+        </p>
+      </div>
+      <dl class="lg:col-span-7 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div class="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-5">
+          <dt class="text-xs uppercase tracking-wider text-subtle">D2C revenue</dt>
+          <dd class="mt-2 text-2xl font-semibold text-[rgb(var(--color-brand))]">2Cr+</dd>
+          <dd class="mt-1 text-xs text-subtle">across 4 stores</dd>
+        </div>
+        <div class="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-5">
+          <dt class="text-xs uppercase tracking-wider text-subtle">AI agents shipped</dt>
+          <dd class="mt-2 text-2xl font-semibold text-[rgb(var(--color-brand))]">6</dd>
+          <dd class="mt-1 text-xs text-subtle">Glitch Grow stack, BSL-licensed</dd>
+        </div>
+        <div class="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-5">
+          <dt class="text-xs uppercase tracking-wider text-subtle">Brands operated</dt>
+          <dd class="mt-2 text-2xl font-semibold text-[rgb(var(--color-brand))]">7+</dd>
+          <dd class="mt-1 text-xs text-subtle">own + client work</dd>
+        </div>
+        <div class="rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-5">
+          <dt class="text-xs uppercase tracking-wider text-subtle">Years operating</dt>
+          <dd class="mt-2 text-2xl font-semibold text-[rgb(var(--color-brand))]">{2026 - 2018}</dd>
+          <dd class="mt-1 text-xs text-subtle">since 2018, hands-on</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* ─── The thesis ─────────────────────────────────────────────────── */}
+  <section class="border-y border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/30 py-20">
+    <div class="container-app grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <h2 class="text-fluid-3xl font-semibold">The thesis.</h2>
+        <p class="mt-3 text-muted">
+          Why "AI agents instead of a team" is the actual leverage point in 2026, and what most operator content misses.
+        </p>
+      </div>
+      <div class="lg:col-span-8 space-y-5 text-fluid-base leading-relaxed text-muted">
+        <p>
+          For most of the last decade, the leverage curve for a solo operator looked like this: hire your first VA, hire your first designer, hire your first growth person, become a manager, stop building. Every successful indie business eventually turned into a small agency, and most operators preferred running spreadsheets to running campaigns.
+        </p>
+        <p>
+          The leverage curve broke in 2024. Now the same tasks — campaign launches, creative iteration, lead routing, customer support, content production, SEO research, social posting, even sales outbound — can be wrapped in a small agent that runs on cron, writes to a Postgres table, and reads from a shared memory. The agent has no opinions and no off-days. It costs $0.30 in inference, not $1,200 a month in salary.
+        </p>
+        <p>
+          The bottleneck shifts. It is no longer your time, your team, or your hiring pipeline. The new bottleneck is your decision architecture — how clearly you have specified what should happen, and how willing you are to let the system run without micromanaging it.
+        </p>
+        <p>
+          Most operators have not updated. They still imagine scale through headcount. They still buy courses about delegation. They are doing the right thing for 2019.
+        </p>
+        <p class="text-fg">
+          Solo Operator is for the operators who already see the shift and want the operating manual for the one-person-many-businesses version of the next five years.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Inside ─────────────────────────────────────────────────────── */}
+  <section id="inside" class="py-20">
+    <div class="container-app">
+      <h2 class="text-fluid-3xl font-semibold">Inside Solo Operator.</h2>
+      <p class="mt-3 max-w-2xl text-muted">
+        What members get. No fluff modules, no "mindset," no founder-LARP — just the working artifacts I use day to day.
+      </p>
+      <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {inside.map((item) => (
+          <div class="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-2))] p-6">
+            <h3 class="text-lg font-semibold text-[rgb(var(--color-brand))]">{item.h}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">{item.p}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Principles ─────────────────────────────────────────────────── */}
+  <section class="border-y border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/30 py-20">
+    <div class="container-app">
+      <h2 class="text-fluid-3xl font-semibold">The Solo Operator framework.</h2>
+      <p class="mt-3 max-w-2xl text-muted">
+        Five operating principles I use across every project. The community goes deep on each of them with the actual stack behind it.
+      </p>
+      <ol class="mt-10 grid gap-4 lg:grid-cols-2">
+        {principles.map((pr) => (
+          <li class="relative rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-2))] p-6">
+            <div class="text-xs font-mono uppercase tracking-wider text-[rgb(var(--color-electric))]">{pr.n}</div>
+            <h3 class="mt-2 text-xl font-semibold">{pr.h}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-muted">{pr.p}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ─── For / Not For ──────────────────────────────────────────────── */}
+  <section class="py-20">
+    <div class="container-app grid gap-10 lg:grid-cols-2">
+      <div class="rounded-2xl border border-[rgb(var(--color-brand))]/30 bg-[rgb(var(--color-surface-2))] p-7">
+        <h2 class="text-fluid-2xl font-semibold text-[rgb(var(--color-brand))]">This is for you if…</h2>
+        <ul class="mt-5 space-y-3">
+          {forWho.map((line) => (
+            <li class="flex gap-3 text-muted">
+              <span class="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--color-brand))]"></span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-2))] p-7">
+        <h2 class="text-fluid-2xl font-semibold text-[rgb(var(--color-danger))]">This is not for you if…</h2>
+        <ul class="mt-5 space-y-3">
+          {notFor.map((line) => (
+            <li class="flex gap-3 text-muted">
+              <span class="mt-1.5 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--color-danger))]"></span>
+              <span>{line}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Pricing ────────────────────────────────────────────────────── */}
+  <section class="py-20">
+    <div class="container-app">
+      <div class="mx-auto max-w-3xl rounded-3xl border border-[rgb(var(--color-brand))]/40 bg-[radial-gradient(circle_at_top,rgb(var(--color-brand)/0.08),transparent_60%)] p-10 text-center">
+        <div class="inline-flex items-center gap-2 rounded-full border border-[rgb(var(--color-brand))]/40 bg-[rgb(var(--color-brand))]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[rgb(var(--color-brand))]">
+          Founding cohort · first {FOUNDING_SEATS} seats
+        </div>
+        <div class="mt-6 flex items-baseline justify-center gap-3">
+          <span class="text-6xl font-semibold">{FOUNDING_PRICE}</span>
+          <span class="text-lg text-muted">/ month</span>
+        </div>
+        <p class="mt-2 text-sm text-subtle">
+          locked in for founding members · regular price {FULL_PRICE}/mo
+        </p>
+        <ul class="mt-8 grid gap-3 text-left sm:grid-cols-2">
+          {[
+            'Skool community access',
+            'Weekly ops teardowns',
+            'Glitch Grow agents (lifetime while active)',
+            'Brain MCP read-access',
+            'Monthly live Q&A (recorded)',
+            'Discord room',
+            'All future stack updates',
+            '14-day refund',
+          ].map((feat) => (
+            <li class="flex items-center gap-2 text-sm text-muted">
+              <svg class="h-4 w-4 shrink-0 text-[rgb(var(--color-brand))]" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.704 5.296a1 1 0 010 1.415l-7.5 7.5a1 1 0 01-1.414 0l-3.5-3.5a1 1 0 011.414-1.415l2.793 2.793 6.793-6.793a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              {feat}
+            </li>
+          ))}
+        </ul>
+        <a href={SKOOL_URL} target="_blank" rel="noreferrer" class="btn btn-primary mt-10 w-full justify-center px-6 py-4 text-base">
+          Claim a founding seat on Skool →
+        </a>
+        <p class="mt-4 text-xs text-subtle">
+          Skool handles the billing. Cancel anytime in two clicks.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ─── FAQ ────────────────────────────────────────────────────────── */}
+  <section class="border-t border-[rgb(var(--color-border))] py-20">
+    <div class="container-app grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <h2 class="text-fluid-3xl font-semibold">Honest questions.</h2>
+        <p class="mt-3 text-muted">
+          I would rather you not join than join expecting the wrong thing.
+        </p>
+      </div>
+      <div class="lg:col-span-8 space-y-4">
+        {faqs.map((f) => (
+          <details class="group rounded-xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-2))] p-5 transition open:border-[rgb(var(--color-brand))]/40">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-fg list-none">
+              <span class="font-medium">{f.q}</span>
+              <span class="text-[rgb(var(--color-brand))] transition group-open:rotate-45 text-2xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-muted">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ─── Final CTA ──────────────────────────────────────────────────── */}
+  <section class="pb-24">
+    <div class="container-app">
+      <div class="rounded-3xl border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] p-10 lg:p-14">
+        <h2 class="max-w-3xl text-fluid-3xl font-semibold">
+          The operating manual for one operator, many businesses.
+        </h2>
+        <p class="mt-4 max-w-2xl text-muted">
+          Start with the founding cohort while seats are open. Worst case: you cancel inside 14 days, full refund, no questions. Best case: a year from now you are running the same kind of portfolio I am.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={SKOOL_URL} target="_blank" rel="noreferrer" class="btn btn-primary justify-center px-6 py-3.5">
+            Join Solo Operator — {FOUNDING_PRICE}/mo
+          </a>
+          <a href="/" class="btn btn-ghost justify-center px-6 py-3.5">
+            See the full portfolio first
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
