@@ -13,6 +13,8 @@ export const site = {
   ogImage: '/assets/brand/og-image.png',
   twitter: '@glitchexecutor',
   linkedin: 'https://www.linkedin.com/in/tejas-karan-agrawal',
+  github: 'https://github.com/floating-astronaut',
+  gitlab: 'https://gitlab.com/floating-astronaut',
   locale: 'en-US',
 } as const;
 
