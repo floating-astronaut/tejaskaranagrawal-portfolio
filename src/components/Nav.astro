@@ -3,7 +3,8 @@ import { nav, site } from '~/lib/site';
 import SocialIcons from '~/components/SocialIcons.astro';
 ---
 <a href="#main" class="skip-link">Skip to content</a>
-<header id="site-nav" class="border-b border-border/60 bg-bg/70 backdrop-blur-xl">
+<header id="site-nav">
+  <div class="mx-auto mt-2 w-[min(calc(100%-1rem),var(--container-max))] rounded-2xl border border-border/60 bg-[linear-gradient(180deg,rgb(var(--color-bg)/0.82),rgb(var(--color-surface)/0.68))] shadow-[0_18px_44px_-28px_rgba(0,0,0,0.85)] backdrop-blur-xl">
   <div class="container-app flex h-[var(--nav-h)] items-center justify-between">
     <a href="/" class="flex min-h-11 items-center gap-3 font-semibold" aria-label={`${site.name} home`}>
       <img src="/assets/brand/mark-128.png" alt="" width="36" height="36" class="h-9 w-9 rounded-full border border-brand/40 object-cover" loading="eager" decoding="async" />
@@ -19,6 +20,7 @@ import SocialIcons from '~/components/SocialIcons.astro';
     <button id="mobile-nav-toggle" type="button" class="md:hidden inline-flex min-h-11 min-w-11 items-center justify-center rounded-md text-fg hover:text-brand" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path data-ham-lines d="M4 7h16M4 12h16M4 17h16" /><path data-ham-x class="hidden" d="M6 6l12 12M6 18L18 6" /></svg>
     </button>
+  </div>
   </div>
 </header>
 <div id="mobile-nav-drawer" class="fixed inset-x-0 bottom-0 z-40 hidden flex-col bg-bg/98 backdrop-blur-xl md:hidden" style="top: var(--nav-h);" aria-hidden="true">
