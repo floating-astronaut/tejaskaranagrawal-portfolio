@@ -22,7 +22,6 @@ export const nav = [
   { href: '/#education', label: 'Education' },
   { href: '/#systems', label: 'Systems' },
   { href: '/#contact', label: 'Contact' },
-  { href: '/operator', label: 'Solo Operator' },
 ] as const;
 
 export const legalNav = [
