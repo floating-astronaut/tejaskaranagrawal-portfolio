@@ -17,10 +17,10 @@ export const site = {
 } as const;
 
 export const nav = [
-  { href: '/#proof', label: 'Proof' },
+  { href: '/#arc', label: 'The arc' },
+  { href: '/#systems', label: 'What I shipped' },
   { href: '/#experience', label: 'Experience' },
   { href: '/#education', label: 'Education' },
-  { href: '/#systems', label: 'Systems' },
   { href: '/#contact', label: 'Contact' },
 ] as const;
 
